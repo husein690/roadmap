@@ -1256,6 +1256,15 @@ function renderAll(){
 
 renderAll();
 
+// Auto-pull for visitors on page load
+window.addEventListener('load', function(){
+  const token = localStorage.getItem('gist_token') || '';
+  if(!token){
+    // Visitor mode — pull publicly from Gist
+    pullFromGist();
+  }
+});
+
 // Drag scroll for badges
 (function(){
   const el = document.getElementById('badges-scroll');
