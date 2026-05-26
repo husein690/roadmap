@@ -1033,7 +1033,7 @@ const CERTS = {
 // ========== GIST SYNC SYSTEM ==========
 const GIST_FILENAME = 'pentest_roadmap_progress.json';
 let GIST_TOKEN = localStorage.getItem('gist_token') || '';
-let GIST_ID    = localStorage.getItem('gist_id')    || '';
+let GIST_ID    = localStorage.getItem('gist_id')    || '9838e80c3a5a5e8eda2f9ed568f534e1';
 let syncStatus = 'idle'; // idle | saving | loading | error
 
 function showSetup(){
@@ -1109,11 +1109,12 @@ async function pushToGist(){
 }
 
 async function pullFromGist(){
-  if(!GIST_TOKEN||!GIST_ID){ setSyncStatus('error','NO ID'); return; }
+  if(!GIST_ID){ setSyncStatus('error','NO ID'); return; }
   setSyncStatus('loading');
   try {
+    const headers = GIST_TOKEN ? {'Authorization':'token '+GIST_TOKEN} : {};
     const res = await fetch(`https://api.github.com/gists/${GIST_ID}`,{
-      headers:{'Authorization':'token '+GIST_TOKEN}
+      headers: headers
     });
     if(!res.ok){ setSyncStatus('error', res.status); return; }
     const j = await res.json();
@@ -1144,6 +1145,10 @@ function toggleMod(id){
   sv('rmap_prog', prog);
   pushToGist();
   renderAll();
+  // Auto-pull for visitors (no token = read-only)
+  if(!GIST_TOKEN && GIST_ID){
+    pullFromGist();
+  }
 }
 
 function toggleChalmers(){
