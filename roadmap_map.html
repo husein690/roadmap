@@ -516,7 +516,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   <div class="phase-inner">
     <div class="ph-head" onclick="toggleExpand(8)">
       <div class="ph-title">LeetCode — DSA Crash Course <span style="font-size:9px;opacity:.5;font-family:var(--tag);">leetcode.com</span></div>
-      <div class="ph-dates">ONGOING · PARALLEL TRACK</div>
+      <div class="ph-dates">28 MAY – 14 JUN 2026 · 15-DAY SPRINT</div>
       <div class="ph-badge" id="ph8-badge" style="background:rgba(167,139,250,.15);color:#a78bfa;border-color:rgba(167,139,250,.3);">◈ ONGOING</div>
     </div>
     <div class="phase-body" id="ph8-body">
@@ -560,10 +560,11 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <div class="dsa-chapter">
         <div class="dsa-ch-title">Ch 4 · LINKED LISTS</div>
         <div class="psec">
-          <div class="psec-title"><span>Linked Lists</span><span id="dsa_list-prog">0/4</span></div>
+          <div class="psec-title"><span>Linked Lists</span><span id="dsa_list-prog">0/5</span></div>
           <div class="cp" id="dsa_c12" onclick="tick(this,'dsa_list')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">READ</span>Linked Lists — Intro &amp; Techniques</div></div></div>
           <div class="cp" id="dsa_c13" onclick="tick(this,'dsa_list')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">CODE</span>Fast &amp; Slow Pointers</div></div></div>
           <div class="cp" id="dsa_c14" onclick="tick(this,'dsa_list')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">CODE</span>Reversing a Linked List</div></div></div>
+          <div class="cp" id="dsa_c46" onclick="tick(this,'dsa_list')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">CODE</span>Doubly Linked List</div></div></div>
           <div class="cp" id="dsa_c15" onclick="tick(this,'dsa_list')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">✓</span>Closing Notes</div></div></div>
         </div>
       </div>
@@ -644,10 +645,11 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <div class="dsa-chapter">
         <div class="dsa-ch-title">Ch 11 · DYNAMIC PROGRAMMING</div>
         <div class="psec">
-          <div class="psec-title"><span>Dynamic Programming</span><span id="dsa_dp-prog">0/4</span></div>
+          <div class="psec-title"><span>Dynamic Programming</span><span id="dsa_dp-prog">0/5</span></div>
           <div class="cp" id="dsa_c40" onclick="tick(this,'dsa_dp')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">READ</span>DP — Concept &amp; Memoization</div></div></div>
           <div class="cp" id="dsa_c41" onclick="tick(this,'dsa_dp')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">CODE</span>1D DP Problems</div></div></div>
           <div class="cp" id="dsa_c42" onclick="tick(this,'dsa_dp')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">CODE</span>Multi-dimensional DP Problems</div></div></div>
+          <div class="cp" id="dsa_c47" onclick="tick(this,'dsa_dp')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">CODE</span>DP on Trees</div></div></div>
           <div class="cp" id="dsa_c43" onclick="tick(this,'dsa_dp')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">✓</span>Closing Notes</div></div></div>
         </div>
       </div>
@@ -656,9 +658,10 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <div class="dsa-chapter">
         <div class="dsa-ch-title">Ch 12 · BONUS — BIT MANIPULATION</div>
         <div class="psec">
-          <div class="psec-title"><span>Bit Manipulation</span><span id="dsa_bit-prog">0/2</span></div>
+          <div class="psec-title"><span>Bit Manipulation</span><span id="dsa_bit-prog">0/3</span></div>
           <div class="cp" id="dsa_c44" onclick="tick(this,'dsa_bit')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">READ</span>Bit Manipulation — Concept &amp; Tricks</div></div></div>
           <div class="cp" id="dsa_c45" onclick="tick(this,'dsa_bit')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">CODE</span>Example Problems</div></div></div>
+          <div class="cp" id="dsa_c48" onclick="tick(this,'dsa_bit')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">✓</span>Closing Notes</div></div></div>
         </div>
       </div>
 
@@ -696,15 +699,15 @@ const SEC_CPS = {
   dsa_intro:  ['dsa_c01'],
   dsa_arr:    ['dsa_c02','dsa_c03','dsa_c04','dsa_c05','dsa_c06'],
   dsa_hash:   ['dsa_c07','dsa_c08','dsa_c09','dsa_c10','dsa_c11'],
-  dsa_list:   ['dsa_c12','dsa_c13','dsa_c14','dsa_c15'],
+  dsa_list:   ['dsa_c12','dsa_c13','dsa_c14','dsa_c46','dsa_c15'],
   dsa_stack:  ['dsa_c16','dsa_c17','dsa_c18','dsa_c19'],
   dsa_tree:   ['dsa_c20','dsa_c21','dsa_c22','dsa_c23','dsa_c24','dsa_c25','dsa_c26'],
   dsa_heap:   ['dsa_c27','dsa_c28','dsa_c29'],
   dsa_greedy: ['dsa_c30','dsa_c31','dsa_c32'],
   dsa_bs:     ['dsa_c33','dsa_c34','dsa_c35','dsa_c36'],
   dsa_bt:     ['dsa_c37','dsa_c38','dsa_c39'],
-  dsa_dp:     ['dsa_c40','dsa_c41','dsa_c42','dsa_c43'],
-  dsa_bit:    ['dsa_c44','dsa_c45']
+  dsa_dp:     ['dsa_c40','dsa_c41','dsa_c42','dsa_c47','dsa_c43'],
+  dsa_bit:    ['dsa_c44','dsa_c45','dsa_c48']
 };
 
 // Section checkpoint counts (auto-derived)
