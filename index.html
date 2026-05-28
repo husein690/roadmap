@@ -187,8 +187,30 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .badge-img-col{position:absolute;bottom:0;left:0;width:72px;height:72px;object-fit:contain;}
 
 </style>
+
+<style id="glass-override">
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.60)!important;background-image:none!important;z-index:0!important;display:block!important;pointer-events:none!important}
+body::after{display:none!important}
+.wrap{position:relative!important;z-index:2!important}
+.gist-modal{z-index:200!important}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
+#glass-profile{position:fixed;top:14px;right:14px;width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.38);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 0 1px rgba(0,212,255,0.25);z-index:300}
+.cc{background:rgba(8,18,36,0.48)!important;backdrop-filter:blur(16px) saturate(160%)!important;-webkit-backdrop-filter:blur(16px) saturate(160%)!important;border:1px solid rgba(255,255,255,0.10)!important;box-shadow:0 4px 24px rgba(0,0,0,0.30)!important}
+.overall{background:rgba(8,18,36,0.52)!important;backdrop-filter:blur(18px) saturate(160%)!important;-webkit-backdrop-filter:blur(18px) saturate(160%)!important;border:1px solid rgba(0,212,255,0.18)!important;box-shadow:0 4px 30px rgba(0,0,0,0.35)!important}
+.hdr{background:rgba(6,14,28,0.60)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important;border-bottom:1px solid rgba(255,255,255,0.08)!important}
+.sec-hdr{background:rgba(6,14,28,0.55)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border:1px solid rgba(255,255,255,0.08)!important}
+.badges-section{background:rgba(6,14,28,0.45)!important;backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important;border:1px solid rgba(255,255,255,0.07)!important}
+.badge-item{background:rgba(255,255,255,0.04)!important;backdrop-filter:blur(8px)!important;-webkit-backdrop-filter:blur(8px)!important;border:1px solid rgba(255,255,255,0.07)!important}
+.gist-modal>div{background:rgba(6,14,28,0.85)!important;backdrop-filter:blur(22px)!important;-webkit-backdrop-filter:blur(22px)!important;border:1px solid rgba(0,212,255,0.22)!important}
+.tph{background:transparent!important}
+.footer{background:rgba(6,14,28,0.45)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;border-top:1px solid rgba(255,255,255,0.07)!important}
+</style>
 </head>
 <body>
+<canvas id="glass-particles"></canvas>
+<img id="glass-profile" src="https://raw.githubusercontent.com/husein690/roadmap/main/assets/husein.jpg" alt="Husein Sulaiman">
+
 <div class="wrap">
 
 <div class="hdr">
@@ -541,5 +563,7 @@ function hideSetup(){document.getElementById('gist-setup').style.display='none';
 function saveToken(){GIST_TOKEN=document.getElementById('token-input').value.trim();const gid=document.getElementById('gistid-input').value.trim();if(gid)GIST_ID=gid;localStorage.setItem('gist_token',GIST_TOKEN);localStorage.setItem('gist_id',GIST_ID);hideSetup();pullFromGist();}
 window.onload=function(){pullFromGist();setInterval(pullFromGist,5*60*1000);};
 </script>
+
+<script id="glass-pjs">(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(40,Math.min(Math.round(W*H/16000),120));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
 </body>
 </html
