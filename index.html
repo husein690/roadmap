@@ -482,7 +482,7 @@ async function pullFromGist(){
 }
 function showSetup(){document.getElementById('gist-setup').style.display='flex';document.getElementById('token-input').value=GIST_TOKEN;document.getElementById('gistid-input').value=GIST_ID;}
 function hideSetup(){document.getElementById('gist-setup').style.display='none';}
-function saveToken(){GIST_TOKEN=document.getElementById('token-input').value.trim();const gid=document.getElementById('gistid-input).value.trim();if(gid)GIST_ID=gid;localStorage.setItem('gist_token',GIST_TOKEN);localStorage.setItem('gist_id',GIST_ID);hideSetup();pullFromGist();}
+function saveToken(){GIST_TOKEN=document.getElementById('token-input').value.trim();const gid=document.getElementById('gistid-input').value.trim();if(gid)GIST_ID=gid;localStorage.setItem('gist_token',GIST_TOKEN);localStorage.setItem('gist_id',GIST_ID);hideSetup();pullFromGist();}
 window.onload=function(){pullFromGist();setInterval(pullFromGist,5*60*1000);};
 </script>
 </body>
