@@ -856,6 +856,25 @@ function applyStates(){
       if(body) body.style.display='none';
     }
   }
+  // Phase 8 (DSA) is always accessible regardless of other phases
+  const _ph8 = document.getElementById('ph8');
+  if(_ph8){
+    _ph8.classList.remove('s-locked');
+    const _foot8 = document.getElementById('ph8-footer');
+    const _body8 = document.getElementById('ph8-body');
+    if(S.phases && S.phases[8]==='done'){
+      // keep s-done state — already set above
+    } else {
+      _ph8.classList.remove('s-done');
+      _ph8.classList.add('s-always');
+      const _badge8 = document.getElementById('ph8-badge');
+      const _dot8 = document.getElementById('ph8-dot');
+      if(_badge8){ _badge8.textContent='◈ ONGOING'; _badge8.className='ph-badge'; _badge8.style.cssText='background:rgba(167,139,250,.15);color:#a78bfa;border-color:rgba(167,139,250,.3);'; }
+      if(_dot8) _dot8.textContent='08';
+      if(_foot8) _foot8.style.display='none';
+      if(_body8) _body8.style.display='block';
+    }
+  }
   updateGlobalProg();
 }
 
