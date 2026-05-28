@@ -113,6 +113,14 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .cc.green-c .cc-bar{background:var(--green);}
 .cc-meta{display:flex;justify-content:space-between;margin-top:5px;font-family:var(--tag);font-size:7px;color:var(--muted);}
 
+
+/* LeetCode brand color */
+.cc.leet .cc-water{background:linear-gradient(0deg,rgba(255,161,22,.2) 0%,rgba(255,161,22,.05) 100%);}
+.cc.leet .cc-code{color:#FFA116;}
+.cc.leet .cc-bar{background:linear-gradient(90deg,#FFA116,#FFD166);}
+.cc.leet .cc-top{border-bottom-color:rgba(255,161,22,.2);}
+.cc.leet .sk{border-color:rgba(255,161,22,.25);color:#FFA116;}
+
 /* FOOTER */
 .footer{text-align:center;margin-top:52px;padding-top:22px;border-top:1px solid var(--border);}
 .footer-txt{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:3px;}
@@ -400,6 +408,30 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   </div>
 </div>
 
+
+<div class="sec-hdr">&#9658; ONLINE COURSES &mdash; SELF-STUDY</div>
+<div class="grid">
+  <div class="cc leet">
+    <div class="cc-water" id="dsa-water"></div>
+    <div class="cc-body">
+      <div class="cc-top">
+        <div class="cc-code">DSA</div>
+        <div class="cc-pct" id="dsa-pct">0%</div>
+      </div>
+      <div class="cc-name">Data Structures &amp; Algorithms</div>
+      <div class="cc-type">LEETCODE &nbsp;&middot;&nbsp; INTERVIEW CRASH COURSE &nbsp;&middot;&nbsp; 28 MAY &ndash; 14 JUN 2026</div>
+      <div class="cc-skills">
+        <span class="sk">Arrays &amp; Strings</span><span class="sk">Hashing</span>
+        <span class="sk">Linked Lists</span><span class="sk">Trees &amp; Graphs</span>
+        <span class="sk">Dynamic Programming</span><span class="sk">Binary Search</span>
+        <span class="sk">Stacks &amp; Queues</span><span class="sk">Backtracking</span>
+      </div>
+      <div class="cc-bar-wrap"><div class="cc-bar" id="dsa-bar"></div></div>
+      <div class="cc-meta"><span id="dsa-done">0/48 lessons</span><span id="dsa-status">IN PROGRESS</span></div>
+    </div>
+  </div>
+</div>
+
 <div class="footer">
   <div class="footer-txt">HUSEIN SULAIMAN &nbsp;&middot;&nbsp; HV DATATEKNIK 2027 &nbsp;&middot;&nbsp; <b>&#9733; eJPT &rarr; eCPPT</b></div>
   <div class="footer-sync">LAST SYNC: <span id="last-sync">NEVER</span></div>
@@ -431,7 +463,8 @@ const COURSE_IDS={
   eda333:['eda333_c1','eda333_c2','eda333_c3','eda333_c4','eda333_c5','eda333_c6','eda333_l1','eda333_l2','eda333_l3','eda333_l4','eda333_ex'],
   eda482:['eda482_l01','eda482_l02','eda482_l03','eda482_lab1','eda482_l04','eda482_l05','eda482_l06','eda482_lab2','eda482_l07','eda482_l08','eda482_l09','eda482_lab3','eda482_l10','eda482_l11','eda482_lab4','eda482_ex'],
   ine102:['ine102_m1','ine102_m2','ine102_ex'],
-  asc400:['asc400_m1','asc400_m2','asc400_ex']
+  asc400:['asc400_m1','asc400_m2','asc400_ex'],
+  dsa:['dsa_c01','dsa_c02','dsa_c03','dsa_c04','dsa_c05','dsa_c06','dsa_c07','dsa_c08','dsa_c09','dsa_c10','dsa_c11','dsa_c12','dsa_c13','dsa_c14','dsa_c15','dsa_c16','dsa_c17','dsa_c18','dsa_c19','dsa_c20','dsa_c21','dsa_c22','dsa_c23','dsa_c24','dsa_c25','dsa_c26','dsa_c27','dsa_c28','dsa_c29','dsa_c30','dsa_c31','dsa_c32','dsa_c33','dsa_c34','dsa_c35','dsa_c36','dsa_c37','dsa_c38','dsa_c39','dsa_c40','dsa_c41','dsa_c42','dsa_c43','dsa_c44','dsa_c45','dsa_c46','dsa_c47','dsa_c48']
 };
 function calcPct(k,d){const ids=COURSE_IDS[k]||[];if(!ids.length)return{pct:0,done:0,tot:0};const dn=ids.filter(id=>d[id]).length;return{pct:Math.round(dn/ids.length*100),done:dn,tot:ids.length};}
 function updateUI(data){
@@ -443,7 +476,7 @@ function updateUI(data){
           we=document.getElementById(k+'-water');
     if(pe)pe.textContent=pct+'%';
     if(be)be.style.width=pct+'%';
-    if(de)de.textContent=done+'/'+tot+' items';
+    if(de)de.textContent=done+'/'+tot+(k==='dsa'?' lessons':' items');
     if(we)we.style.height=pct+'%';
     if(se)se.textContent=pct===100?'DONE ✓':pct>0?'IN PROGRESS':'NOT STARTED';
   });
@@ -486,4 +519,4 @@ function saveToken(){GIST_TOKEN=document.getElementById('token-input').value.tri
 window.onload=function(){pullFromGist();setInterval(pullFromGist,5*60*1000);};
 </script>
 </body>
-</html>
+</html
