@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Husein — Journey Map 2026-2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#030810;--surface:#080f1c;--surface2:#0c1828;--border:#0e2035;
+  --accent:#00d4ff;--accent-dim:rgba(0,212,255,0.1);
+  --orange:#ff6b35;--green:#39ff14;--green-dim:rgba(57,255,20,0.1);
+  --purple:#a855f7;--pink:#ec4899;--yellow:#fbbf24;--red:#ff5757;
+  --text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;
+  --mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0;}
+.wrap{max-width:860px;margin:0 auto;padding:36px 16px 100px;position:relative;z-index:1;}
+
+/* HEADER */
+.hdr{text-align:center;margin-bottom:44px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:4px;margin-bottom:10px;}
+.hdr h1{font-family:var(--mono);font-size:clamp(20px,3vw,36px);font-weight:700;color:var(--white);text-shadow:0 0 40px rgba(0,212,255,.4);}
+.hdr h1 span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:3px;margin-top:8px;border:1px solid var(--border);display:inline-block;padding:4px 16px;}
+
+/* PROGRESS BAR */
+.global-prog{margin-bottom:32px;}
+.gp-label{font-family:var(--tag);font-size:8px;color:var(--muted);letter-spacing:3px;margin-bottom:6px;display:flex;justify-content:space-between;}
+.gp-track{height:6px;background:var(--border);position:relative;}
+.gp-fill{height:100%;background:linear-gradient(to right,var(--accent),var(--green));transition:width .6s;box-shadow:0 0 10px rgba(0,212,255,.3);}
+.gp-phases{display:flex;justify-content:space-between;margin-top:4px;}
+.gp-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;}
+.gp-dot.done{background:var(--green);border-color:var(--green);box-shadow:0 0 6px rgba(57,255,20,.5);}
+.gp-dot.active{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px rgba(0,212,255,.6);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(0,212,255,.4);}50%{box-shadow:0 0 16px rgba(0,212,255,.8);}}
+
+/* ROAD */
+.road-wrap{position:relative;}
+.road-line{position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--border) 80%);z-index:0;}
+
+/* PHASE CARD */
+.phase{position:relative;padding-left:68px;margin-bottom:12px;}
+.phase-dot{position:absolute;left:18px;top:22px;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:var(--surface);z-index:2;display:flex;align-items:center;justify-content:center;font-family:var(--tag);font-size:8px;color:var(--muted);transition:all .3s;}
+.phase.s-done .phase-dot{background:var(--green);border-color:var(--green);color:#000;box-shadow:0 0 12px rgba(57,255,20,.5);}
+.phase.s-active .phase-dot{background:var(--accent);border-color:var(--accent);color:#000;animation:pulse 2s infinite;}
+.phase.s-locked .phase-dot{background:var(--surface2);border-color:var(--muted);color:var(--muted);}
+
+.phase-card{border:1px solid var(--border);background:var(--surface);transition:all .3s;}
+.phase.s-active .phase-card{border-color:rgba(0,212,255,.35);box-shadow:0 0 24px rgba(0,212,255,.08);}
+.phase.s-done .phase-card{border-color:rgba(57,255,20,.2);opacity:.8;}
+.phase.s-locked .phase-card{opacity:.35;filter:blur(.3px);}
+
+/* PHASE HEADER */
+.phase-hdr{padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;}
+.phase-hdr:hover{background:rgba(255,255,255,.02);}
+.ph-num{font-family:var(--tag);font-size:10px;color:var(--muted);min-width:24px;}
+.ph-info{flex:1;}
+.ph-dates{font-family:var(--tag);font-size:9px;letter-spacing:2px;margin-bottom:3px;}
+.phase.s-active .ph-dates{color:var(--accent);}
+.phase.s-done .ph-dates{color:var(--green);}
+.phase.s-locked .ph-dates{color:var(--muted);}
+.ph-title{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--white);}
+.phase.s-locked .ph-title{color:var(--muted);}
+.ph-badge{font-family:var(--tag);font-size:8px;padding:2px 8px;border-radius:1px;white-space:nowrap;}
+.pb-active{background:rgba(0,212,255,.15);color:var(--accent);border:1px solid rgba(0,212,255,.3);}
+.pb-done{background:rgba(57,255,20,.12);color:var(--green);border:1px solid rgba(57,255,20,.25);}
+.pb-locked{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.pb-work{background:rgba(255,107,53,.12);color:var(--orange);border:1px solid rgba(255,107,53,.25);}
+.pb-warn{background:rgba(255,87,87,.12);color:var(--red);border:1px solid rgba(255,87,87,.3);}
+
+/* PHASE BODY */
+.phase-body{display:none;border-top:1px solid var(--border);padding:16px;}
+.phase.s-active .phase-body{display:block;}
+.phase.s-done .phase-body{display:none;}
+.phase.s-done.expanded .phase-body{display:block;}
+
+/* SECTION inside phase */
+.psec{margin-bottom:16px;}
+.psec-title{font-family:var(--tag);font-size:8px;letter-spacing:3px;color:var(--muted);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.psec-prog{font-family:var(--tag);font-size:8px;}
+
+/* ITEMS GRID */
+.items-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+@media(max-width:600px){.items-grid{grid-template-columns:1fr;}}
+.items-list{display:flex;flex-direction:column;gap:5px;}
+
+/* CHECKPOINT */
+.cp{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;user-select:none;}
+.cp:hover{border-color:rgba(0,212,255,.25);background:rgba(0,212,255,.04);}
+.cp.done{border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.04);}
+.cp-box{width:15px;height:15px;min-width:15px;border:1px solid var(--muted);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s;border-radius:2px;}
+.cp.done .cp-box{background:var(--green);border-color:var(--green);color:#000;}
+.cp.done .cp-box::after{content:'✓';}
+.cp-info{flex:1;}
+.cp-name{font-family:var(--sans);font-size:11px;color:var(--text);line-height:1.3;}
+.cp.done .cp-name{color:var(--muted);text-decoration:line-through;}
+.cp-meta{font-family:var(--tag);font-size:7px;color:var(--muted);margin-top:2px;}
+.cp-tag{font-family:var(--tag);font-size:7px;padding:1px 5px;border-radius:1px;margin-right:4px;}
+.t-exam{background:rgba(251,191,36,.12);color:var(--yellow);}
+.t-study{background:rgba(0,212,255,.1);color:var(--accent);}
+.t-lab{background:rgba(168,85,247,.12);color:var(--purple);}
+.t-ch{background:rgba(57,255,20,.1);color:var(--green);}
+.t-cert{background:rgba(0,212,255,.1);color:var(--accent);}
+.t-warn{background:rgba(255,87,87,.12);color:var(--red);}
+
+/* EXAM ROW — full width highlight */
+.cp.cp-exam{border-left:3px solid var(--yellow);background:rgba(251,191,36,.04);}
+.cp.cp-exam.done{border-left-color:var(--green);background:rgba(57,255,20,.04);}
+.cp.cp-conflict{border-left:3px solid var(--red);background:rgba(255,87,87,.04);}
+
+/* WORK BAND */
+.work-band{padding:10px 14px;background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.2);border-left:3px solid var(--orange);font-family:var(--tag);font-size:8px;margin-bottom:14px;line-height:1.7;}
+.wb-title{color:var(--orange);letter-spacing:2px;margin-bottom:3px;}
+.wb-body{color:var(--muted);letter-spacing:1px;}
+
+/* NOTE BOX */
+.note{padding:8px 12px;background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.2);border-left:3px solid var(--purple);font-family:var(--tag);font-size:8px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+.warn-box{padding:8px 12px;background:rgba(255,87,87,.07);border:1px solid rgba(255,87,87,.25);border-left:3px solid var(--red);font-family:var(--tag);font-size:8px;color:var(--red);line-height:1.6;margin-bottom:12px;letter-spacing:.5px;}
+
+/* COMPLETE BUTTON */
+.complete-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px;margin-top:14px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.25);color:var(--accent);font-family:var(--tag);font-size:9px;letter-spacing:3px;cursor:pointer;transition:all .2s;}
+.complete-btn:hover{background:rgba(0,212,255,.14);border-color:rgba(0,212,255,.5);box-shadow:0 0 16px rgba(0,212,255,.15);}
+.undo-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:5px 12px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--tag);font-size:8px;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-top:8px;}
+.undo-btn:hover{border-color:var(--muted);color:var(--text);}
+
+/* PHASE FOOTER (done state) */
+.phase-footer{padding:8px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);background:rgba(57,255,20,.03);}
+.pf-done{font-family:var(--tag);font-size:8px;color:var(--green);letter-spacing:2px;}
+.pf-expand{font-family:var(--tag);font-size:8px;color:var(--muted);cursor:pointer;letter-spacing:1px;}
+.pf-expand:hover{color:var(--text);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="hdr-tag">&#9658; JOURNEY MAP 2026–2027</div>
+  <h1>HUSEIN <span>MASTER PLAN</span></h1>
+  <div class="hdr-sub">CLICK CHECKPOINTS &#183; ADVANCE PHASES &#183; PROGRESS SAVED</div>
+</div>
+
+<!-- GLOBAL PROGRESS -->
+<div class="global-prog">
+  <div class="gp-label"><span>OVERALL PROGRESS</span><span id="gp-txt">PHASE 1 / 7</span></div>
+  <div class="gp-track"><div class="gp-fill" id="gp-fill" style="width:0%"></div></div>
+  <div class="gp-phases" id="gp-dots"></div>
+</div>
+
+<!-- ROAD -->
+<div class="road-wrap">
+<div class="road-line"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PHASE 1 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="phase" id="ph1">
+  <div class="phase-dot" id="ph1-dot">01</div>
+  <div class="phase-card">
+    <div class="phase-hdr" onclick="toggleExpand(1)">
+      <div class="ph-num">01</div>
+      <div class="ph-info">
+        <div class="ph-dates">27 MAY — 14 JUN 2026</div>
+        <div class="ph-title">IMMEDIATE &#8212; ابدأ الآن</div>
+      </div>
+      <div class="ph-badge pb-active" id="ph1-badge">&#9670; ACTIVE</div>
+    </div>
+    <div class="phase-body" id="ph1-body">
+      <div class="psec">
+        <div class="psec-title"><span>EXAMS &amp; KICKOFF</span><span id="ph1-prog">0/3</span></div>
+        <div class="items-list">
+          <div class="cp cp-exam" id="ph1_c1" onclick="tick(this,'ph1')">
+            <div class="cp-box"></div>
+            <div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>DAT038 — Datastrukturer &amp; Algoritmer</div><div class="cp-meta">4 Jun 2026 · 08:30-14:00 · Chalmers</div></div>
+          </div>
+          <div class="cp" id="ph1_c2" onclick="tick(this,'ph1')">
+            <div class="cp-box"></div>
+            <div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">START</span>Skapa INE-konto + logga in p&#229; eJPT learning path</div><div class="cp-meta">Voucher: c270376a · Expires 4 Sep 2026</div></div>
+          </div>
+          <div class="cp" id="ph1_c3" onclick="tick(this,'ph1')">
+            <div class="cp-box"></div>
+            <div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">PLAN</span>G&#246;r ett studieplan f&#246;r Augusti (DFR100 + EDA333 + EDA482 + INE102)</div><div class="cp-meta">Inga m&#229;ste g&#246;ras f&#246;re 15 Jun</div></div>
+          </div>
+        </div>
+      </div>
+      <button class="complete-btn" onclick="completePhase(1)">MARK PHASE DONE &amp; UNLOCK NEXT &#9658;</button>
+    </div>
+    <div class="phase-footer" id="ph1-footer" style="display:none">
+      <div class="pf-done">&#10003; DONE</div>
+      <div class="pf-expand" onclick="toggleExpand(1)">show &#9660;</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PHASE 2 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="phase s-locked" id="ph2">
+  <div class="phase-dot" id="ph2-dot">02</div>
+  <div class="phase-card">
+    <div class="phase-hdr" onclick="toggleExpand(2)">
+      <div class="ph-num">02</div>
+      <div class="ph-info">
+        <div class="ph-dates">15 JUN — 31 JUL 2026</div>
+        <div class="ph-title">HEMTJ&#196;NST GRIND + eJPT</div>
+      </div>
+      <div class="ph-badge pb-locked" id="ph2-badge">&#128274; LOCKED</div>
+    </div>
+    <div class="phase-body" id="ph2-body">
+      <div class="work-band">
+        <div class="wb-title">&#9658; FULL-TIME HEMTJ&#196;NST</div>
+        <div class="wb-body">Jobb varje dag · eJPT p&#229; kvällarna ~1-2h/dag · M&#229;l: 50-70h totalt</div>
+      </div>
+      <div class="psec">
+        <div class="psec-title"><span>eJPT — EVENING STUDY</span><span id="ph2-prog">0/14</span></div>
+        <div class="items-list">
+          <div class="cp" id="ej_m1" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S01</span>Welcome — Penetration Testing Student Overview</div><div class="cp-meta">2m</div></div></div>
+          <div class="cp" id="ej_m2" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S02</span>Information Gathering</div><div class="cp-meta">5h 34m</div></div></div>
+          <div class="cp" id="ej_m3" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S02</span>Footprinting &amp; Scanning</div><div class="cp-meta">11h 16m</div></div></div>
+          <div class="cp" id="ej_m4" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S02</span>Enumeration</div><div class="cp-meta">8h 45m</div></div></div>
+          <div class="cp" id="ej_m5" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S02</span>Vulnerability Assessment</div><div class="cp-meta">7h 1m</div></div></div>
+          <div class="cp" id="ej_m6" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S03</span>Auditing Fundamentals</div><div class="cp-meta">3h 58m</div></div></div>
+          <div class="cp" id="ej_m7" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S04</span>System/Host Based Attacks</div><div class="cp-meta">20h 28m</div></div></div>
+          <div class="cp" id="ej_m8" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S04</span>Network-Based Attacks</div><div class="cp-meta">4h 47m</div></div></div>
+          <div class="cp" id="ej_m9" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S04</span>The Metasploit Framework (MSF)</div><div class="cp-meta">35h 29m &#9889; اثقل موضوع</div></div></div>
+          <div class="cp" id="ej_m10" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S04</span>Exploitation</div><div class="cp-meta">20h 49m</div></div></div>
+          <div class="cp" id="ej_m11" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S04</span>Post-Exploitation</div><div class="cp-meta">26h 33m</div></div></div>
+          <div class="cp" id="ej_m12" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S05</span>Intro to the Web &amp; HTTP Protocol</div><div class="cp-meta">11h 51m</div></div></div>
+          <div class="cp" id="ej_m13" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S06</span>Offensive AI: Generative AI for Pentesters</div><div class="cp-meta">4h 44m</div></div></div>
+          <div class="cp" id="ej_m14" onclick="tick(this,'ph2')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S07</span>Penetration Testing Student Summary</div><div class="cp-meta">1m · eJPT READY!</div></div></div>
+        </div>
+      </div>
+      <button class="complete-btn" onclick="completePhase(2)">MARK PHASE DONE &amp; UNLOCK AUGUST &#9658;</button>
+    </div>
+    <div class="phase-footer" id="ph2-footer" style="display:none">
+      <div class="pf-done">&#10003; DONE</div>
+      <div class="pf-expand" onclick="toggleExpand(2)">show &#9660;</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PHASE 3 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="phase s-locked" id="ph3">
+  <div class="phase-dot" id="ph3-dot">03</div>
+  <div class="phase-card">
+    <div class="phase-hdr" onclick="toggleExpand(3)">
+      <div class="ph-num">03</div>
+      <div class="ph-info">
+        <div class="ph-dates">1 AUG — 24 AUG 2026</div>
+        <div class="ph-title">AUGUST SPRINT &#9889;</div>
+      </div>
+      <div class="ph-badge pb-locked" id="ph3-badge">&#128274; LOCKED</div>
+    </div>
+    <div class="phase-body" id="ph3-body">
+      <div class="warn-box">&#9888; CONFLICT: DFR100 exam 20 Aug &amp; EDA482 omtentamen ~20 Aug — تحقق من مواعيد شالمش قبل اغسطس!</div>
+
+      <!-- EDA333 -->
+      <div class="psec">
+        <div class="psec-title"><span>EDA333 DATORSYSTEMTEKNIK · Exam 18 Aug</span><span id="ph3a-prog">0/10</span></div>
+        <div class="items-grid">
+          <div class="cp" id="eda333_c1" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-ch">CH1</span>Computer Abstractions &amp; Technology</div></div></div>
+          <div class="cp" id="eda333_c2" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-ch">CH2</span>Instructions: Language of the Computer</div></div></div>
+          <div class="cp" id="eda333_c3" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-ch">CH3</span>Arithmetic for Computers</div></div></div>
+          <div class="cp" id="eda333_c4" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-ch">CH4</span>The Processor</div></div></div>
+          <div class="cp" id="eda333_c5" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-ch">CH5</span>Memory Hierarchy</div></div></div>
+          <div class="cp" id="eda333_c6" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-ch">CH6</span>Parallel Processors</div></div></div>
+          <div class="cp" id="eda333_l1" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-lab">LAB</span>Lab 1</div></div></div>
+          <div class="cp" id="eda333_l2" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-lab">LAB</span>Lab 2</div></div></div>
+          <div class="cp" id="eda333_l3" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-lab">LAB</span>Lab 3</div></div></div>
+          <div class="cp" id="eda333_l4" onclick="tick(this,'ph3a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-lab">LAB</span>Lab 4 — Project</div></div></div>
+        </div>
+        <div class="cp cp-exam" id="eda333_ex" onclick="tick(this,'ph3a')" style="margin-top:6px;">
+          <div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>EDA333 Tentamen</div><div class="cp-meta">18 Aug 2026 · Chalmers</div></div>
+        </div>
+      </div>
+
+      <!-- DFR100 -->
+      <div class="psec">
+        <div class="psec-title"><span>DFR100 DIFFERENTIALEKVATIONER (HV) · Exam 20 Aug</span><span id="ph3b-prog">0/3</span></div>
+        <div class="items-list">
+          <div class="cp" id="dfr100_m1" onclick="tick(this,'ph3b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">V1</span>Differentialekvationer: grunder + l&#246;sningsmetoder</div></div></div>
+          <div class="cp" id="dfr100_m2" onclick="tick(this,'ph3b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">V2</span>Reglerteknik-till&#228;mpningar + gamla tentor</div></div></div>
+          <div class="cp cp-conflict" id="dfr100_ex" onclick="tick(this,'ph3b')">
+            <div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>DFR100 Tentamen</div><div class="cp-meta">20 Aug 2026 08:30-11:30 · HV &#9888; Kontrollera mot EDA482!</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EDA482 -->
+      <div class="psec">
+        <div class="psec-title"><span>EDA482 MASKINORIENTERAD (Chalmers) · Exam ~20 Aug</span><span id="ph3c-prog">0/15</span></div>
+        <div class="items-grid">
+          <div class="cp" id="eda482_l01" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L01</span>Introduction + Dev Env</div></div></div>
+          <div class="cp" id="eda482_l02" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L02</span>Assembly on RISC-V</div></div></div>
+          <div class="cp" id="eda482_l03" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L03</span>More Assembly on RISC-V</div></div></div>
+          <div class="cp" id="eda482_lab1" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-lab">LAB1</span>Assembly Lab</div></div></div>
+          <div class="cp" id="eda482_l04" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L04</span>GPIO and C: Intro</div></div></div>
+          <div class="cp" id="eda482_l05" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L05</span>GPIO and C: Basics</div></div></div>
+          <div class="cp" id="eda482_l06" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L06</span>Synchronization &amp; Pointers</div></div></div>
+          <div class="cp" id="eda482_lab2" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-lab">LAB2</span>GPIO &amp; C Lab</div></div></div>
+          <div class="cp" id="eda482_l07" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L07</span>C Structures</div></div></div>
+          <div class="cp" id="eda482_l08" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L08</span>Internal Interrupts</div></div></div>
+          <div class="cp" id="eda482_l09" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L09</span>External Interrupts</div></div></div>
+          <div class="cp" id="eda482_lab3" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-lab">LAB3</span>Interrupts Lab</div></div></div>
+          <div class="cp" id="eda482_l10" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L10</span>Serial Communication</div></div></div>
+          <div class="cp" id="eda482_l11" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">L11</span>Libraries</div></div></div>
+          <div class="cp" id="eda482_lab4" onclick="tick(this,'ph3c')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-lab">LAB4</span>Optional Lab</div></div></div>
+        </div>
+        <div class="cp cp-conflict" id="eda482_ex" onclick="tick(this,'ph3c')" style="margin-top:6px;">
+          <div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>EDA482 Omtentamen</div><div class="cp-meta">~20 Aug 2026 · &#9888; Verify no conflict with DFR100!</div></div>
+        </div>
+      </div>
+
+      <!-- INE102 -->
+      <div class="psec">
+        <div class="psec-title"><span>INE102 INDUSTRIELL EKONOMI (HV) · Exam 24 Aug</span><span id="ph3d-prog">0/3</span></div>
+        <div class="items-list">
+          <div class="cp" id="ine102_m1" onclick="tick(this,'ph3d')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">V1</span>Grunderna: ekonomi, kalkyl, marknadsanalys</div></div></div>
+          <div class="cp" id="ine102_m2" onclick="tick(this,'ph3d')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">V2</span>Gamla tentor + repetition</div></div></div>
+          <div class="cp cp-exam" id="ine102_ex" onclick="tick(this,'ph3d')">
+            <div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>INE102 Tentamen</div><div class="cp-meta">24 Aug 2026 08:30-12:30 · HV</div></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="complete-btn" onclick="completePhase(3)">AUGUST SPRINT DONE &#9658; UNLOCK SEP</button>
+    </div>
+    <div class="phase-footer" id="ph3-footer" style="display:none">
+      <div class="pf-done">&#10003; DONE</div>
+      <div class="pf-expand" onclick="toggleExpand(3)">show &#9660;</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PHASE 4 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="phase s-locked" id="ph4">
+  <div class="phase-dot" id="ph4-dot">04</div>
+  <div class="phase-card">
+    <div class="phase-hdr" onclick="toggleExpand(4)">
+      <div class="ph-num">04</div>
+      <div class="ph-info">
+        <div class="ph-dates">SEP 2026</div>
+        <div class="ph-title">eJPT EXAM + eCPPT START</div>
+      </div>
+      <div class="ph-badge pb-locked" id="ph4-badge">&#128274; LOCKED</div>
+    </div>
+    <div class="phase-body" id="ph4-body">
+      <div class="warn-box">&#9888; eJPT VOUCHER EXPIRES 4 SEP 2026 — Book &amp; take exam BEFORE this date!</div>
+      <div class="psec">
+        <div class="psec-title"><span>eJPT EXAM &amp; eCPPT KICKOFF</span><span id="ph4-prog">0/4</span></div>
+        <div class="items-list">
+          <div class="cp cp-exam" id="ph4_ejpt_book" onclick="tick(this,'ph4')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">BOOK</span>Boka eJPT-examen (voucher: c270376a)</div><div class="cp-meta">Senast 1 Sep 2026 — Expires 4 Sep!</div></div></div>
+          <div class="cp cp-exam" id="ph4_ejpt_ex" onclick="tick(this,'ph4')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>eJPT Exam — 48h, 45 fr&#229;gor, 70% g&#246;dkänt</div><div class="cp-meta">F&#246;re 4 Sep 2026 · INE Platform</div></div></div>
+          <div class="cp" id="ec_m1" onclick="tick(this,'ph4')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">START</span>B&#246;rja eCPPT Learning Path p&#229; INE</div><div class="cp-meta">Ingen voucher &#228;n — k&#246;p n&#228;r eJPT &#228;r klar</div></div></div>
+          <div class="cp" id="ec_m2" onclick="tick(this,'ph4')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S01</span>eCPPT Overview + PowerShell for Pentesters</div><div class="cp-meta">S01: 1m · S02 start: 5h 50m</div></div></div>
+        </div>
+      </div>
+      <button class="complete-btn" onclick="completePhase(4)">eJPT EARNED &#127942; &#9658; UNLOCK OCT-NOV</button>
+    </div>
+    <div class="phase-footer" id="ph4-footer" style="display:none">
+      <div class="pf-done">&#10003; DONE</div>
+      <div class="pf-expand" onclick="toggleExpand(4)">show &#9660;</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PHASE 5 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="phase s-locked" id="ph5">
+  <div class="phase-dot" id="ph5-dot">05</div>
+  <div class="phase-card">
+    <div class="phase-hdr" onclick="toggleExpand(5)">
+      <div class="ph-num">05</div>
+      <div class="ph-info">
+        <div class="ph-dates">OKT — NOV 2026</div>
+        <div class="ph-title">eCPPT + ASC400</div>
+      </div>
+      <div class="ph-badge pb-locked" id="ph5-badge">&#128274; LOCKED</div>
+    </div>
+    <div class="phase-body" id="ph5-body">
+      <div class="psec">
+        <div class="psec-title"><span>eCPPT MODULES</span><span id="ph5a-prog">0/9</span></div>
+        <div class="items-list">
+          <div class="cp" id="ec_m3" onclick="tick(this,'ph5a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S02</span>Client-Side Attacks</div><div class="cp-meta">15h 51m</div></div></div>
+          <div class="cp" id="ec_m4" onclick="tick(this,'ph5a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S03</span>Web Application Penetration Testing</div><div class="cp-meta">14h 31m</div></div></div>
+          <div class="cp" id="ec_m5" onclick="tick(this,'ph5a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S04</span>Network Penetration Testing</div><div class="cp-meta">17h 3m</div></div></div>
+          <div class="cp" id="ec_m6" onclick="tick(this,'ph5a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S05</span>System Security &amp; x86 Assembly</div><div class="cp-meta">3h 54m</div></div></div>
+          <div class="cp" id="ec_m7" onclick="tick(this,'ph5a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S05</span>Exploit Dev: Buffer Overflows</div><div class="cp-meta">3h 19m</div></div></div>
+          <div class="cp" id="ec_m8" onclick="tick(this,'ph5a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S06</span>Privilege Escalation</div><div class="cp-meta">14h 10m</div></div></div>
+          <div class="cp" id="ec_m9" onclick="tick(this,'ph5a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S06</span>Lateral Movement &amp; Pivoting</div><div class="cp-meta">13h 48m</div></div></div>
+          <div class="cp" id="ec_m10" onclick="tick(this,'ph5a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S07</span>Active Directory Penetration Testing</div><div class="cp-meta">12h 20m</div></div></div>
+          <div class="cp" id="ec_m11" onclick="tick(this,'ph5a')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">S07</span>Command &amp; Control (C2/C&amp;C)</div><div class="cp-meta">6h 28m</div></div></div>
+        </div>
+        <div class="cp cp-exam" id="ec_m12" onclick="tick(this,'ph5a')" style="margin-top:6px;">
+          <div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>eCPPT Exam — 24h, 45 fr&#229;gor, 70% g&#246;dkänt</div><div class="cp-meta">Okt–Nov 2026 · INE Platform</div></div>
+        </div>
+      </div>
+      <div class="psec">
+        <div class="psec-title"><span>ASC400 AVANCERAD CYBER &amp; IoT (HV) · Exam 13 Nov</span><span id="ph5b-prog">0/3</span></div>
+        <div class="items-list">
+          <div class="cp" id="asc400_m1" onclick="tick(this,'ph5b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">MID</span>IoT security fundamentals + protocols</div></div></div>
+          <div class="cp" id="asc400_m2" onclick="tick(this,'ph5b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">MID</span>Advanced cyber attacks + gamla tentor</div></div></div>
+          <div class="cp cp-exam" id="asc400_ex" onclick="tick(this,'ph5b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>ASC400 Tentamen</div><div class="cp-meta">13 Nov 2026 08:30-11:30 · HV</div></div></div>
+        </div>
+      </div>
+      <button class="complete-btn" onclick="completePhase(5)">eCPPT + ASC400 DONE &#9658; UNLOCK DEC</button>
+    </div>
+    <div class="phase-footer" id="ph5-footer" style="display:none">
+      <div class="pf-done">&#10003; DONE</div>
+      <div class="pf-expand" onclick="toggleExpand(5)">show &#9660;</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PHASE 6 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="phase s-locked" id="ph6">
+  <div class="phase-dot" id="ph6-dot">06</div>
+  <div class="phase-card">
+    <div class="phase-hdr" onclick="toggleExpand(6)">
+      <div class="ph-num">06</div>
+      <div class="ph-info">
+        <div class="ph-dates">DEC 2026</div>
+        <div class="ph-title">VILA + THESIS PREP</div>
+      </div>
+      <div class="ph-badge pb-locked" id="ph6-badge">&#128274; LOCKED</div>
+    </div>
+    <div class="phase-body" id="ph6-body">
+      <div class="note">Du har klarat eJPT + eCPPT + alla HV-tentor. Dags att vila och planera examensarbetet.</div>
+      <div class="psec">
+        <div class="psec-title"><span>THESIS PREPARATION</span><span id="ph6-prog">0/4</span></div>
+        <div class="items-list">
+          <div class="cp" id="ph6_c1" onclick="tick(this,'ph6')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">PLAN</span>Bekr&#228;fta examensarbete — WiFi pentest med ESP32 + Tello drone</div></div></div>
+          <div class="cp" id="ph6_c2" onclick="tick(this,'ph6')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">PLAN</span>Hitta handledare (HV) + godkänd projektplan</div></div></div>
+          <div class="cp" id="ph6_c3" onclick="tick(this,'ph6')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">READ</span>Litteraturstudie: drone security, ESP32, 802.11 attacks</div></div></div>
+          <div class="cp" id="ph6_c4" onclick="tick(this,'ph6')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">PLAN</span>K&#246;p utrustning: ESP32 + Tello drone (om ej klar)</div></div></div>
+        </div>
+      </div>
+      <button class="complete-btn" onclick="completePhase(6)">PREP DONE &#9658; START THESIS</button>
+    </div>
+    <div class="phase-footer" id="ph6-footer" style="display:none">
+      <div class="pf-done">&#10003; DONE</div>
+      <div class="pf-expand" onclick="toggleExpand(6)">show &#9660;</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PHASE 7 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="phase s-locked" id="ph7">
+  <div class="phase-dot" id="ph7-dot">07</div>
+  <div class="phase-card">
+    <div class="phase-hdr" onclick="toggleExpand(7)">
+      <div class="ph-num">07</div>
+      <div class="ph-info">
+        <div class="ph-dates">JAN — VÅR 2027</div>
+        <div class="ph-title">EXAMENSARBETE &#127941;</div>
+      </div>
+      <div class="ph-badge pb-locked" id="ph7-badge">&#128274; LOCKED</div>
+    </div>
+    <div class="phase-body" id="ph7-body">
+      <div class="note" style="border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.04);color:var(--green);">
+        Drone WiFi Pentesting med ESP32 + Tello Drone — Kandidatexamen vid H&#246;gskolan V&#228;st
+      </div>
+      <div class="psec">
+        <div class="psec-title"><span>THESIS MILESTONES</span><span id="ph7-prog">0/6</span></div>
+        <div class="items-list">
+          <div class="cp" id="ph7_c1" onclick="tick(this,'ph7')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">IMPL</span>S&#228;tt upp testmilj&#246; (ESP32 + drone + router)</div></div></div>
+          <div class="cp" id="ph7_c2" onclick="tick(this,'ph7')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">IMPL</span>Implementera WiFi-attack vektorer (deauth, MITM, sniffing)</div></div></div>
+          <div class="cp" id="ph7_c3" onclick="tick(this,'ph7')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">IMPL</span>Integrera drone-r&#246;relse med ESP32-payload</div></div></div>
+          <div class="cp" id="ph7_c4" onclick="tick(this,'ph7')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">WRITE</span>Skriv rapport + analys av s&#228;kerhetsproblem</div></div></div>
+          <div class="cp" id="ph7_c5" onclick="tick(this,'ph7')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">WRITE</span>Opposition + presentation</div></div></div>
+          <div class="cp cp-exam" id="ph7_c6" onclick="tick(this,'ph7')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">DONE</span>Examination + Kandidatexamen &#127941;</div><div class="cp-meta">H&#246;gskolan V&#228;st · V&#229;r 2027</div></div></div>
+        </div>
+      </div>
+      <button class="complete-btn" style="background:rgba(57,255,20,.1);border-color:rgba(57,255,20,.4);color:var(--green);" onclick="completePhase(7)">&#127941; KANDIDATEXAMEN KLAR! GRADUATION 2027</button>
+    </div>
+    <div class="phase-footer" id="ph7-footer" style="display:none">
+      <div class="pf-done">&#10003; DONE — GRADUATED!</div>
+      <div class="pf-expand" onclick="toggleExpand(7)">show &#9660;</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /road-wrap -->
+</div><!-- /wrap -->
+
+<script>
+const TOTAL = 7;
+const GIST_ID   = '9838e80c3a5a5e8eda2f9ed568f534e1';
+const GIST_FILE = 'pentest_roadmap_progress.json';
+
+// All checkpoint IDs per section (for refreshSecProg)
+const SEC_CPS = {
+  ph1:  ['ph1_c1','ph1_c2','ph1_c3'],
+  ph2:  ['ej_m1','ej_m2','ej_m3','ej_m4','ej_m5','ej_m6','ej_m7','ej_m8','ej_m9','ej_m10','ej_m11','ej_m12','ej_m13','ej_m14'],
+  ph3a: ['eda333_c1','eda333_c2','eda333_c3','eda333_c4','eda333_c5','eda333_c6','eda333_l1','eda333_l2','eda333_l3','eda333_l4','eda333_ex'],
+  ph3b: ['dfr100_m1','dfr100_m2','dfr100_ex'],
+  ph3c: ['eda482_l01','eda482_l02','eda482_l03','eda482_lab1','eda482_l04','eda482_l05','eda482_l06','eda482_lab2','eda482_l07','eda482_l08','eda482_l09','eda482_lab3','eda482_l10','eda482_l11','eda482_lab4','eda482_ex'],
+  ph3d: ['ine102_m1','ine102_m2','ine102_ex'],
+  ph4:  ['ph4_ejpt_book','ph4_ejpt_ex','ec_m1','ec_m2'],
+  ph5a: ['ec_m3','ec_m4','ec_m5','ec_m6','ec_m7','ec_m8','ec_m9','ec_m10','ec_m11','ec_m12'],
+  ph5b: ['asc400_m1','asc400_m2','asc400_ex'],
+  ph6:  ['ph6_c1','ph6_c2','ph6_c3','ph6_c4'],
+  ph7:  ['ph7_c1','ph7_c2','ph7_c3','ph7_c4','ph7_c5','ph7_c6']
+};
+
+// Section checkpoint counts (auto-derived)
+const SEC_COUNTS = {};
+Object.keys(SEC_CPS).forEach(k => SEC_COUNTS[k] = SEC_CPS[k].length);
+
+// Phase -> section IDs (for progress)
+const PHASE_SECS = {
+  1:['ph1'], 2:['ph2'],
+  3:['ph3a','ph3b','ph3c','ph3d'],
+  4:['ph4'], 5:['ph5a','ph5b'],
+  6:['ph6'], 7:['ph7']
+};
+
+let S = {};
+try{ S = JSON.parse(localStorage.getItem('jmap4')||'{}'); }catch(e){}
+function save(){ try{ localStorage.setItem('jmap4', JSON.stringify(S)); }catch(e){} }
+
+// ─── Gist sync ───────────────────────────────────────────────────────────────
+function getToken(){ return localStorage.getItem('gist_token')||''; }
+
+let _gistTimer = null;
+function scheduleGistPush(){
+  clearTimeout(_gistTimer);
+  _gistTimer = setTimeout(pushToGist, 1200);
+}
+
+async function pushToGist(){
+  const token = getToken();
+  if(!token) return;
+  // Build flat JSON: all known module IDs
+  const data = {};
+  const allIds = Object.values(SEC_CPS).flat();
+  allIds.forEach(id => { data[id] = !!(S.cp && S.cp[id]); });
+  // Phase completion flags
+  for(let i=1;i<=TOTAL;i++) data['ph'+i] = !!(S.phases && S.phases[i]==='done');
+  data._updated = new Date().toISOString();
+  try{
+    await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      method:'PATCH',
+      headers:{ 'Authorization':'Bearer '+token, 'Content-Type':'application/json' },
+      body: JSON.stringify({ files:{ [GIST_FILE]:{ content: JSON.stringify(data,null,2) } } })
+    });
+    showSyncStatus('✓ synced');
+  } catch(e){ showSyncStatus('⚠ sync failed'); }
+}
+
+function showSyncStatus(msg){
+  const el = document.getElementById('sync-status');
+  if(!el) return;
+  el.textContent = msg;
+  el.style.opacity='1';
+  setTimeout(()=>{ el.style.opacity='0'; }, 2500);
+}
+
+function openTokenModal(){
+  const m = document.getElementById('token-modal');
+  if(m){ m.style.display='flex'; document.getElementById('token-input').value=getToken(); }
+}
+function saveToken(){
+  const v = document.getElementById('token-input').value.trim();
+  if(v) localStorage.setItem('gist_token',v);
+  document.getElementById('token-modal').style.display='none';
+  pushToGist();
+}
+function closeTokenModal(){ document.getElementById('token-modal').style.display='none'; }
+
+// ─── Core ────────────────────────────────────────────────────────────────────
+function tick(el, secId){
+  if(el.closest('.phase').classList.contains('s-locked')) return;
+  el.classList.toggle('done');
+  if(!S.cp) S.cp={};
+  S.cp[el.id] = el.classList.contains('done');
+  save();
+  refreshSecProg(secId);
+  scheduleGistPush();
+}
+
+function refreshSecProg(secId){
+  const ids = SEC_CPS[secId]||[];
+  const total = ids.length;
+  const done = ids.filter(id=>{ const e=document.getElementById(id); return e&&e.classList.contains('done'); }).length;
+  const el = document.getElementById(secId+'-prog');
+  if(el) el.textContent = done+'/'+total;
+}
+
+function completePhase(n){
+  if(!S.phases) S.phases={};
+  S.phases[n]='done';
+  save();
+  applyStates();
+  scheduleGistPush();
+  if(n===TOTAL) document.getElementById('gp-txt').textContent = 'GRADUATED! 🎓';
+}
+
+function toggleExpand(n){
+  const ph = document.getElementById('ph'+n);
+  if(!ph) return;
+  if(ph.classList.contains('s-done')){
+    ph.classList.toggle('expanded');
+    const foot = document.getElementById('ph'+n+'-footer');
+    if(foot){
+      const exp = ph.classList.contains('expanded');
+      foot.querySelector('.pf-expand').textContent = exp ? 'hide ▲' : 'show ▼';
+    }
+  }
+}
+
+function applyStates(){
+  if(!S.phases) S.phases={};
+  let activeFound = false;
+  for(let i=1;i<=TOTAL;i++){
+    const ph = document.getElementById('ph'+i);
+    const dot = document.getElementById('ph'+i+'-dot');
+    const badge = document.getElementById('ph'+i+'-badge');
+    const footer = document.getElementById('ph'+i+'-footer');
+    const body = document.getElementById('ph'+i+'-body');
+    if(!ph) continue;
+    ph.classList.remove('s-active','s-done','s-locked');
+    if(S.phases[i]==='done'){
+      ph.classList.add('s-done');
+      dot.textContent='✓';
+      badge.textContent='✓ DONE';
+      badge.className='ph-badge pb-done';
+      if(footer) footer.style.display='flex';
+      if(body) body.style.display='none';
+    } else if(!activeFound){
+      ph.classList.add('s-active');
+      activeFound=true;
+      dot.textContent=String(i).padStart(2,'0');
+      badge.textContent='◈ ACTIVE';
+      badge.className='ph-badge pb-active';
+      if(footer) footer.style.display='none';
+      if(body) body.style.display='block';
+    } else {
+      ph.classList.add('s-locked');
+      dot.textContent=String(i).padStart(2,'0');
+      badge.textContent='🔒 LOCKED';
+      badge.className='ph-badge pb-locked';
+      if(footer) footer.style.display='none';
+      if(body) body.style.display='none';
+    }
+  }
+  updateGlobalProg();
+}
+
+function updateGlobalProg(){
+  const doneCount = Object.values(S.phases||{}).filter(v=>v==='done').length;
+  const pct = Math.round(doneCount/TOTAL*100);
+  const fill = document.getElementById('gp-fill');
+  if(fill) fill.style.width=pct+'%';
+  const txt = document.getElementById('gp-txt');
+  if(txt && doneCount<TOTAL) txt.textContent='PHASE '+(doneCount+1)+' / '+TOTAL;
+  const dotsEl = document.getElementById('gp-dots');
+  if(dotsEl){
+    dotsEl.innerHTML='';
+    for(let i=1;i<=TOTAL;i++){
+      const d=document.createElement('div');
+      d.className='gp-dot';
+      if(S.phases&&S.phases[i]==='done') d.classList.add('done');
+      else if(i===TOTAL-Object.values(S.phases||{}).filter(v=>v==='done').length) d.classList.add('active');
+      dotsEl.appendChild(d);
+    }
+  }
+}
+
+window.onload=function(){
+  if(S.cp) Object.entries(S.cp).forEach(([id,v])=>{ if(v){ const e=document.getElementById(id); if(e) e.classList.add('done'); }});
+  applyStates();
+  Object.keys(SEC_CPS).forEach(refreshSecProg);
+};
+</script>
+
+<!-- Gist Token Modal -->
+<div id="token-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#0d1b2a;border:1px solid #00d4ff;border-radius:10px;padding:28px;width:360px;max-width:90vw;">
+    <div style="color:#00d4ff;font-family:monospace;font-size:14px;font-weight:700;margin-bottom:12px;">⚙ Gist Sync Token</div>
+    <div style="color:#8aa4bf;font-size:12px;margin-bottom:12px;">GitHub PAT with <code>gist</code> scope — stored only in your browser.</div>
+    <input id="token-input" type="password" placeholder="ghp_xxxxxxxxxxxx"
+      style="width:100%;box-sizing:border-box;background:#03080f;border:1px solid #1e3a5f;color:#e2e8f0;padding:8px 10px;border-radius:6px;font-family:monospace;font-size:13px;margin-bottom:14px;outline:none;">
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="closeTokenModal()" style="background:transparent;border:1px solid #1e3a5f;color:#8aa4bf;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;">Cancel</button>
+      <button onclick="saveToken()" style="background:#00d4ff;border:none;color:#030810;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">Save & Sync</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sync status indicator (fixed bottom-right) -->
+<div style="position:fixed;bottom:14px;right:14px;display:flex;align-items:center;gap:8px;z-index:1000;">
+  <span id="sync-status" style="color:#39ff14;font-family:monospace;font-size:11px;opacity:0;transition:opacity .4s;"></span>
+  <button onclick="openTokenModal()" title="Configure Gist sync token"
+    style="background:#0d1b2a;border:1px solid #1e3a5f;color:#00d4ff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:monospace;">⚙ Sync</button>
+</div>
+</body>
+</html>
