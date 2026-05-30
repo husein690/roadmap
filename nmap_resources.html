@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nmap Resources — Pentest Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mony&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--surface:#080f1c;--surface2:#0c1828;--border:#0e2035;--accent:#00d4ff;--accent-dim:rgba(0,212,255,0.1);--orange:#ff6b35;--orange-dim:rgba(255,107,53,0.1);--green:#39ff14;--green-dim:rgba(57,255,20,0.1);--purple:#a855f7;--purple-dim:rgba(168,85,247,0.1);--pink:#ec4899;--yellow:#fbbf24;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani)',sans-serif;--tag:'Share Tech Mono', monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var($--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+.wrap{max-width:1060px;margin:0 auto;padding:36px 16px 60px;position:relative;z-index:1}
+.hdr{text-align:center;margin-bottom:40px}
+.hdr h1{font-family:var($--mono);font-size:clamp(24px,4vw,46px);font-weight:700;color:var($--white);text-shadow:0 0 40px rgba(0,212,255,0.45);line-height:1}
+.hdr h1 span{color:var($--accent)}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var($--tag);font-size:10px;letter-spacing:2px;color:var($--muted);border:1px solid var($--border);padding:6px 14px;background:var($--surface);text-decoration:none;margin-bottom:30px;transition:all 0.2s}
+.summary-bar{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:var($--surface);border:1px solid var($--border);padding:16px 20px;margin-bottom:36px}
+.cards-gri{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.res-card{background:var($--surface);border:1px solid var($--border);padding:18px;position:relative;transition:all 0.25s;display:flex;flex-direction:column;gap:10px}
+.topics-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:12px}
+.topics-table th{background:var($--surface2);color:var($--white);padding:9px 14px;font-size:9px;text-align:right;border-bottom:1px solid var($--border)}
+.topics-table td{padding:9px 14px;border-bottom:1px solid rgba(14,32,53,0.7);color:var($--text)}
+.prog-badge{display:inline-flex;align-items:center;gap:5px;font-size:8px;padding:2px 8px;border:1px solid}
+.prog-badge.done{color:#39ff14;border-color:rgba(57,255,20,0.3);background:rgba(57,255,20,0.1)}
+.prog-badge.next{color:#3a5060;border-color:#0e2035}
+.cmd-block{background:#030810;border:1px solid #0e2035;border-right:3px solid #00d4ff;padding:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8b949e;overflow-x:auto;white-space:pre;margin:10px 0}
+.footer{border-top:1px solid #0e2035;padding-top:22px;margin-top:50px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hdr">
+<div style="font-family:'Share Tech Mono', monospace;font-size:11px;color:#39ff14;letter-spacing:4px;margin-bottom:14px">▶ RESOURCES.SYS — NMAP MODULE</div>
+<h1>NMAR <span style="color:#00d4ff">RESOURCES</span></h1>
+<div style="display:inline-block;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#3a5060;letter-spacing:6px;border:1px solid #0e2035;padding:5px 20px">// NETWORK ENUMERATION WITH NMAP — HTB ACADEMY //</div>
+</div>
+<a href="index.html" class="back-btn">◀ رجوع للـ Roadmap</a>
+<div class="summary-bar">
+<div><div style="font-size:24px;font-weight:700;color:#00d4ff">12</div><div style="font-size:9px;color:#3a5060">SECTIONS TOTAL</div></div>
+<div style="width:1px;height:36px;background:#0e2035"></div>
+<div><div style="font-size:24px;font-weight:700;color:#39ff14">3</div><div style="font-size:9px;color:#3a5060">SECTIONS STUDIED</div></div>
+<div style="width:1px;height:36px;background:#0e2035"></div>
+<div><div style="font-size:24px;font-weight:700;color:#ff6b35">9</div><div style="font-size:9px;color:#3a5060">SECTIONS REMAINING</div></div>
+<div style="width:1px;height:36px;background:#0e2035"></div>
+<div><div style="font-size:24px;font-weight:700;color:#a855f7">25%</div><div style="font-size:9px;color:#3a5060">PROGRESS</div></div>
+<div style="flex:1"></div>
+<a href="https://academy.hackthebox.com/module/details/19" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:2px;padding:7px 14px;border:1px solid rgba(0,212,255,0.3);color:#00d4ff;text-decoration:none">↗ فتح الموديول</a>
+</div>
+<h2 style="font-size:16px;color:#00d4ff;border-bottom:1px solid #0e2035;padding-bottom:8px;margin:36px 0 20px">HTB ACADEMY - ددوس الموديول <span style="font-size:12px">Network Enumeration with Nmap</span></h2>
+<table class="topics-table">
+<thead><tr><th>#</mѠ��Ѡ�b�fb�b�b��Ѡ��Ѡ�b�f�f#b��Ѡ��Ѡ�b�fb�b�f�Ѡ������ѡ����(�щ����(�����ѐ����ѐ��ѐ�9����=ٕ�٥���ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������ffb�fb�b0�b�b�b�f+f+b�b0���х��ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�!��Ё�͍�ٕ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ��������͸���A��%
+5@��A@�ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�!��Ё����A��ЁM��������ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������؃b�b�b�fb�b��b�fb�f#b�b�b0�f����Ё�Ʌ���ѐ��ѐ��������������ɽ���������������rL�=9�������ѐ�����(�����ѐ����ѐ��ѐ�M�٥���ѡ��I��ձ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ���������8���`�������ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�M��٥����յ�Ʌѥ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ���������X�ٕ�ͥ�����ѕ�ѥ���ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�9����M�ɥ�ѥ����������9M��ѐ��ѐ���屔􉍽�������љ�홽�еͥ������������͍ɥ�Ё��ѕ��ɥ���ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�A�ə�ɵ�����ѐ��ѐ���屔􉍽�������љ�홽�еͥ��������P��ԁIQP�������Ʌє������ɕ�ɥ���ѐ��ѐ��������������ɽ���������������rL�=9�������ѐ�����(�����ѐ����ѐ��ѐ��ɕ݅�����%L�%AL�مͥ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ�����������́ͽ�ɍ�����Ё�Ʌ����хѥ���ѐ��ѐ��������������ɽ���������������rL�=9�������ѐ�����(�����ѐ����ѐ��ѐ��ɕ݅���مͥ���5���մ�1���ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������b�b�b�f+f�b�fff(�fb�f#b�b��ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ��ɕ݅���مͥ���!�ɐ�1���ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������b�b�b�f+f�b�fff+b��fb�fb��ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�=L��ѕ�ѥ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ��������<�=L��������ɥ�ѥ���QQ0�ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�M����́�͕�͵����ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������b�b�f+f+f�b�b�ff�fff�b�fff#b�f+f#f�ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�щ����(�х����(�ȁ��屔􉙽�еͥ������퍽�����噘��퉽ɑ�ȵ���ѽ������ͽ�����������������������ѽ��������ɝ���������������������͡��Ѐ��b�ff�b�fb�f#b�fb����(�؁�����􉍵�����������!��Ё�͍�ٕ��)�Ց��������͸�������ȸ����(��A��ЁM�������)�Ց���������L�����������ȸ��)�Ց���������Ԁ��������ȸ��(��M��٥�����Y��ͥ��)�Ց���������X����������ȸ��(��A�ə�ɵ����)�Ց��������PЀ������Ʌє����������������ȸ��(��مͥ��)�Ց���������I9��Ԁ������ȸ��)�Ց�����������̀������ȸ��(��M�ٔ)�Ց����������͍��}ɕ�ձ�̀������ȸ��(��!Q�]�ɭ����)�Ց���������L��A���������������Ʌє�������PЀ����ձ�}э��QIP)�Ց���������X�����A��������A=IQL���ɕ�ͽ��QIP)�Ց���������T��A���������̰��İ��Ȱ���܁QIP(𽑥��(���ȁ��屔􉙽�еͥ������퍽���荙�و��퉽ɑ�ȵ���ѽ������ͽ�����������������������ѽ��������ɝ�����������������ffb�b�f#b̃b�ارية</h2>
+<div class="cards-gri">
+<div class="res-card" style="border-color:rgba(0,212,255,0.3)">
+<div style="font-size:9px;letter-spacing:2px;color:#00d4ff">▸ OFFICIAL DOCS</div>
+<div style="font-family:'IBM Plex Mono';font-size:15px;font-weight:700;color:#e8f4ff">Nmap Official Documentation</div>
+<div style="font-size:13px;opacity:0.8">الوثائق الرسentation لـ Nmap فى the official authors.</div>
+<a href="https://nmap.org/book/man.html" target="_blank" style="color:#00d4ff;text-decoration:none">↗ nmap.org/book/man.html</a>
+</div>
+<div class="res-card" style="border-color:rgba(255,107,53,0.3)">
+<div style="font-size:9px;letter-spacing:2px;color:#ff6b35">▸ HTB ACADEMY</div>
+<div style="font-family:'IBM Plex Mono';font-size:15px;font-weight:700;color:#e8f4ff">HTB AX�Y[^H8�%�X\[�[O�]���]��[OH��۝\�^�N�L���X�]N����)�a6avb6+�b�b6a6)�a6`�)�ava6.va6bH�X�Y[^HHL��X�[ۋ��]���H�Y�H�΋��X�Y[^K�X��X�����K�[�[K�]Z[��NH�\��]H�؛[�Ȉ�[OH���܎�ٙ����N�^YX�ܘ][ێ��ۙH������X�Y[^O�O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ
+M��MK���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎���Y��M������H�ԒT��]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N������X\�ܚ\]X�\�O�]���]��[OH��۝\�^�N�L���X�]N����`�)�.v+�*H6a6`�a��H�ܚ\ˏ�]���H�Y�H�΋�ۛX\�ܙ�ۜ�Y��Ȉ\��]H�؛[�Ȉ�[OH���܎���Y��M�^YX�ܘ][ێ��ۙH������X\�ܙ�ۜ�Y���O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJM�
+K�
+���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎��N
+MY�ȏ����PU�QU�]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N������X\�X]�Y]H�][ۖ�]���]��[OH��۝\�^�N�L���X�]N����ava6.6-H6-6)�ava6a6`�a6)�a6(�b6)�av,H�X\��]���H�Y�H�΋����˜�][۞��]ۛX\X�X]\�Y]Ȉ\��]H�؛[�Ȉ�[OH���܎��N
+MY���^YX�ܘ][ێ��ۙH������][ۖ�X]�Y]�O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ�LKNLK͋��H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎�٘���������QS�]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N������H�X�\�]HH�X\]ܚX[�]���H�Y�H�΋����˞[�]X�K���K��]�ݏM
+К�\��H�\��]H�؛[�Ȉ�[OH���܎�٘�����^YX�ܘ][ێ��ۙH�����[�UX�O�O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ�L��MK��H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎��
+������UU�PUSӏ�]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N�����]]ԙX�ۏ�]���]��[OH��۝\�^�N�L���X�]N����(�+�)�.�6*�*�-6.�d6a�X\6b6.v-6,v)�*�6`vb����6b���]���H�Y�H�΋���]X����K�X�ܚ]\��]]ԙX�ۈ�\��]H�؛[�Ȉ�[OH���܎��
+���^YX�ܘ][ێ��ۙH������]X��O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ�MKL
+�
+L���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎�ٙ����H�����T���S��T��]����]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N�����X\���[��]���H�Y�H�΋���]X����Kܛؙ\�]�YܘZ[K�X\���[��\��]H�؛[�Ȉ�[OH���܎�ٙ����N�^YX�ܘ][ێ��ۙH������]X��O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ
+M��MK���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎���Y��M����P���]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N�����X��H���]���]��[OH��۝\�^�N�L���X�]N����(�*6`v-�a6av`�)�a�6a6*�-�*6b�`��X\��]���H�Y�H�΋����˚X��X�����H�\��]H�؛[�Ȉ�[OH���܎���Y��M�^YX�ܘ][ێ��ۙH�����X��X�����O�O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ�MKL
+�
+L���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎�ٙ����H�����Q�S��T��]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N������RX��YH8�%�X\���O�]���H�Y�H�΋���ZX��YK���Kܛ��Kٝ\�\��X\�\��]H�؛[�Ȉ�[OH���܎�ٙ����N�^YX�ܘ][ێ��ۙH������RX��YO�O���]����]���]��\��H����\����]��[OH��۝\�^�N�L���܎���ML
+��]\�\�X�[�Ό����PT�T��T��T�8�%T�RS��SRSPS�8��S�T���QPT
+vB$�4��[������$̌����[���]����]����]���؛�O���[�
