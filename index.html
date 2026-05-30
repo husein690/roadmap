@@ -391,10 +391,10 @@ body::after{display:none!important}
   </div>
 <div class="cc htb" id="cc-cpts">
 <div class="cc-label" style="background:#9fef00;color:#111;font-weight:900">CPTS</div>
-<div class="pct-num" id="pct-cpts">0%</div>
+<div class="pct-num" id="cpts-pct">0%</div>
 <div class="cc-title">Certified Penetration Testing Specialist</div>
 <div class="cc-sub">HACKTHEBOX ACADEMY  ·  HACK THE BOX  ·  2027</div>
-<div class="water-wrap"><div class="water-fill" id="water-cpts"></div></div>
+<div class="water-wrap"><div class="water-fill" id="cpts-water"></div></div>
 <div class="topics" id="topics-cpts">
 <label><input type="checkbox" class="cp" data-id="cpts-01"> Penetration Testing Process</label>
 <label><input type="checkbox" class="cp" data-id="cpts-02"> Getting Started</label>
@@ -425,7 +425,8 @@ body::after{display:none!important}
 <label><input type="checkbox" class="cp" data-id="cpts-27"> Documentation &amp; Reporting</label>
 <label><input type="checkbox" class="cp" data-id="cpts-28"> Attacking Enterprise Networks</label>
 </div>
-<div class="items-count" id="items-cpts">0 / 28 MODULES</div>
+<div class="items-count" id="cpts-done">0 / 28 MODULES</div>
+<div id="cpts-status" style="margin-top:6px;font-size:10px;color:var(--muted)">NOT STARTED</div>
 </div></div>
 
 <div class="sec-hdr">► UNIVERSITY COURSES — HV &amp; CHALMERS</div>
@@ -605,4 +606,91 @@ window.onload=function(){pullFromGist();setInterval(pullFromGist,5*60*1000);};
 
 <script id="glass-pjs">(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
 
+<script id="cpts-handler">
+(function(){
+  var GIST_FILE = 'pentest_roadmap_progress.json';
+  var TOTAL = 28;
+
+  function getGistCreds(){
+    return {
+      id: localStorage.getItem('gist_id'),
+      token: localStorage.getItem('gist_token')
+    };
+  }
+
+  function updateCPTSCard(){
+    var boxes = document.querySelectorAll('.cp[data-id^="cpts-"]');
+    var done = 0;
+    boxes.forEach(function(b){ if(b.checked) done++; });
+    var pct = Math.round(done / TOTAL * 100);
+    var pctEl = document.getElementById('cpts-pct');
+    var waterEl = document.getElementById('cpts-water');
+    var doneEl = document.getElementById('cpts-done');
+    var statusEl = document.getElementById('cpts-status');
+    if(pctEl) pctEl.textContent = pct + '%';
+    if(waterEl) waterEl.style.height = pct + '%';
+    if(doneEl) doneEl.textContent = done + ' / ' + TOTAL + ' MODULES';
+    if(statusEl) statusEl.textContent = done === 0 ? 'NOT STARTED' : done === TOTAL ? 'COMPLETED' : 'IN PROGRESS';
+    return {done: done, pct: pct};
+  }
+
+  function saveCPTSToGist(){
+    var creds = getGistCreds();
+    if(!creds.id || !creds.token) return;
+    // Read current Gist then merge CPTS data
+    fetch('https://api.github.com/gists/' + creds.id, {
+      headers: { Authorization: 'token ' + creds.token, Accept: 'application/vnd.github.v3+json' }
+    }).then(function(r){ return r.json(); })
+    .then(function(gist){
+      var file = gist.files[GIST_FILE];
+      var existing = {};
+      try { existing = JSON.parse(file ? file.content : '{}'); } catch(e){}
+      // Update CPTS entries
+      document.querySelectorAll('.cp[data-id^="cpts-"]').forEach(function(b){
+        existing[b.dataset.id] = b.checked;
+      });
+      // Push back
+      var body = JSON.stringify({ files: {} });
+      var files = {}; files[GIST_FILE] = { content: JSON.stringify(existing, null, 2) };
+      return fetch('https://api.github.com/gists/' + creds.id, {
+        method: 'PATCH',
+        headers: { Authorization: 'token ' + creds.token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ files: files })
+      });
+    }).then(function(r){
+      if(r && r.ok) localStorage.setItem('rmap_prog', JSON.stringify(Object.fromEntries(
+        Array.from(document.querySelectorAll('.cp[data-id^="cpts-"]')).map(b=>[b.dataset.id, b.checked])
+      )));
+    }).catch(function(e){ console.warn('CPTS Gist save failed:', e); });
+  }
+
+  function loadCPTSFromGist(){
+    var prog = localStorage.getItem('rmap_prog');
+    if(prog){
+      try {
+        var data = JSON.parse(prog);
+        document.querySelectorAll('.cp[data-id^="cpts-"]').forEach(function(b){
+          if(data[b.dataset.id] !== undefined) b.checked = !!data[b.dataset.id];
+        });
+      } catch(e){}
+    }
+    updateCPTSCard();
+  }
+
+  // Listen for checkbox changes
+  document.addEventListener('change', function(e){
+    if(e.target && e.target.classList.contains('cp') && e.target.dataset.id && e.target.dataset.id.startsWith('cpts-')){
+      updateCPTSCard();
+      saveCPTSToGist();
+    }
+  });
+
+  // Init on load
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', loadCPTSFromGist);
+  } else {
+    setTimeout(loadCPTSFromGist, 500);
+  }
+})();
+</script>
 </body></html>
