@@ -242,7 +242,17 @@ body::after{display:none!important}
 #cpts-status { color:var(--muted); font-size:10px; margin-top:4px; }
 #cpts-done { font-size:11px; color:var(--muted); margin-top:4px; }
 </style>
-</head>
+<style id="cpts-layout">
+.cc.htb{position:relative;overflow:hidden}
+#cpts-water{position:absolute;bottom:0;left:0;right:0;background:rgba(159,239,0,0.13);transition:height 1.2s ease;height:0;pointer-events:none;z-index:0}
+.cc.htb>*:not(#cpts-water){position:relative;z-index:1}
+.cc.htb .topics{column-count:2;column-gap:10px;font-size:11px;margin:8px 0;max-height:200px;overflow-y:auto}
+.cc.htb .topics label{display:block !important;break-inside:avoid;padding:2px 0;cursor:pointer}
+.cc.htb .topics input[type=checkbox]{margin-right:4px;accent-color:#9fef00}
+#cpts-pct{color:#9fef00!important}
+#cpts-status{color:var(--muted);font-size:10px;margin-top:4px}
+#cpts-done{font-size:11px;color:var(--muted);margin-top:4px}
+</style></head>
 <body>
 <canvas id="glass-particles"></canvas>
 <img id="glass-profile" src="https://raw.githubusercontent.com/husein690/roadmap/main/assets/husein.jpg" alt="Husein Sulaiman">
