@@ -634,32 +634,45 @@ window.onload=function(){pullFromGist();setInterval(pullFromGist,5*60*1000);};
 
 <script id="cpts-updater">
 (function(){
-  var TOTAL=28,PREFIX='ct_m';
-  function upd(data){
+  // 1. Register cpts in COURSE_IDS so updateUI includes it in Overall Progress
+  if(typeof COURSE_IDS!=='undefined'){
+    COURSE_IDS['cpts']=['ct_m01','ct_m02','ct_m03','ct_m04','ct_m05','ct_m06','ct_m07',
+    'ct_m08','ct_m09','ct_m10','ct_m11','ct_m12','ct_m13','ct_m14','ct_m15','ct_m16',
+    'ct_m17','ct_m18','ct_m19','ct_m20','ct_m21','ct_m22','ct_m23','ct_m24','ct_m25',
+    'ct_m26','ct_m27','ct_m28'];
+  }
+  var TOTAL=28, PREFIX='ct_m';
+  function upd(d){
     var done=0;
-    if(data)Object.keys(data).forEach(function(k){if(k.indexOf(PREFIX)===0&&data[k])done++;});
+    if(d)Object.keys(d).forEach(function(k){if(k.indexOf(PREFIX)===0&&d[k])done++;});
     var pct=Math.round(done/TOTAL*100);
-    var p=document.getElementById('cpts-pct'),
-        w=document.getElementById('cpts-water'),
-        b=document.getElementById('cpts-bar'),
-        d=document.getElementById('cpts-done'),
+    var p=document.getElementById('cpts-pct'),w=document.getElementById('cpts-water'),
+        b=document.getElementById('cpts-bar'),dd=document.getElementById('cpts-done'),
         s=document.getElementById('cpts-status');
     if(p)p.textContent=pct+'%';
     if(w)w.style.height=pct+'%';
     if(b)b.style.width=pct+'%';
-    if(d)d.textContent=done+'/'+TOTAL+' items';
+    if(dd)dd.textContent=done+'/'+TOTAL+' items';
     if(s)s.textContent=done===0?'NOT STARTED':done===TOTAL?'COMPLETED':'IN PROGRESS';
   }
+  // 2. Hook updateUI — fires when Gist is pulled
   var _orig=window.updateUI;
-  window.updateUI=function(data){if(_orig)_orig(data);upd(data);};
+  window.updateUI=function(d){if(_orig)_orig(d);upd(d);};
+  // 3. On load: fetch Gist directly, update CPTS card AND overall
   function loadFromGist(){
     var id=localStorage.getItem('gist_id');
     var tok=localStorage.getItem('gist_token');
-    if(!id||!tok){try{var p=localStorage.getItem('rmap_prog');if(p)upd(JSON.parse(p));}catch(e){}return;}
+    if(!id||!tok){try{var p=localStorage.getItem('rmap_prog');if(p){upd(JSON.parse(p));}}catch(e){}return;}
     fetch('https://api.github.com/gists/'+id,{headers:{Authorization:'token '+tok,Accept:'application/vnd.github.v3+json'}})
     .then(function(r){return r.json();})
-    .then(function(g){var f=g.files&&g.files['pentest_roadmap_progress.json'];if(f)try{upd(JSON.parse(f.content));}catch(e){}})
-    .catch(function(){try{var p=localStorage.getItem('rmap_prog');if(p)upd(JSON.parse(p));}catch(e){}});
+    .then(function(g){
+      var f=g.files&&g.files['pentest_roadmap_progress.json'];
+      if(f){try{
+        var d=JSON.parse(f.content);
+        upd(d);         // update CPTS card
+        if(_orig)_orig(d); // update Overall Progress ring
+      }catch(e){}}
+    }).catch(function(){try{var p=localStorage.getItem('rmap_prog');if(p)upd(JSON.parse(p));}catch(e){}});
   }
   setTimeout(loadFromGist,900);
 })();
