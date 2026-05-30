@@ -634,10 +634,10 @@ window.onload=function(){pullFromGist();setInterval(pullFromGist,5*60*1000);};
 
 <script id="cpts-updater">
 (function(){
-  var TOTAL=28, PREFIX='ct_m';
+  var TOTAL=28,PREFIX='ct_m';
   function upd(data){
     var done=0;
-    if(data) Object.keys(data).forEach(function(k){if(k.indexOf(PREFIX)===0&&data[k])done++;});
+    if(data)Object.keys(data).forEach(function(k){if(k.indexOf(PREFIX)===0&&data[k])done++;});
     var pct=Math.round(done/TOTAL*100);
     var p=document.getElementById('cpts-pct'),
         w=document.getElementById('cpts-water'),
@@ -648,14 +648,19 @@ window.onload=function(){pullFromGist();setInterval(pullFromGist,5*60*1000);};
     if(w)w.style.height=pct+'%';
     if(b)b.style.width=pct+'%';
     if(d)d.textContent=done+'/'+TOTAL+' items';
-    if(s)s.textContent=done===0?'NOT STARTED':done===TOTAL?'COMPLETED ✓':'IN PROGRESS';
+    if(s)s.textContent=done===0?'NOT STARTED':done===TOTAL?'COMPLETED':'IN PROGRESS';
   }
-  // Hook updateUI if it exists
   var _orig=window.updateUI;
   window.updateUI=function(data){if(_orig)_orig(data);upd(data);};
-  // Init from localStorage
-  setTimeout(function(){
-    try{var p=localStorage.getItem('rmap_prog');if(p)upd(JSON.parse(p));}catch(e){}
-  },600);
+  function loadFromGist(){
+    var id=localStorage.getItem('gist_id');
+    var tok=localStorage.getItem('gist_token');
+    if(!id||!tok){try{var p=localStorage.getItem('rmap_prog');if(p)upd(JSON.parse(p));}catch(e){}return;}
+    fetch('https://api.github.com/gists/'+id,{headers:{Authorization:'token '+tok,Accept:'application/vnd.github.v3+json'}})
+    .then(function(r){return r.json();})
+    .then(function(g){var f=g.files&&g.files['pentest_roadmap_progress.json'];if(f)try{upd(JSON.parse(f.content));}catch(e){}})
+    .catch(function(){try{var p=localStorage.getItem('rmap_prog');if(p)upd(JSON.parse(p));}catch(e){}});
+  }
+  setTimeout(loadFromGist,900);
 })();
 </script></body></html>
