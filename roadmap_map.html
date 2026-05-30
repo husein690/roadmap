@@ -414,8 +414,34 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
         <div class="cp cp-exam" id="ec_m12" onclick="tick(this,'ph5a')" style="margin-top:6px;">
           <div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>eCPPT Exam — 24h, 45 frågor, 70% gödkänt</div><div class="cp-meta">Okt–Nov 2026 · INE Platform</div></div>
         </div>
-      </div><div class="psec" id="psec-cpts">
-<div class="psec-title"><span>CPTS — HTB Penetration Tester Path</span><span id="cpts-prog">0/28</span></div>
+      </div>
+      <div class="psec">
+        <div class="psec-title"><span>ASC400 AVANCERAD CYBER &amp; IoT (HV) · Exam 13 Nov</span><span id="ph5b-prog">0/3</span></div>
+        <div class="items-list">
+          <div class="cp" id="asc400_m1" onclick="tick(this,'ph5b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">MID</span>IoT security fundamentals + protocols</div></div></div>
+          <div class="cp" id="asc400_m2" onclick="tick(this,'ph5b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">MID</span>Advanced cyber attacks + gamla tentor</div></div></div>
+          <div class="cp cp-exam" id="asc400_ex" onclick="tick(this,'ph5b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>ASC400 Tentamen</div><div class="cp-meta">13 Nov 2026 08:30-11:30 · HV</div></div></div>
+        </div>
+      </div>
+      <button class="complete-btn" onclick="completePhase(5)">eCPPT + ASC400 DONE ► UNLOCK DEC</button>
+    </div>
+    <div class="phase-footer" id="ph5-footer" style="display:none">
+      <div class="pf-done">✓ DONE</div>
+      <div class="pf-undo" onclick="undoPhase(5)">↵ undo</div>
+      <div class="pf-expand" onclick="toggleExpand(5)">show ▼</div>
+    </div>
+  </div>
+</div><div id="ph-cpts" class="phase s-always">
+<div id="phdot-cpts" class="phase-dot"></div>
+<div class="phase-inner">
+<div class="ph-head">
+<div class="ph-title">CPTS — HTB Penetration Tester Path</div>
+<div class="ph-dates">2026 – 2027 · HACKTHEBOX ACADEMY</div>
+<div class="ph-badge">◈ IN PROGRESS</div>
+</div>
+<div id="phbody-cpts" class="phase-body">
+<div class="psec" id="psec-cpts">
+<div class="psec-title"><span>CPTS Modules (28)</span><span id="cpts-prog">0/28</span></div>
 <div class="items-list">
 <div class="cp" id="ct_m01" onclick="tick(this,'cpts')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">M01</span>Penetration Testing Process</div></div></div>
 <div class="cp" id="ct_m02" onclick="tick(this,'cpts')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">M02</span>Getting Started</div></div></div>
@@ -447,22 +473,8 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 <div class="cp" id="ct_m28" onclick="tick(this,'cpts')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-cert">M28</span>Attacking Enterprise Networks</div></div></div>
 </div>
 </div>
-      <div class="psec">
-        <div class="psec-title"><span>ASC400 AVANCERAD CYBER &amp; IoT (HV) · Exam 13 Nov</span><span id="ph5b-prog">0/3</span></div>
-        <div class="items-list">
-          <div class="cp" id="asc400_m1" onclick="tick(this,'ph5b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">MID</span>IoT security fundamentals + protocols</div></div></div>
-          <div class="cp" id="asc400_m2" onclick="tick(this,'ph5b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-study">MID</span>Advanced cyber attacks + gamla tentor</div></div></div>
-          <div class="cp cp-exam" id="asc400_ex" onclick="tick(this,'ph5b')"><div class="cp-box"></div><div class="cp-info"><div class="cp-name"><span class="cp-tag t-exam">EXAM</span>ASC400 Tentamen</div><div class="cp-meta">13 Nov 2026 08:30-11:30 · HV</div></div></div>
-        </div>
-      </div>
-      <button class="complete-btn" onclick="completePhase(5)">eCPPT + ASC400 DONE ► UNLOCK DEC</button>
-    </div>
-    <div class="phase-footer" id="ph5-footer" style="display:none">
-      <div class="pf-done">✓ DONE</div>
-      <div class="pf-undo" onclick="undoPhase(5)">↵ undo</div>
-      <div class="pf-expand" onclick="toggleExpand(5)">show ▼</div>
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 <!-- ═══════════════════════════════════════════ -->
