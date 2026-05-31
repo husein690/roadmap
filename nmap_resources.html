@@ -3,75 +3,1925 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nmap Resources — Pentest Roadmap</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mony&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Nmap — دليل شامل</title>
 <style>
-:root{--bg:#030810;--surface:#080f1c;--surface2:#0c1828;--border:#0e2035;--accent:#00d4ff;--accent-dim:rgba(0,212,255,0.1);--orange:#ff6b35;--orange-dim:rgba(255,107,53,0.1);--green:#39ff14;--green-dim:rgba(57,255,20,0.1);--purple:#a855f7;--purple-dim:rgba(168,85,247,0.1);--pink:#ec4899;--yellow:#fbbf24;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani)',sans-serif;--tag:'Share Tech Mono', monospace}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var($--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
-.wrap{max-width:1060px;margin:0 auto;padding:36px 16px 60px;position:relative;z-index:1}
-.hdr{text-align:center;margin-bottom:40px}
-.hdr h1{font-family:var($--mono);font-size:clamp(24px,4vw,46px);font-weight:700;color:var($--white);text-shadow:0 0 40px rgba(0,212,255,0.45);line-height:1}
-.hdr h1 span{color:var($--accent)}
-.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var($--tag);font-size:10px;letter-spacing:2px;color:var($--muted);border:1px solid var($--border);padding:6px 14px;background:var($--surface);text-decoration:none;margin-bottom:30px;transition:all 0.2s}
-.summary-bar{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:var($--surface);border:1px solid var($--border);padding:16px 20px;margin-bottom:36px}
-.cards-gri{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.res-card{background:var($--surface);border:1px solid var($--border);padding:18px;position:relative;transition:all 0.25s;display:flex;flex-direction:column;gap:10px}
-.topics-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:12px}
-.topics-table th{background:var($--surface2);color:var($--white);padding:9px 14px;font-size:9px;text-align:right;border-bottom:1px solid var($--border)}
-.topics-table td{padding:9px 14px;border-bottom:1px solid rgba(14,32,53,0.7);color:var($--text)}
-.prog-badge{display:inline-flex;align-items:center;gap:5px;font-size:8px;padding:2px 8px;border:1px solid}
-.prog-badge.done{color:#39ff14;border-color:rgba(57,255,20,0.3);background:rgba(57,255,20,0.1)}
-.prog-badge.next{color:#3a5060;border-color:#0e2035}
-.cmd-block{background:#030810;border:1px solid #0e2035;border-right:3px solid #00d4ff;padding:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8b949e;overflow-x:auto;white-space:pre;margin:10px 0}
-.footer{border-top:1px solid #0e2035;padding-top:22px;margin-top:50px;text-align:center}
+/* ===== BASE ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #0d1117;
+  color: #e6edf3;
+  font-size: 14px;
+  line-height: 1.6;
+}
+h2.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0); }
+
+/* flat sections — always shown */
+.flat-section { display: block !important; margin-bottom: 32px; }
+
+/* ===== STICKY NAV ===== */
+.top-nav {
+  position: sticky; top: 0; z-index: 200;
+  background: #080c14;
+  border-bottom: 2px solid #1a2030;
+  display: flex; align-items: center;
+  padding: 0 24px; gap: 0;
+  flex-wrap: wrap;
+}
+.top-nav-brand {
+  font-family: monospace; font-size: 14px; font-weight: 700;
+  color: #9fef00; letter-spacing: 3px;
+  padding: 13px 20px 13px 0;
+  border-left: 1px solid #1a2030; margin-left: auto;
+  padding-left: 20px;
+}
+.top-nav a {
+  padding: 14px 18px; color: #8b949e;
+  text-decoration: none; font-size: 13px; font-weight: 600;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s; white-space: nowrap;
+}
+.top-nav a:hover { color: #e6edf3; }
+.top-nav a.c1:hover, .top-nav a.c1.cur { color: #9fef00; border-bottom-color: #9fef00; }
+.top-nav a.c2:hover, .top-nav a.c2.cur { color: #ffa657; border-bottom-color: #ffa657; }
+.top-nav a.c3:hover, .top-nav a.c3.cur { color: #bc8cff; border-bottom-color: #bc8cff; }
+
+/* ===== CHAPTER DIVIDERS ===== */
+.chapter-divider {
+  display: flex; align-items: center; gap: 14px;
+  margin: 48px 0 0 0;
+  padding: 20px 20px 0 20px;
+  max-width: 980px; margin-left: auto; margin-right: auto;
+}
+.chapter-divider:first-of-type { margin-top: 24px; }
+.chapter-num { font-size: 28px; }
+.chapter-title {
+  font-family: 'IBM Plex Mono', 'Consolas', monospace;
+  font-size: 22px; font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.chapter-line {
+  flex: 1; height: 2px;
+  background: linear-gradient(to left, transparent, #21262d);
+}
+
+/* separator between chapters */
+.chapter-sep {
+  border: none; border-top: 1px solid #1a2030;
+  margin: 40px auto 0; max-width: 980px;
+}
+
+/* ===== INHERITED STYLES FROM WIDGETS ===== */
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  h2.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  /* Tab nav */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 8px 14px; border: none; border-radius: 6px;
+    background: #21262d; color: #8b949e; cursor: pointer;
+    font-size: 13px; transition: all 0.2s;
+  }
+  .tab-btn:hover { background: #30363d; color: #e6edf3; }
+  .tab-btn.active { background: #9fef00; color: #0d1117; font-weight: 700; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Section titles */
+  .section-title {
+    font-size: 20px; font-weight: 700; color: #9fef00;
+    margin-bottom: 6px; border-bottom: 1px solid #21262d; padding-bottom: 8px;
+  }
+  .section-desc { color: #8b949e; margin-bottom: 18px; font-size: 13px; }
+
+  /* Port state cards */
+  .states-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .state-card {
+    border-radius: 10px; padding: 16px; border: 1px solid;
+    cursor: pointer; transition: all 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .state-card:hover { transform: translateY(-2px); }
+  .state-card.open    { border-color: #9fef00; background: #0d1a00; }
+  .state-card.closed  { border-color: #f85149; background: #1a0000; }
+  .state-card.filtered{ border-color: #d29922; background: #1a1200; }
+  .state-card.unfiltered { border-color: #58a6ff; background: #00103a; }
+  .state-card.open-filtered { border-color: #bc8cff; background: #110022; }
+  .state-card.closed-filtered { border-color: #ff7b72; background: #1a0a00; }
+
+  .state-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; font-family: monospace; margin-bottom: 8px;
+  }
+  .open .state-badge    { background: #9fef00; color: #0d1117; }
+  .closed .state-badge  { background: #f85149; color: #fff; }
+  .filtered .state-badge{ background: #d29922; color: #0d1117; }
+  .unfiltered .state-badge { background: #58a6ff; color: #0d1117; }
+  .open-filtered .state-badge { background: #bc8cff; color: #0d1117; }
+  .closed-filtered .state-badge { background: #ff7b72; color: #0d1117; }
+
+  .state-title { font-size: 15px; font-weight: 700; color: #e6edf3; margin-bottom: 6px; }
+  .state-body { color: #8b949e; font-size: 13px; }
+  .state-detail {
+    margin-top: 10px; padding: 10px; background: #161b22;
+    border-radius: 6px; font-size: 12px; color: #8b949e;
+    display: none;
+  }
+  .state-card.expanded .state-detail { display: block; }
+  .state-card.expanded { transform: none; }
+  .expand-hint { font-size: 11px; color: #30363d; margin-top: 8px; }
+
+  /* Packet diagram */
+  .packet-diagram {
+    background: #161b22; border-radius: 10px; padding: 16px;
+    margin-bottom: 16px; border: 1px solid #21262d;
+  }
+  .diagram-title { font-size: 14px; font-weight: 700; color: #e6edf3; margin-bottom: 12px; }
+  .flow {
+    display: flex; align-items: center; gap: 0; margin: 8px 0;
+    overflow-x: auto;
+  }
+  .node {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 12px; font-weight: 700; text-align: center; min-width: 80px;
+    background: #21262d; border: 1px solid #30363d; color: #e6edf3;
+    white-space: nowrap;
+  }
+  .node.attacker { background: #0d1a00; border-color: #9fef00; color: #9fef00; }
+  .node.target-open { background: #0d1a00; border-color: #9fef00; color: #9fef00; }
+  .node.target-closed { background: #1a0000; border-color: #f85149; color: #f85149; }
+  .node.target-filtered { background: #1a1200; border-color: #d29922; color: #d29922; }
+  .node.firewall { background: #1a1200; border-color: #d29922; color: #d29922; }
+
+  .arrow {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    padding: 0 4px; min-width: 80px;
+  }
+  .arrow-line {
+    width: 100%; height: 2px; position: relative; margin: 2px 0;
+  }
+  .arrow-line.to-target { background: #58a6ff; }
+  .arrow-line.from-target { background: #9fef00; }
+  .arrow-line.no-response { background: #30363d; border-top: 2px dashed #30363d; background: none; }
+  .arrow-line.rst { background: #f85149; }
+  .arrow-line::after {
+    content: '▶'; position: absolute; right: -4px; top: -8px;
+    font-size: 10px; color: inherit;
+  }
+  .arrow-line.from-target::after { content: '◀'; left: -4px; right: auto; color: #9fef00; }
+  .arrow-line.rst::after { content: '◀'; left: -4px; right: auto; color: #f85149; }
+  .arrow-line.no-response::after { content: ''; }
+  .arrow-label { font-size: 10px; color: #8b949e; text-align: center; }
+  .arrow-label.blue { color: #58a6ff; }
+  .arrow-label.green { color: #9fef00; }
+  .arrow-label.red { color: #f85149; }
+  .arrow-label.grey { color: #30363d; }
+
+  /* Code blocks */
+  .code-block {
+    background: #161b22; border-radius: 8px; padding: 14px;
+    font-family: 'Consolas', monospace; font-size: 12px;
+    color: #8b949e; margin: 12px 0; border: 1px solid #21262d;
+    overflow-x: auto; white-space: pre;
+  }
+  .code-block .cmd { color: #9fef00; }
+  .code-block .flag { color: #58a6ff; }
+  .code-block .open-port { color: #9fef00; }
+  .code-block .closed-port { color: #f85149; }
+  .code-block .filtered-port { color: #d29922; }
+  .code-block .comment { color: #3b4754; }
+
+  /* Info boxes */
+  .info-box {
+    border-radius: 8px; padding: 14px; margin: 12px 0; border-left: 4px solid;
+  }
+  .info-box.tip { background: #0d1a00; border-color: #9fef00; }
+  .info-box.warn { background: #1a1200; border-color: #d29922; }
+  .info-box.danger { background: #1a0000; border-color: #f85149; }
+  .info-box.info { background: #00103a; border-color: #58a6ff; }
+  .info-box-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; }
+  .info-box.tip .info-box-title { color: #9fef00; }
+  .info-box.warn .info-box-title { color: #d29922; }
+  .info-box.danger .info-box-title { color: #f85149; }
+  .info-box.info .info-box-title { color: #58a6ff; }
+
+  /* Protocol comparison */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+  .compare-card {
+    background: #161b22; border-radius: 8px; padding: 14px;
+    border: 1px solid #21262d;
+  }
+  .compare-card h4 { color: #58a6ff; margin-bottom: 8px; font-size: 14px; }
+  .compare-card ul { padding-right: 16px; }
+  .compare-card li { color: #8b949e; font-size: 12px; margin-bottom: 4px; }
+
+  /* Flags table */
+  .flags-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  .flags-table th { background: #21262d; color: #e6edf3; padding: 8px 12px; font-size: 12px; text-align: right; }
+  .flags-table td { border-bottom: 1px solid #21262d; padding: 8px 12px; font-size: 12px; color: #8b949e; }
+  .flags-table tr:hover td { background: #161b22; }
+  .flag-name { font-family: monospace; color: #58a6ff; font-weight: 700; }
+  .flag-full { color: #e6edf3; }
+
+  /* Summary badge row */
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .cmd-badge {
+    background: #161b22; border: 1px solid #30363d; border-radius: 6px;
+    padding: 5px 10px; font-family: monospace; font-size: 12px; color: #9fef00;
+  }
+
+  @media (max-width: 600px) {
+    .states-grid, .compare-grid { grid-template-columns: 1fr; }
+  }
+
+
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #0d1117; color: #e6edf3;
+  font-size: 14px; line-height: 1.6;
+}
+h2.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0); }
+.container { max-width: 920px; margin: 0 auto; padding: 20px; }
+
+.tabs { display:flex; gap:4px; margin-bottom:20px; flex-wrap:wrap; }
+.tab-btn {
+  padding:8px 14px; border:none; border-radius:6px;
+  background:#21262d; color:#8b949e; cursor:pointer; font-size:13px; transition:all 0.2s;
+}
+.tab-btn:hover { background:#30363d; color:#e6edf3; }
+.tab-btn.active { background:#9fef00; color:#0d1117; font-weight:700; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+.section-title { font-size:20px; font-weight:700; color:#9fef00; margin-bottom:6px; border-bottom:1px solid #21262d; padding-bottom:8px; }
+.section-desc { color:#8b949e; margin-bottom:18px; font-size:13px; }
+
+.code-block {
+  background:#161b22; border-radius:8px; padding:14px;
+  font-family:'Consolas',monospace; font-size:12px; color:#8b949e;
+  margin:12px 0; border:1px solid #21262d; overflow-x:auto; white-space:pre;
+}
+.cmd { color:#9fef00; }
+.flag { color:#58a6ff; }
+.comment { color:#3b4754; }
+.val { color:#ffa657; }
+
+.info-box { border-radius:8px; padding:14px; margin:12px 0; border-left:4px solid; }
+.info-box.tip { background:#0d1a00; border-color:#9fef00; }
+.info-box.warn { background:#1a1200; border-color:#d29922; }
+.info-box.info { background:#00103a; border-color:#58a6ff; }
+.info-box.danger { background:#1a0000; border-color:#f85149; }
+.info-box-title { font-weight:700; margin-bottom:4px; font-size:13px; }
+.info-box.tip .info-box-title { color:#9fef00; }
+.info-box.warn .info-box-title { color:#d29922; }
+.info-box.info .info-box-title { color:#58a6ff; }
+.info-box.danger .info-box-title { color:#f85149; }
+
+/* Timing template visual */
+.timing-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin:16px 0; }
+.t-card {
+  border-radius:8px; padding:10px 6px; text-align:center; border:2px solid;
+  cursor:pointer; transition:all 0.2s; position:relative;
+}
+.t-card:hover { transform:translateY(-2px); }
+.t0 { border-color:#58a6ff; background:#00103a; }
+.t1 { border-color:#bc8cff; background:#110022; }
+.t2 { border-color:#9fef00; background:#0d1a00; }
+.t3 { border-color:#d29922; background:#1a1200; }
+.t4 { border-color:#ff7b72; background:#1a0500; }
+.t5 { border-color:#f85149; background:#1a0000; }
+.t-num { font-size:22px; font-weight:900; margin-bottom:4px; }
+.t0 .t-num { color:#58a6ff; }
+.t1 .t-num { color:#bc8cff; }
+.t2 .t-num { color:#9fef00; }
+.t3 .t-num { color:#d29922; }
+.t4 .t-num { color:#ff7b72; }
+.t5 .t-num { color:#f85149; }
+.t-name { font-size:10px; font-weight:700; color:#e6edf3; margin-bottom:4px; }
+.t-use { font-size:10px; color:#8b949e; }
+.t-speed { margin-top:6px; }
+.speed-bar-bg { height:4px; background:#21262d; border-radius:2px; overflow:hidden; }
+.speed-bar { height:100%; border-radius:2px; }
+
+/* RTT section */
+.rtt-visual {
+  background:#161b22; border-radius:10px; padding:16px; margin:12px 0;
+  border:1px solid #21262d;
+}
+.rtt-title { font-size:14px; font-weight:700; color:#e6edf3; margin-bottom:12px; }
+.rtt-row { display:flex; align-items:center; gap:10px; margin:10px 0; }
+.rtt-label { font-size:12px; color:#8b949e; width:200px; text-align:right; flex-shrink:0; }
+.rtt-bar-bg { flex:1; height:20px; background:#21262d; border-radius:4px; overflow:hidden; position:relative; }
+.rtt-bar { height:100%; border-radius:4px; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:700; }
+.rtt-val { font-size:11px; font-family:monospace; width:80px; text-align:left; flex-shrink:0; }
+
+/* Options table */
+.opt-table { width:100%; border-collapse:collapse; margin:12px 0; }
+.opt-table th { background:#21262d; color:#e6edf3; padding:8px 12px; font-size:12px; text-align:right; }
+.opt-table td { border-bottom:1px solid #21262d; padding:10px 12px; font-size:12px; }
+.opt-table tr:hover td { background:#161b22; }
+.opt-name { font-family:monospace; color:#58a6ff; font-weight:700; }
+.opt-desc { color:#8b949e; }
+.opt-note { color:#9fef00; font-size:11px; }
+
+/* Comparison meter */
+.meter-section { background:#161b22; border-radius:10px; padding:16px; margin:12px 0; border:1px solid #21262d; }
+.meter-title { font-size:14px; font-weight:700; margin-bottom:12px; }
+
+/* Timeline diagram */
+.timeline { position:relative; margin:16px 0; }
+.tl-row { display:flex; align-items:center; margin:8px 0; gap:10px; }
+.tl-label { font-size:12px; width:120px; text-align:right; flex-shrink:0; color:#8b949e; }
+.tl-track { flex:1; position:relative; height:24px; background:#21262d; border-radius:4px; overflow:hidden; }
+.tl-fill { height:100%; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:700; border-radius:4px; white-space:nowrap; }
+.tl-time { font-size:11px; font-family:monospace; width:60px; text-align:left; color:#8b949e; flex-shrink:0; }
+
+@media(max-width:600px){
+  .timing-grid { grid-template-columns:repeat(3,1fr); }
+}
+
+
+
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI',Tahoma,sans-serif; background:#0d1117; color:#e6edf3; font-size:14px; line-height:1.6; }
+h2.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0); }
+.container { max-width:940px; margin:0 auto; padding:20px; }
+
+.tabs { display:flex; gap:4px; margin-bottom:20px; flex-wrap:wrap; }
+.tab-btn { padding:8px 13px; border:none; border-radius:6px; background:#21262d; color:#8b949e; cursor:pointer; font-size:13px; transition:all 0.2s; }
+.tab-btn:hover { background:#30363d; color:#e6edf3; }
+.tab-btn.active { background:#9fef00; color:#0d1117; font-weight:700; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+.section-title { font-size:20px; font-weight:700; color:#9fef00; margin-bottom:6px; border-bottom:1px solid #21262d; padding-bottom:8px; }
+.section-desc { color:#8b949e; margin-bottom:18px; font-size:13px; }
+
+.code-block { background:#161b22; border-radius:8px; padding:14px; font-family:'Consolas',monospace; font-size:12px; color:#8b949e; margin:10px 0; border:1px solid #21262d; overflow-x:auto; white-space:pre; }
+.cmd { color:#9fef00; }
+.flag { color:#58a6ff; }
+.comment { color:#3b4754; }
+.hi { color:#ffa657; }
+.red { color:#f85149; }
+.green { color:#9fef00; }
+
+.info-box { border-radius:8px; padding:14px; margin:12px 0; border-left:4px solid; }
+.info-box.tip { background:#0d1a00; border-color:#9fef00; }
+.info-box.warn { background:#1a1200; border-color:#d29922; }
+.info-box.info { background:#00103a; border-color:#58a6ff; }
+.info-box.danger { background:#1a0000; border-color:#f85149; }
+.info-box-title { font-weight:700; margin-bottom:4px; font-size:13px; }
+.info-box.tip .info-box-title { color:#9fef00; }
+.info-box.warn .info-box-title { color:#d29922; }
+.info-box.info .info-box-title { color:#58a6ff; }
+.info-box.danger .info-box-title { color:#f85149; }
+
+.card-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0; }
+.card { background:#161b22; border-radius:10px; padding:16px; border:1px solid #21262d; }
+.card h4 { margin-bottom:8px; font-size:14px; }
+.card p { color:#8b949e; font-size:13px; }
+
+/* Network diagram */
+.net-diag { background:#161b22; border-radius:10px; padding:16px; margin:12px 0; border:1px solid #21262d; }
+.net-title { font-size:14px; font-weight:700; color:#e6edf3; margin-bottom:14px; }
+
+.flow-row { display:flex; align-items:center; gap:6px; margin:10px 0; flex-wrap:nowrap; overflow-x:auto; }
+.fnode { padding:8px 10px; border-radius:8px; font-size:11px; font-weight:700; text-align:center; border:1px solid; white-space:nowrap; min-width:70px; }
+.fnode.attacker { background:#0d1a00; border-color:#9fef00; color:#9fef00; }
+.fnode.decoy { background:#110022; border-color:#bc8cff; color:#bc8cff; }
+.fnode.firewall { background:#1a1200; border-color:#d29922; color:#d29922; }
+.fnode.ids { background:#1a0000; border-color:#f85149; color:#f85149; }
+.fnode.target { background:#00103a; border-color:#58a6ff; color:#58a6ff; }
+.fnode.internet { background:#21262d; border-color:#30363d; color:#8b949e; }
+
+.arrow-h { display:flex; flex-direction:column; align-items:center; min-width:50px; }
+.arrow-line-h { width:100%; height:2px; background:#30363d; position:relative; }
+.arrow-line-h.blocked { background:#f85149; }
+.arrow-line-h.allowed { background:#9fef00; }
+.arrow-line-h.suspicious { background:#d29922; }
+.arrow-line-h::after { content:'▶'; position:absolute; right:-5px; top:-7px; font-size:10px; color:inherit; }
+.arrow-label-h { font-size:10px; color:#8b949e; }
+
+/* Technique cards */
+.tech-card { background:#161b22; border-radius:10px; padding:16px; border:1px solid #21262d; margin:12px 0; }
+.tech-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; cursor:pointer; }
+.tech-badge { padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; font-family:monospace; }
+.tech-title { font-size:15px; font-weight:700; color:#e6edf3; }
+.tech-body { color:#8b949e; font-size:13px; margin-bottom:10px; }
+.tech-detail { display:none; }
+.tech-card.open .tech-detail { display:block; }
+.chevron { color:#30363d; margin-right:auto; }
+
+/* Port scan types comparison */
+.scan-row { display:flex; align-items:stretch; gap:0; margin:6px 0; }
+.scan-name { font-family:monospace; font-size:12px; color:#58a6ff; width:120px; flex-shrink:0; padding:8px; background:#21262d; border-radius:6px 0 0 6px; display:flex; align-items:center; }
+.scan-desc { font-size:12px; color:#8b949e; flex:1; padding:8px 12px; background:#161b22; border-radius:0 6px 6px 0; border:1px solid #21262d; border-left:none; }
+.scan-stealth { font-size:11px; font-weight:700; width:80px; flex-shrink:0; padding:8px; display:flex; align-items:center; justify-content:center; border-radius:0 6px 6px 0; }
+
+/* Source port visual */
+.port-example { background:#0d1117; border-radius:8px; padding:12px; margin:10px 0; border:1px solid #30363d; }
+.port-label { font-size:11px; color:#3b4754; margin-bottom:4px; }
+.port-val { font-family:monospace; font-size:13px; }
+
+table.t { width:100%; border-collapse:collapse; margin:12px 0; }
+table.t th { background:#21262d; color:#e6edf3; padding:8px 12px; font-size:12px; text-align:right; }
+table.t td { border-bottom:1px solid #21262d; padding:8px 12px; font-size:12px; }
+table.t tr:hover td { background:#161b22; }
+
+@media(max-width:600px){
+  .card-grid { grid-template-columns:1fr; }
+}
+
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="hdr">
-<div style="font-family:'Share Tech Mono', monospace;font-size:11px;color:#39ff14;letter-spacing:4px;margin-bottom:14px">▶ RESOURCES.SYS — NMAP MODULE</div>
-<h1>NMAR <span style="color:#00d4ff">RESOURCES</span></h1>
-<div style="display:inline-block;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#3a5060;letter-spacing:6px;border:1px solid #0e2035;padding:5px 20px">// NETWORK ENUMERATION WITH NMAP — HTB ACADEMY //</div>
+
+<!-- STICKY NAV -->
+<nav class="top-nav">
+  <a href="#chapter-port" class="c1" onclick="setCur(this)">🔴 Host &amp; Port Scanning</a>
+  <a href="#chapter-perf" class="c2" onclick="setCur(this)">⚡ Performance</a>
+  <a href="#chapter-evade" class="c3" onclick="setCur(this)">🛡️ Firewall &amp; IDS Evasion</a>
+  <div class="top-nav-brand">NMAP GUIDE</div>
+</nav>
+
+
+<div class="chapter-divider" id="chapter-port">
+  <div class="chapter-num">🔴</div>
+  <div class="chapter-title" style="color:#9fef00">Host and Port Scanning</div>
+  <div class="chapter-line"></div>
 </div>
-<a href="index.html" class="back-btn">◀ رجوع للـ Roadmap</a>
-<div class="summary-bar">
-<div><div style="font-size:24px;font-weight:700;color:#00d4ff">12</div><div style="font-size:9px;color:#3a5060">SECTIONS TOTAL</div></div>
-<div style="width:1px;height:36px;background:#0e2035"></div>
-<div><div style="font-size:24px;font-weight:700;color:#39ff14">3</div><div style="font-size:9px;color:#3a5060">SECTIONS STUDIED</div></div>
-<div style="width:1px;height:36px;background:#0e2035"></div>
-<div><div style="font-size:24px;font-weight:700;color:#ff6b35">9</div><div style="font-size:9px;color:#3a5060">SECTIONS REMAINING</div></div>
-<div style="width:1px;height:36px;background:#0e2035"></div>
-<div><div style="font-size:24px;font-weight:700;color:#a855f7">25%</div><div style="font-size:9px;color:#3a5060">PROGRESS</div></div>
-<div style="flex:1"></div>
-<a href="https://academy.hackthebox.com/module/details/19" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:2px;padding:7px 14px;border:1px solid rgba(0,212,255,0.3);color:#00d4ff;text-decoration:none">↗ فتح الموديول</a>
+
+<h2 class="sr-only">شرح تفصيلي لدرس Host and Port Scanning من </h2>
+
+<div class="container">
+
+  <div style="margin-bottom:20px;">
+    <div style="color:#9fef00;font-size:11px;font-weight:700;letter-spacing:2px;margin-bottom:4px;"></div>
+    <div style="font-size:22px;font-weight:700;color:#e6edf3;">Host and Port Scanning</div>
+    <div style="color:#8b949e;font-size:13px;margin-top:4px;">شرح تفصيلي شامل — بكل ما في الدرس</div>
+  </div>
+
+  
+
+  <!-- TAB 1: PORT STATES -->
+  <div class="flat-section" id="tab-states">
+    <div class="section-title">الحالات الـ6 للبورت</div>
+    <div class="section-desc">لما Nmap يسكن بورت، بيرجعلك واحدة من هاي الحالات الـ6. كل حالة إلها معنى مختلف بناءً على الرد اللي استقبله من الهوست. اضغط على أي كارت لتشوف تفاصيل أكثر.</div>
+
+    <div class="states-grid">
+
+      <div class="state-card open" onclick="toggleCard(this)">
+        <div class="state-badge">open</div>
+        <div class="state-title">مفتوح</div>
+        <div class="state-body">البورت شغال وفيه سيرفيس يستقبل connections. هاد أهم هدف لأي pentest.</div>
+        <div class="state-detail">
+          <strong style="color:#9fef00;">شو يعني بالنسبة لك:</strong><br>
+          يعني في تطبيق أو سيرفيس شغال على هاد البورت ويستقبل اتصالات. ممكن تكون web server, SSH, database, أو أي سيرفيس ثاني.<br><br>
+          <strong style="color:#9fef00;">ليش بيظهر open:</strong><br>
+          • TCP: الهوست أرسل SYN-ACK رداً على SYN بتاعنا<br>
+          • UDP: الهوست أرسل UDP response<br>
+          • SCTP: في INIT-ACK response<br><br>
+          <strong style="color:#9fef00;">مثال عملي:</strong><br>
+          <span style="font-family:monospace;color:#9fef00;">22/tcp open ssh</span>
+        </div>
+        <div class="expand-hint">اضغط للمزيد ▼</div>
+      </div>
+
+      <div class="state-card closed" onclick="toggleCard(this)">
+        <div class="state-badge">closed</div>
+        <div class="state-title">مغلق</div>
+        <div class="state-body">البورت متاح لكن ما في سيرفيس شغال عليه. الهوست رد بـ RST.</div>
+        <div class="state-detail">
+          <strong style="color:#f85149;">شو يعني:</strong><br>
+          البورت وصله الباكيت بس ما في خدمة شغالة. مفيد جداً لأنه يأكدلك إن الهوست حي وشغال.<br><br>
+          <strong style="color:#f85149;">ليش بيظهر closed:</strong><br>
+          الهوست رد بـ TCP RST flag (Reset). هاد يعني "ما في شي هون".<br><br>
+          <strong style="color:#f85149;">الفايدة العملية:</strong><br>
+          حتى لو مغلق، يفيدك تعرف الهوست شغال. بعض الأوقات بتقدر تستغل هاد لـ OS fingerprinting.<br><br>
+          <span style="font-family:monospace;color:#f85149;">21/tcp closed ftp</span>
+        </div>
+        <div class="expand-hint">اضغط للمزيد ▼</div>
+      </div>
+
+      <div class="state-card filtered" onclick="toggleCard(this)">
+        <div class="state-badge">filtered</div>
+        <div class="state-title">محجوب بجدار ناري</div>
+        <div class="state-body">Nmap ما قدر يحدد الحالة. في فايروول بيبلوك الباكيتات ويمنع الرد.</div>
+        <div class="state-detail">
+          <strong style="color:#d29922;">ليش صعب:</strong><br>
+          لأنه ما في رد خالص (drop) أو في رد error مبهم، فـ Nmap ما يعرف إذا البورت مفتوح أو مغلق.<br><br>
+          <strong style="color:#d29922;">نوعين من الـ filtered:</strong><br>
+          • <strong>Dropped:</strong> الفايروول يحذف الباكيت بدون ما يرد — Nmap بيستنى طويل وبيبعث أكثر من مرة<br>
+          • <strong>Rejected:</strong> الفايروول يرد بـ ICMP error (مثل type 3) — أسرع لكن كشف<br><br>
+          <strong style="color:#d29922;">علامة عملية:</strong><br>
+          لما السكان ياخد وقت طويل (مثل 2 ثواني بدل 0.05 ثانية) = filtered<br><br>
+          <span style="font-family:monospace;color:#d29922;">139/tcp filtered netbios-ssn</span>
+        </div>
+        <div class="expand-hint">اضغط للمزيد ▼</div>
+      </div>
+
+      <div class="state-card unfiltered" onclick="toggleCard(this)">
+        <div class="state-badge">unfiltered</div>
+        <div class="state-title">غير محجوب (لكن غير محدد)</div>
+        <div class="state-body">البورت متاح ومش محجوب، لكن Nmap ما يقدر يحدد إذا مفتوح أو مغلق.</div>
+        <div class="state-detail">
+          <strong style="color:#58a6ff;">متى يظهر:</strong><br>
+          فقط في ACK scan (<code style="color:#58a6ff;">-sA</code>). هاد النوع من السكان مصمم لـ firewall rule mapping مش لاكتشاف البورتات المفتوحة.<br><br>
+          <strong style="color:#58a6ff;">الفايدة:</strong><br>
+          يساعدك تفهم قواعد الفايروول — أي بورتات بيعدّيها وأي ما بيعدّيها.<br><br>
+          <strong style="color:#58a6ff;">الفرق عن open:</strong><br>
+          open = عارف إنه شغال<br>
+          unfiltered = عارف إنه وصله الباكيت بس مش عارف إيش الحالة بالضبط<br><br>
+          <span style="font-family:monospace;color:#58a6ff;">النوع يظهر مع: nmap -sA</span>
+        </div>
+        <div class="expand-hint">اضغط للمزيد ▼</div>
+      </div>
+
+      <div class="state-card open-filtered" onclick="toggleCard(this)">
+        <div class="state-badge">open|filtered</div>
+        <div class="state-title">مفتوح أو محجوب — مش واضح</div>
+        <div class="state-body">Nmap ما يقدر يميز: إما مفتوح وما رد، أو في فايروول يبلوك.</div>
+        <div class="state-detail">
+          <strong style="color:#bc8cff;">متى يظهر:</strong><br>
+          غالباً في UDP scan وبعض TCP scans. لما ما في رد خالص — Nmap ما يعرف إذا البورت مفتوح وما رد على الـ probe، أو في فايروول قاطع.<br><br>
+          <strong style="color:#bc8cff;">مثال UDP:</strong><br>
+          أرسلنا UDP packet لبورت 138، ما رجعلنا رد. ممكن السيرفيس شغال بس ما يرد على هاد النوع من الـ probe، أو في فايروول يبلوك.<br><br>
+          <strong style="color:#bc8cff;">كيف تفرق:</strong><br>
+          استخدم <code style="color:#bc8cff;">-sV</code> (version scan) — بيحاول يتفاعل مع السيرفيس ويأكدلك إذا مفتوح فعلاً.<br><br>
+          <span style="font-family:monospace;color:#bc8cff;">68/udp open|filtered dhcpc</span>
+        </div>
+        <div class="expand-hint">اضغط للمزيد ▼</div>
+      </div>
+
+      <div class="state-card closed-filtered" onclick="toggleCard(this)">
+        <div class="state-badge">closed|filtered</div>
+        <div class="state-title">مغلق أو محجوب — مش واضح</div>
+        <div class="state-body">نادر جداً. Nmap ما قدر يحدد إذا البورت مغلق أو محجوب بفايروول.</div>
+        <div class="state-detail">
+          <strong style="color:#ff7b72;">متى يظهر:</strong><br>
+          فقط في IP ID idle scan (<code style="color:#ff7b72;">-sI</code>). هاد نوع scan متقدم جداً بيستخدم جهاز وسيط "zombie host" لإخفاء هوية المهاجم.<br><br>
+          <strong style="color:#ff7b72;">الـ IP ID idle scan:</strong><br>
+          تقنية stealth متقدمة — بتبعث باكيتات وكأنها جاية من جهاز ثاني (الزومبي) وبترصد تغيير في IP ID counter ع الزومبي لتعرف الحالة.<br><br>
+          <strong style="color:#ff7b72;">الاستخدام العملي:</strong><br>
+          نادر في pentesting اليومي. أكثر شي بتشوفه في CTFs أو advanced stealth operations.
+        </div>
+        <div class="expand-hint">اضغط للمزيد ▼</div>
+      </div>
+
+    </div>
+
+    <!-- Visual summary diagram -->
+    <div class="packet-diagram">
+      <div class="diagram-title">📦 شو يصير على مستوى الباكيت — TCP SYN Scan</div>
+
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px;color:#9fef00;font-weight:700;margin-bottom:8px;">✅ بورت مفتوح (open)</div>
+        <div class="flow">
+          <div class="node attacker">أنت<br><small>10.10.14.2</small></div>
+          <div class="arrow">
+            <div class="arrow-line to-target"></div>
+            <div class="arrow-label blue">SYN →</div>
+          </div>
+          <div class="node target-open">الهوست<br><small>port open</small></div>
+          <div class="arrow">
+            <div class="arrow-line from-target"></div>
+            <div class="arrow-label green">← SYN-ACK</div>
+          </div>
+          <div class="node attacker">أنت</div>
+          <div class="arrow">
+            <div class="arrow-line to-target" style="background:#f85149;"></div>
+            <div class="arrow-label red">RST → (أنهى)</div>
+          </div>
+          <div class="node target-open">الهوست</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px;color:#f85149;font-weight:700;margin-bottom:8px;">❌ بورت مغلق (closed)</div>
+        <div class="flow">
+          <div class="node attacker">أنت</div>
+          <div class="arrow">
+            <div class="arrow-line to-target"></div>
+            <div class="arrow-label blue">SYN →</div>
+          </div>
+          <div class="node target-closed">الهوست<br><small>port closed</small></div>
+          <div class="arrow">
+            <div class="arrow-line rst"></div>
+            <div class="arrow-label red">← RST+ACK</div>
+          </div>
+          <div class="node attacker">أنت</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:12px;color:#d29922;font-weight:700;margin-bottom:8px;">🚫 بورت محجوب (filtered)</div>
+        <div class="flow">
+          <div class="node attacker">أنت</div>
+          <div class="arrow">
+            <div class="arrow-line to-target"></div>
+            <div class="arrow-label blue">SYN →</div>
+          </div>
+          <div class="node firewall">🔥 Firewall</div>
+          <div class="arrow">
+            <div class="arrow-line no-response"></div>
+            <div class="arrow-label grey">DROP (لا رد)</div>
+          </div>
+          <div class="node" style="border-color:#30363d;">الهوست<br><small>ما وصله</small></div>
+        </div>
+        <div style="font-size:11px;color:#8b949e;margin-top:6px;">→ Nmap بيعيد المحاولة (--max-retries) وبعدين يقرر "filtered"</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB 2: TCP SCANNING -->
+  <div class="flat-section" id="tab-tcp">
+    <div class="section-title">اكتشاف بورتات TCP</div>
+    <div class="section-desc">Nmap عنده طريقتان رئيسيتان لسكان TCP. الفرق بينهم مهم جداً للـ stealth وللدقة.</div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h4>🔪 SYN Scan (نص اتصال)</h4>
+        <div style="font-family:monospace;color:#9fef00;font-size:12px;margin-bottom:8px;">nmap -sS [target]</div>
+        <ul>
+          <li>الافتراضي لما تشغّل Nmap كـ root</li>
+          <li>يبعث SYN فقط — ما يكمل الـ handshake</li>
+          <li>لما يستقبل SYN-ACK يبعث RST ليقطع</li>
+          <li>أسرع وأخفى — ما بيسجله كثير من الـ IDS</li>
+          <li>يحتاج صلاحية root/sudo</li>
+        </ul>
+        <div class="info-box tip" style="margin-top:10px;">
+          <div class="info-box-title">⚡ يُسمى Half-Open Scan</div>
+          <div style="font-size:12px;color:#8b949e;">لأنه ما بيكمل الـ Three-Way Handshake. بس ما يعني إنك غير مكشوف!</div>
+        </div>
+      </div>
+      <div class="compare-card">
+        <h4>🤝 Connect Scan (اتصال كامل)</h4>
+        <div style="font-family:monospace;color:#58a6ff;font-size:12px;margin-bottom:8px;">nmap -sT [target]</div>
+        <ul>
+          <li>يكمل الـ Three-Way Handshake بالكامل</li>
+          <li>SYN → SYN-ACK → ACK (اتصال كامل)</li>
+          <li>أبطأ وأوضح — بيسجّل في logs الهوست</li>
+          <li>يشتغل بدون root</li>
+          <li>أدق — لأنه اتصال حقيقي</li>
+        </ul>
+        <div class="info-box info" style="margin-top:10px;">
+          <div class="info-box-title">🎯 متى تستخدمه؟</div>
+          <div style="font-size:12px;color:#8b949e;">لما ما عندك root، أو تحتاج دقة عالية، أو تعمل scan من وراء proxy.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Three way handshake -->
+    <div class="packet-diagram">
+      <div class="diagram-title">🤝 الـ Three-Way Handshake — كيف تشتغل الـ TCP</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div style="font-size:12px;color:#9fef00;font-weight:700;margin-bottom:8px;">SYN Scan (-sS)</div>
+          <div style="font-size:12px;color:#8b949e;margin-bottom:8px;">
+            1️⃣ أنت → SYN<br>
+            2️⃣ الهوست → SYN-ACK<br>
+            3️⃣ أنت → RST (قطع) ❌<br>
+            <span style="color:#9fef00;">✓ ما اكتمل الاتصال = أخفى</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#58a6ff;font-weight:700;margin-bottom:8px;">Connect Scan (-sT)</div>
+          <div style="font-size:12px;color:#8b949e;margin-bottom:8px;">
+            1️⃣ أنت → SYN<br>
+            2️⃣ الهوست → SYN-ACK<br>
+            3️⃣ أنت → ACK ✅<br>
+            <span style="color:#58a6ff;">✓ اتصال كامل = أدق</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trace example -->
+    <div class="packet-diagram">
+      <div class="diagram-title">🔍 مثال حقيقي من --packet-trace على بورت 21 (closed)</div>
+      <div class="code-block"><span class="cmd">sudo nmap 10.129.2.28 -p 21 --packet-trace -Pn -n --disable-arp-ping</span>
+
+<span style="color:#8b949e;"># ما أرسلناه:</span>
+SENT (0.0429s) TCP <span class="flag">10.10.14.2:63090</span> > <span class="flag">10.129.2.28:21</span> <span style="color:#9fef00;">S</span> ttl=56 seq=1699105818
+           ^أنت         ^sourcePort     ^الهدف  ^port  ^SYN flag
+
+<span style="color:#8b949e;"># ما استقبلناه:</span>
+RCVD (0.0573s) TCP <span class="flag">10.129.2.28:21</span> > <span class="flag">10.10.14.2:63090</span> <span style="color:#f85149;">RA</span> ttl=64 win=0
+           ^الهدف       ^port    ^أنت         ^RST+ACK = مغلق!
+
+PORT    STATE  SERVICE
+<span class="closed-port">21/tcp  closed ftp</span></div>
+      <div class="info-box warn">
+        <div class="info-box-title">🔑 فهم الـ flags</div>
+        S = SYN | A = ACK | R = RST | F = FIN | P = PUSH | U = URG<br>
+        <span style="font-size:12px;color:#8b949e;">RA = RST + ACK معاً = الهوست رفض الاتصال لأن البورت مغلق</span>
+      </div>
+    </div>
+
+    <!-- Filtered example -->
+    <div class="packet-diagram">
+      <div class="diagram-title">🔥 مثال على filtered — بورت 139</div>
+      <div class="code-block"><span class="cmd">sudo nmap 10.129.2.28 -p 139 --packet-trace -n --disable-arp-ping -Pn</span>
+
+SENT (0.0381s) TCP 10.10.14.2:60277 > 10.129.2.28:139 <span style="color:#9fef00;">S</span> ttl=47 seq=4175236769
+SENT (1.0411s) TCP 10.10.14.2:60278 > 10.129.2.28:139 <span style="color:#9fef00;">S</span> ttl=45 seq=4175171232
+<span style="color:#d29922;">← لاحظ: بعث مرتين ولا رد! (retry بعد ثانية كاملة)</span>
+
+<span class="filtered-port">139/tcp filtered netbios-ssn</span>
+
+<span style="color:#3b4754;"># وقت السكان: 2.06 ثانية (بدل 0.05 للـ closed) = علامة filtered</span></div>
+    </div>
+
+    <!-- Scan commands -->
+    <div class="section-title" style="font-size:16px;margin-top:20px;">أوامر السكان الأساسية</div>
+    <div class="code-block"><span class="comment"># سكان أعلى 10 بورتات</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">--top-ports=10</span>
+
+<span class="comment"># سكان كل البورتات (65535)</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-p-</span>
+
+<span class="comment"># سكان بورتات محددة</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-p 22,80,443,445</span>
+
+<span class="comment"># سكان نطاق</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-p 22-445</span>
+
+<span class="comment"># أعلى 100 بورت</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-F</span>
+
+<span class="comment"># SYN scan مع تتبع الباكيتات</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-sS --packet-trace -Pn -n --disable-arp-ping</span></div>
+
+  </div>
+
+  <!-- TAB 3: UDP -->
+  <div class="flat-section" id="tab-udp">
+    <div class="section-title">اكتشاف بورتات UDP</div>
+    <div class="section-desc">UDP بروتوكول مختلف تماماً عن TCP — بدون connection، بدون handshake، وصعب جداً تسكنه. كثير من المسؤولين بينسوا يحموا UDP!</div>
+
+    <div class="info-box warn">
+      <div class="info-box-title">⚠️ UDP بطيء جداً</div>
+      سكان أعلى 100 UDP بورت ممكن ياخد 98 ثانية مقارنةً بثانية واحدة لـ TCP. السبب: ما في response لتأكيد الاستقبال، فـ Nmap بيستنى timeout لكل بورت.
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h4 style="color:#bc8cff;">TCP — Connection-oriented</h4>
+        <ul>
+          <li>Handshake قبل البيانات</li>
+          <li>ضمان وصول البيانات</li>
+          <li>رد فوري (SYN-ACK أو RST)</li>
+          <li>سهل السكان ✓</li>
+          <li>SSH, HTTP, FTP, SMB</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <h4 style="color:#bc8cff;">UDP — Connectionless</h4>
+        <ul>
+          <li>ما في handshake</li>
+          <li>ما في ضمان للوصول</li>
+          <li>ممكن ما في رد نهائياً</li>
+          <li>صعب السكان ✗</li>
+          <li>DNS, DHCP, SNMP, NetBIOS</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="packet-diagram">
+      <div class="diagram-title">🟣 نتائج UDP Scan وتفسيرها</div>
+      <div class="code-block"><span class="cmd">sudo nmap 10.129.2.28 -F -sU</span>
+
+PORT        STATE           SERVICE
+<span class="open-port">137/udp     open            netbios-ns</span>    <span style="color:#3b4754;">← رد UDP ✓</span>
+<span class="filtered-port">68/udp      open|filtered   dhcpc</span>         <span style="color:#3b4754;">← ما في رد</span>
+<span class="filtered-port">138/udp     open|filtered   netbios-dgm</span>   <span style="color:#3b4754;">← ما في رد</span>
+<span class="filtered-port">631/udp     open|filtered   ipp</span>           <span style="color:#3b4754;">← ما في رد</span>
+<span class="open-port">5353/udp    open            zeroconf</span>      <span style="color:#3b4754;">← رد UDP ✓</span>
+<span style="color:#8b949e;">Not shown: 95 closed ports</span>               <span style="color:#3b4754;">← ICMP unreachable</span>
+
+<span style="color:#3b4754;"># الوقت: 98.07 ثانية!</span></div>
+    </div>
+
+    <div class="packet-diagram">
+      <div class="diagram-title">🔍 كيف UDP يحدد الحالة؟</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div style="background:#0d1a00;border:1px solid #9fef00;border-radius:8px;padding:12px;">
+          <div style="color:#9fef00;font-weight:700;margin-bottom:6px;">open</div>
+          <div style="color:#8b949e;font-size:12px;">الهوست رد بـ UDP response<br><br>مثال: port 137 (NetBIOS) رد على probe</div>
+        </div>
+        <div style="background:#1a0000;border:1px solid #f85149;border-radius:8px;padding:12px;">
+          <div style="color:#f85149;font-weight:700;margin-bottom:6px;">closed</div>
+          <div style="color:#8b949e;font-size:12px;">ICMP error type=3, code=3<br>"Port Unreachable"<br><br>يعني ما في سيرفيس على البورت</div>
+        </div>
+        <div style="background:#110022;border:1px solid #bc8cff;border-radius:8px;padding:12px;">
+          <div style="color:#bc8cff;font-weight:700;margin-bottom:6px;">open|filtered</div>
+          <div style="color:#8b949e;font-size:12px;">ما في رد خالص<br><br>Nmap ما يعرف: شغال وصامت؟ أو فايروول؟</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block"><span class="comment"># UDP scan</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-sU</span>
+
+<span class="comment"># مع --reason لتشوف سبب الحالة</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-sU -Pn -n --disable-arp-ping --packet-trace -p 137 --reason</span>
+
+<span class="comment"># تأكيد UDP open مثال (رد)</span>
+SENT UDP 10.10.14.2:55478 > 10.129.2.28:137
+RCVD UDP 10.129.2.28:137 > 10.10.14.2:55478   <span style="color:#9fef00;">← رد = open ✓</span>
+
+<span class="comment"># تأكيد UDP closed (ICMP)</span>
+SENT UDP 10.10.14.2:63825 > 10.129.2.28:100
+RCVD ICMP [Port unreachable type=3/code=3]      <span style="color:#f85149;">← closed ✗</span>
+
+<span class="comment"># تأكيد UDP open|filtered (صمت)</span>
+SENT UDP 10.10.14.2:52341 > 10.129.2.28:138
+SENT UDP 10.10.14.2:52342 > 10.129.2.28:138    <span style="color:#bc8cff;">← بعث مرتين وما رد = open|filtered</span></div>
+
+    <div class="info-box tip">
+      <div class="info-box-title">💡 نصيحة pentest</div>
+      UDP ports مهملة كثير في الحماية. DNS (53), SNMP (161/162), TFTP (69), DHCP (67/68) — هاي ممرات شهيرة للاستغلال لأن كثير من المسؤولين بيركزوا على TCP بس!
+    </div>
+  </div>
+
+  <!-- TAB 4: FLAGS -->
+  <div class="flat-section" id="tab-flags">
+    <div class="section-title">TCP Flags — أعلام TCP</div>
+    <div class="section-desc">كل باكيت TCP يحمل flags في header بتحدد الغرض من الباكيت. فهمها ضروري لفهم كيف يشتغل Nmap وكيف تقرأ الـ packet traces.</div>
+
+    <table class="flags-table">
+      <tr><th>الـ Flag</th><th>الاسم الكامل</th><th>الاستخدام</th><th>في Nmap</th></tr>
+      <tr>
+        <td><span class="flag-name">SYN (S)</span></td>
+        <td><span class="flag-full">Synchronize</span></td>
+        <td style="color:#8b949e;">بدء اتصال TCP جديد</td>
+        <td style="color:#9fef00;font-size:12px;">-sS يبعث SYN فقط</td>
+      </tr>
+      <tr>
+        <td><span class="flag-name">ACK (A)</span></td>
+        <td><span class="flag-full">Acknowledge</span></td>
+        <td style="color:#8b949e;">تأكيد استقبال باكيت</td>
+        <td style="color:#58a6ff;font-size:12px;">-sA يبعث ACK فقط</td>
+      </tr>
+      <tr>
+        <td><span class="flag-name">RST (R)</span></td>
+        <td><span class="flag-full">Reset</span></td>
+        <td style="color:#8b949e;">إنهاء اتصال فجأة / رفض</td>
+        <td style="color:#f85149;font-size:12px;">رد الهوست على بورت مغلق</td>
+      </tr>
+      <tr>
+        <td><span class="flag-name">FIN (F)</span></td>
+        <td><span class="flag-full">Finish</span></td>
+        <td style="color:#8b949e;">إنهاء اتصال بشكل نظيف</td>
+        <td style="color:#d29922;font-size:12px;">-sF يبعث FIN</td>
+      </tr>
+      <tr>
+        <td><span class="flag-name">PSH (P)</span></td>
+        <td><span class="flag-full">Push</span></td>
+        <td style="color:#8b949e;">إرسال البيانات فوراً</td>
+        <td style="color:#8b949e;font-size:12px;">نادر في scanning</td>
+      </tr>
+      <tr>
+        <td><span class="flag-name">URG (U)</span></td>
+        <td><span class="flag-full">Urgent</span></td>
+        <td style="color:#8b949e;">بيانات عاجلة تُعالَج أولاً</td>
+        <td style="color:#8b949e;font-size:12px;">نادر</td>
+      </tr>
+      <tr>
+        <td><span class="flag-name">SA</span></td>
+        <td><span class="flag-full">SYN+ACK</span></td>
+        <td style="color:#8b949e;">رد الهوست على SYN</td>
+        <td style="color:#9fef00;font-size:12px;">يعني البورت open</td>
+      </tr>
+      <tr>
+        <td><span class="flag-name">RA</span></td>
+        <td><span class="flag-full">RST+ACK</span></td>
+        <td style="color:#8b949e;">رفض الاتصال</td>
+        <td style="color:#f85149;font-size:12px;">يعني البورت closed</td>
+      </tr>
+    </table>
+
+    <div class="packet-diagram" style="margin-top:16px;">
+      <div class="diagram-title">🧠 قراءة سطر SENT/RCVD في packet-trace</div>
+      <div class="code-block">SENT (0.0429s) TCP 10.10.14.2:63090 > 10.129.2.28:21 S ttl=56 id=57322 seq=1699105818
+  │              │   │              │     │           │  │  │     │     │
+  │              │   │              │     │           │  │  │     │     └─ Sequence number
+  │              │   │              │     │           │  │  │     └─ IP identifier
+  │              │   │              │     │           │  │  └─ Time To Live
+  │              │   │              │     │           │  └─ TCP Flag (S=SYN)
+  │              │   │              │     │           └─ Target port
+  │              │   │              │     └─ Target IP
+  │              │   │              └─ Source port
+  │              │   └─ Our IP
+  │              └─ Protocol
+  └─ Operation type (SENT=أرسلنا, RCVD=استقبلنا)</div>
+    </div>
+  </div>
+
+  <!-- TAB 5: CHEATSHEET -->
+  <div class="flat-section" id="tab-cheatsheet">
+    <div class="section-title">Cheatsheet — كل الأوامر المهمة</div>
+    <div class="section-desc">ملخص كل الأوامر في الدرس + أوامر مهمة ستحتاجها في الـ pentesting.</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#58a6ff;font-weight:700;margin-bottom:8px;">🎯 اكتشاف البورتات</div>
+      <div class="code-block"><span class="flag">-p-</span>              سكان كل 65535 بورت
+<span class="flag">-p 22,80,443</span>    سكان بورتات محددة
+<span class="flag">-p 1-1024</span>       سكان نطاق
+<span class="flag">-F</span>               أسرع 100 بورت
+<span class="flag">--top-ports=100</span>  أكثر 100 بورت استخداماً</div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#9fef00;font-weight:700;margin-bottom:8px;">🔍 أنواع السكان</div>
+      <div class="code-block"><span class="flag">-sS</span>    SYN scan (نص اتصال) — الافتراضي مع root — أخفى
+<span class="flag">-sT</span>    Connect scan (اتصال كامل) — بدون root — أدق
+<span class="flag">-sU</span>    UDP scan — بطيء لكن يكشف سيرفيسز مخفية
+<span class="flag">-sA</span>    ACK scan — لرسم خريطة قواعد الفايروول
+<span class="flag">-sV</span>    Version scan — يكتشف إصدار السيرفيس</div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#d29922;font-weight:700;margin-bottom:8px;">🔧 خيارات مهمة</div>
+      <div class="code-block"><span class="flag">-Pn</span>               لا تعمل ping — تعامل مع الهوست كأنه شغال
+<span class="flag">-n</span>                لا تحل DNS — أسرع وأخفى
+<span class="flag">--disable-arp-ping</span> لا تستخدم ARP
+<span class="flag">--packet-trace</span>    شوف كل باكيت بيتبعث ويتستقبل
+<span class="flag">--reason</span>          شوف سبب الحالة
+<span class="flag">--max-retries=1</span>   قلل retries للسرعة</div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#bc8cff;font-weight:700;margin-bottom:8px;">💾 حفظ النتائج</div>
+      <div class="code-block"><span class="flag">-oN scan.txt</span>    حفظ نص عادي
+<span class="flag">-oX scan.xml</span>    حفظ XML (للأدوات)
+<span class="flag">-oG scan.gnmap</span>  حفظ grepable
+<span class="flag">-oA scan</span>        حفظ كل الأنواع معاً</div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#f85149;font-weight:700;margin-bottom:8px;">⚡ أوامر جاهزة للـ Pentest</div>
+      <div class="code-block"><span class="comment"># اكتشاف سريع أول ما تدخل</span>
+<span class="cmd">sudo nmap</span> -sS -Pn -n --disable-arp-ping <span class="flag">-p-</span> --min-rate 5000 -oA full_scan TARGET
+
+<span class="comment"># سكان دقيق مع version detection</span>
+<span class="cmd">sudo nmap</span> -sV -sC -Pn -n <span class="flag">-p 22,80,443,445</span> --packet-trace TARGET
+
+<span class="comment"># UDP للسيرفيسز المهمة</span>
+<span class="cmd">sudo nmap</span> -sU -Pn -n <span class="flag">-p 53,161,162,69,67</span> --reason TARGET
+
+<span class="comment"># فحص الفايروول</span>
+<span class="cmd">sudo nmap</span> -sA -Pn -n <span class="flag">-p-</span> TARGET</div>
+    </div>
+
+    <div class="info-box danger">
+      <div class="info-box-title">🚨 تحذير مهم</div>
+      لا تستخدم هالأوامر إلا على أجهزة عندك إذن صريح بتستها! في الـ HTB والـ CTFs يكون عندك إذن. في الواقع بدونه = جريمة في أغلب الدول.
+    </div>
+  </div>
+
 </div>
-<h2 style="font-size:16px;color:#00d4ff;border-bottom:1px solid #0e2035;padding-bottom:8px;margin:36px 0 20px">HTB ACADEMY - ددوس الموديول <span style="font-size:12px">Network Enumeration with Nmap</span></h2>
-<table class="topics-table">
-<thead><tr><th>#</mѠ��Ѡ�b�fb�b�b��Ѡ��Ѡ�b�f�f#b��Ѡ��Ѡ�b�fb�b�f�Ѡ������ѡ����(�щ����(�����ѐ����ѐ��ѐ�9����=ٕ�٥���ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������ffb�fb�b0�b�b�b�f+f+b�b0���х��ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�!��Ё�͍�ٕ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ��������͸���A��%
-5@��A@�ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�!��Ё����A��ЁM��������ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������؃b�b�b�fb�b��b�fb�f#b�b�b0�f����Ё�Ʌ���ѐ��ѐ��������������ɽ���������������rL�=9�������ѐ�����(�����ѐ����ѐ��ѐ�M�٥���ѡ��I��ձ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ���������8���`�������ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�M��٥����յ�Ʌѥ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ���������X�ٕ�ͥ�����ѕ�ѥ���ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�9����M�ɥ�ѥ����������9M��ѐ��ѐ���屔􉍽�������љ�홽�еͥ������������͍ɥ�Ё��ѕ��ɥ���ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�A�ə�ɵ�����ѐ��ѐ���屔􉍽�������љ�홽�еͥ��������P��ԁIQP�������Ʌє������ɕ�ɥ���ѐ��ѐ��������������ɽ���������������rL�=9�������ѐ�����(�����ѐ����ѐ��ѐ��ɕ݅�����%L�%AL�مͥ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ�����������́ͽ�ɍ�����Ё�Ʌ����хѥ���ѐ��ѐ��������������ɽ���������������rL�=9�������ѐ�����(�����ѐ����ѐ��ѐ��ɕ݅���مͥ���5���մ�1���ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������b�b�b�f+f�b�fff(�fb�f#b�b��ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ��ɕ݅���مͥ���!�ɐ�1���ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������b�b�b�f+f�b�fff+b��fb�fb��ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�=L��ѕ�ѥ���ѐ��ѐ���屔􉍽�������љ�홽�еͥ��������<�=L��������ɥ�ѥ���QQ0�ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�����ѐ����ѐ��ѐ�M����́�͕�͵����ѐ��ѐ���屔􉍽�������љ�홽�еͥ�������b�b�f+f+f�b�b�ff�fff�b�fff#b�f+f#f�ѐ��ѐ��������������ɽ�����������Ј��Z܁9aP�������ѐ�����(�щ����(�х����(�ȁ��屔􉙽�еͥ������퍽�����噘��퉽ɑ�ȵ���ѽ������ͽ�����������������������ѽ��������ɝ���������������������͡��Ѐ��b�ff�b�fb�f#b�fb����(�؁�����􉍵�����������!��Ё�͍�ٕ��)�Ց��������͸�������ȸ����(��A��ЁM�������)�Ց���������L�����������ȸ��)�Ց���������Ԁ��������ȸ��(��M��٥�����Y��ͥ��)�Ց���������X����������ȸ��(��A�ə�ɵ����)�Ց��������PЀ������Ʌє����������������ȸ��(��مͥ��)�Ց���������I9��Ԁ������ȸ��)�Ց�����������̀������ȸ��(��M�ٔ)�Ց����������͍��}ɕ�ձ�̀������ȸ��(��!Q�]�ɭ����)�Ց���������L��A���������������Ʌє�������PЀ����ձ�}э��QIP)�Ց���������X�����A��������A=IQL���ɕ�ͽ��QIP)�Ց���������T��A���������̰��İ��Ȱ���܁QIP(𽑥��(���ȁ��屔􉙽�еͥ������퍽���荙�و��퉽ɑ�ȵ���ѽ������ͽ�����������������������ѽ��������ɝ�����������������ffb�b�f#b̃b�ارية</h2>
-<div class="cards-gri">
-<div class="res-card" style="border-color:rgba(0,212,255,0.3)">
-<div style="font-size:9px;letter-spacing:2px;color:#00d4ff">▸ OFFICIAL DOCS</div>
-<div style="font-family:'IBM Plex Mono';font-size:15px;font-weight:700;color:#e8f4ff">Nmap Official Documentation</div>
-<div style="font-size:13px;opacity:0.8">الوثائق الرسentation لـ Nmap فى the official authors.</div>
-<a href="https://nmap.org/book/man.html" target="_blank" style="color:#00d4ff;text-decoration:none">↗ nmap.org/book/man.html</a>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleCard(card) {
+  card.classList.toggle('expanded');
+  const hint = card.querySelector('.expand-hint');
+  if (card.classList.contains('expanded')) {
+    hint.textContent = 'اضغط للطي ▲';
+  } else {
+    hint.textContent = 'اضغط للمزيد ▼';
+  }
+}
+</script>
+
+
+<div class="chapter-divider" id="chapter-perf">
+  <div class="chapter-num">⚡</div>
+  <div class="chapter-title" style="color:#ffa657">Nmap Performance</div>
+  <div class="chapter-line"></div>
 </div>
-<div class="res-card" style="border-color:rgba(255,107,53,0.3)">
-<div style="font-size:9px;letter-spacing:2px;color:#ff6b35">▸ HTB ACADEMY</div>
-<div style="font-family:'IBM Plex Mono';font-size:15px;font-weight:700;color:#e8f4ff">HTB AX�Y[^H8�%�X\[�[O�]���]��[OH��۝\�^�N�L���X�]N����)�a6avb6+�b�b6a6)�a6`�)�ava6.va6bH�X�Y[^HHL��X�[ۋ��]���H�Y�H�΋��X�Y[^K�X��X�����K�[�[K�]Z[��NH�\��]H�؛[�Ȉ�[OH���܎�ٙ����N�^YX�ܘ][ێ��ۙH������X�Y[^O�O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ
-M��MK���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎���Y��M������H�ԒT��]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N������X\�ܚ\]X�\�O�]���]��[OH��۝\�^�N�L���X�]N����`�)�.v+�*H6a6`�a��H�ܚ\ˏ�]���H�Y�H�΋�ۛX\�ܙ�ۜ�Y��Ȉ\��]H�؛[�Ȉ�[OH���܎���Y��M�^YX�ܘ][ێ��ۙH������X\�ܙ�ۜ�Y���O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJM�
-K�
-���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎��N
-MY�ȏ����PU�QU�]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N������X\�X]�Y]H�][ۖ�]���]��[OH��۝\�^�N�L���X�]N����ava6.6-H6-6)�ava6a6`�a6)�a6(�b6)�av,H�X\��]���H�Y�H�΋����˜�][۞��]ۛX\X�X]\�Y]Ȉ\��]H�؛[�Ȉ�[OH���܎��N
-MY���^YX�ܘ][ێ��ۙH������][ۖ�X]�Y]�O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ�LKNLK͋��H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎�٘���������QS�]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N������H�X�\�]HH�X\]ܚX[�]���H�Y�H�΋����˞[�]X�K���K��]�ݏM
-К�\��H�\��]H�؛[�Ȉ�[OH���܎�٘�����^YX�ܘ][ێ��ۙH�����[�UX�O�O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ�L��MK��H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎��
-������UU�PUSӏ�]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N�����]]ԙX�ۏ�]���]��[OH��۝\�^�N�L���X�]N����(�+�)�.�6*�*�-6.�d6a�X\6b6.v-6,v)�*�6`vb����6b���]���H�Y�H�΋���]X����K�X�ܚ]\��]]ԙX�ۈ�\��]H�؛[�Ȉ�[OH���܎��
-���^YX�ܘ][ێ��ۙH������]X��O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ�MKL
-�
-L���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎�ٙ����H�����T���S��T��]����]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N�����X\���[��]���H�Y�H�΋���]X����Kܛؙ\�]�YܘZ[K�X\���[��\��]H�؛[�Ȉ�[OH���܎�ٙ����N�^YX�ܘ][ێ��ۙH������]X��O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ
-M��MK���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎���Y��M����P���]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N�����X��H���]���]��[OH��۝\�^�N�L���X�]N����(�*6`v-�a6av`�)�a�6a6*�-�*6b�`��X\��]���H�Y�H�΋����˚X��X�����H�\��]H�؛[�Ȉ�[OH���܎���Y��M�^YX�ܘ][ێ��ۙH�����X��X�����O�O���]���]��\��H��\�X�\���[OH��ܙ\�X��܎��ؘJ�MKL
-�
-L���H���]��[OH��۝\�^�N�\�]\�\�X�[�Ό����܎�ٙ����H�����Q�S��T��]���]��[OH��۝Y�[Z[N��P�H^[ۛ��ٛ۝\�^�N�M\ٛ۝]�ZY������܎��N������RX��YH8�%�X\���O�]���H�Y�H�΋���ZX��YK���Kܛ��Kٝ\�\��X\�\��]H�؛[�Ȉ�[OH���܎�ٙ����N�^YX�ܘ][ێ��ۙH������RX��YO�O���]����]���]��\��H����\����]��[OH��۝\�^�N�L���܎���ML
-��]\�\�X�[�Ό����PT�T��T��T�8�%T�RS��SRSPS�8��S�T���QPT
-vB$�4��[������$̌����[���]����]����]���؛�O���[�
+
+<h2 class="sr-only">شرح شامل لدرس Performance في موديول Nmap من </h2>
+<div class="container">
+
+  <div style="margin-bottom:20px;">
+    <div style="color:#9fef00;font-size:11px;font-weight:700;letter-spacing:2px;margin-bottom:4px;"></div>
+    <div style="font-size:22px;font-weight:700;color:#e6edf3;">Nmap Performance</div>
+    <div style="color:#8b949e;font-size:13px;margin-top:4px;">كيف تتحكم بسرعة ودقة السكان — تفصيل كامل</div>
+  </div>
+
+  
+
+  <!-- OVERVIEW -->
+  <div class="flat-section" id="tab-overview">
+    <div class="section-title">ليش Performance مهمة؟</div>
+    <div class="section-desc">
+      لما تعمل nmap scan، في ترادوف دايم بين السرعة والدقة والـ stealth. كل مشروع pentest إله احتياجاته: أحياناً بدك تنتهي بسرعة، أحياناً ما تكشف حالك، وأحياناً الشبكة بطيئة وبدك Nmap يتكيف.
+    </div>
+
+    <div class="info-box warn">
+      <div class="info-box-title">⚠️ الـ Default مش دايماً الأفضل</div>
+      الإعدادات الافتراضية لـ Nmap معقولة، لكن في بيئات الـ pentesting الحقيقية أو الـ CTF محتاج تعدّل حسب الموقف. سكان كل البورتات (-p-) بالإعدادات الافتراضية ممكن ياخد ساعة!
+    </div>
+
+    <div style="margin:16px 0;">
+      <div style="font-size:15px;font-weight:700;color:#e6edf3;margin-bottom:12px;">المعاملات الـ3 الرئيسية للـ Performance:</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div style="background:#00103a;border:1px solid #58a6ff;border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:6px;">⏰</div>
+          <div style="color:#58a6ff;font-weight:700;font-size:14px;">RTT Timeout</div>
+          <div style="color:#8b949e;font-size:12px;margin-top:4px;">كم وقت ينتظر Nmap رد على كل باكيت قبل ما يعتبره timeout</div>
+        </div>
+        <div style="background:#1a1200;border:1px solid #d29922;border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:6px;">🔁</div>
+          <div style="color:#d29922;font-weight:700;font-size:14px;">Max Retries</div>
+          <div style="color:#8b949e;font-size:12px;margin-top:4px;">كم مرة Nmap يعيد إرسال الباكيت لنفس البورت لو ما رد</div>
+        </div>
+        <div style="background:#0d1a00;border:1px solid #9fef00;border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:6px;">🚀</div>
+          <div style="color:#9fef00;font-weight:700;font-size:14px;">Rate</div>
+          <div style="color:#8b949e;font-size:12px;margin-top:4px;">كم باكيت في الثانية يبعث Nmap — يتحكم بسرعة السكان كلها</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="meter-section">
+      <div class="meter-title" style="color:#e6edf3;">⚖️ الترادوف الأساسي</div>
+      <div class="tl-row">
+        <div class="tl-label">سرعة السكان</div>
+        <div class="tl-track"><div class="tl-fill" style="width:20%;background:#f85149;color:#fff;">بطيء</div></div>
+        <div class="tl-time"></div>
+        <div class="tl-track"><div class="tl-fill" style="width:90%;background:#9fef00;color:#0d1117;">سريع جداً</div></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">دقة النتائج</div>
+        <div class="tl-track"><div class="tl-fill" style="width:95%;background:#9fef00;color:#0d1117;">دقة عالية</div></div>
+        <div class="tl-time"></div>
+        <div class="tl-track"><div class="tl-fill" style="width:50%;background:#d29922;color:#0d1117;">ممكن فوّت بورتات</div></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">Stealth (الخفاء)</div>
+        <div class="tl-track"><div class="tl-fill" style="width:90%;background:#58a6ff;color:#0d1117;">أخفى — صعب يكتشفك IDS</div></div>
+        <div class="tl-time"></div>
+        <div class="tl-track"><div class="tl-fill" style="width:15%;background:#f85149;color:#fff;">واضح</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#3b4754;margin-top:8px;">
+        <span>← إعدادات بطيئة (-T0, --min-rate صغير)</span>
+        <span>إعدادات سريعة (-T5, --min-rate كبير) →</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TIMING TEMPLATES -->
+  <div class="flat-section" id="tab-timing">
+    <div class="section-title">Timing Templates — القوالب الزمنية</div>
+    <div class="section-desc">
+      Nmap عنده 6 قوالب جاهزة تتحكم بكل شي دفعة واحدة: الـ RTT، الـ retries، الـ delays بين البورتات، وكثير غيره. كلهم بيُستخدموا بـ <span style="font-family:monospace;color:#58a6ff;">-T</span> متبوعاً برقم أو اسم.
+    </div>
+
+    <div class="timing-grid">
+      <div class="t-card t0">
+        <div class="t-num">-T0</div>
+        <div class="t-name">Paranoid</div>
+        <div class="t-use">IDS evasion متقدم</div>
+        <div class="t-speed"><div class="speed-bar-bg"><div class="speed-bar" style="width:5%;background:#58a6ff;"></div></div></div>
+      </div>
+      <div class="t-card t1">
+        <div class="t-num">-T1</div>
+        <div class="t-name">Sneaky</div>
+        <div class="t-use">IDS evasion</div>
+        <div class="t-speed"><div class="speed-bar-bg"><div class="speed-bar" style="width:15%;background:#bc8cff;"></div></div></div>
+      </div>
+      <div class="t-card t2">
+        <div class="t-num">-T2</div>
+        <div class="t-name">Polite</div>
+        <div class="t-use">شبكات بطيئة</div>
+        <div class="t-speed"><div class="speed-bar-bg"><div class="speed-bar" style="width:30%;background:#9fef00;"></div></div></div>
+      </div>
+      <div class="t-card t3">
+        <div class="t-num">-T3</div>
+        <div class="t-name">Normal ★</div>
+        <div class="t-use">الافتراضي</div>
+        <div class="t-speed"><div class="speed-bar-bg"><div class="speed-bar" style="width:55%;background:#d29922;"></div></div></div>
+      </div>
+      <div class="t-card t4">
+        <div class="t-num">-T4</div>
+        <div class="t-name">Aggressive</div>
+        <div class="t-use">شبكات سريعة</div>
+        <div class="t-speed"><div class="speed-bar-bg"><div class="speed-bar" style="width:80%;background:#ff7b72;"></div></div></div>
+      </div>
+      <div class="t-card t5">
+        <div class="t-num">-T5</div>
+        <div class="t-name">Insane</div>
+        <div class="t-use">سرعة قصوى</div>
+        <div class="t-speed"><div class="speed-bar-bg"><div class="speed-bar" style="width:100%;background:#f85149;"></div></div></div>
+      </div>
+    </div>
+
+    <div style="margin:16px 0;">
+      <table class="opt-table">
+        <tr>
+          <th>القالب</th>
+          <th>الاسم</th>
+          <th>متى تستخدمه</th>
+          <th>التأثير على الوقت</th>
+        </tr>
+        <tr>
+          <td><span class="opt-name" style="color:#58a6ff;">-T0 / paranoid</span></td>
+          <td><span class="opt-desc">بارانويد</span></td>
+          <td><span class="opt-desc">تتهرب من IDS متقدم — ينتظر 5 دقائق بين كل بورت</span></td>
+          <td><span style="color:#f85149;font-size:12px;">ساعات أو أيام</span></td>
+        </tr>
+        <tr>
+          <td><span class="opt-name" style="color:#bc8cff;">-T1 / sneaky</span></td>
+          <td><span class="opt-desc">متسلل</span></td>
+          <td><span class="opt-desc">تتهرب من IDS — ينتظر 15 ثانية بين كل بورت</span></td>
+          <td><span style="color:#f85149;font-size:12px;">ساعات</span></td>
+        </tr>
+        <tr>
+          <td><span class="opt-name" style="color:#9fef00;">-T2 / polite</span></td>
+          <td><span class="opt-desc">مؤدب</span></td>
+          <td><span class="opt-desc">ما تحمّل الشبكة — 0.4 ثانية بين كل بورت</span></td>
+          <td><span style="color:#d29922;font-size:12px;">دقائق طويلة</span></td>
+        </tr>
+        <tr>
+          <td><span class="opt-name" style="color:#d29922;">-T3 / normal</span></td>
+          <td><span class="opt-desc">عادي ★ افتراضي</span></td>
+          <td><span class="opt-desc">الاستخدام العادي — توازن بين السرعة والدقة</span></td>
+          <td><span style="color:#9fef00;font-size:12px;">متوازن</span></td>
+        </tr>
+        <tr>
+          <td><span class="opt-name" style="color:#ff7b72;">-T4 / aggressive</span></td>
+          <td><span class="opt-desc">عدواني</span></td>
+          <td><span class="opt-desc">شبكات سريعة موثوقة — الأشهر في CTFs والـ labs</span></td>
+          <td><span style="color:#9fef00;font-size:12px;">سريع</span></td>
+        </tr>
+        <tr>
+          <td><span class="opt-name" style="color:#f85149;">-T5 / insane</span></td>
+          <td><span class="opt-desc">مجنون</span></td>
+          <td><span class="opt-desc">شبكة محلية فقط — ممكن يفوّت بورتات بسبب السرعة</span></td>
+          <td><span style="color:#9fef00;font-size:12px;">سريع جداً</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="info-box tip">
+      <div class="info-box-title">💡 الأكثر استخداماً في الـ CTFs</div>
+      <code style="color:#ff7b72;">-T4</code> هو الأشهر — سريع كفاية ودقيق كفاية على شبكات الـ labs. ما تستخدم T5 إلا لو الشبكة محلية عندك مباشرة.
+    </div>
+
+    <div class="info-box danger">
+      <div class="info-box-title">⚠️ -T0 و -T1 في الواقع</div>
+      نادراً ما تحتاجهم في الـ CTF. في الـ real world pentest ممكن تستخدمهم لو الـ IDS حساس جداً — لكن بعضهم الأحدث يكتشف أنماط السكان البطيئة أيضاً.
+    </div>
+  </div>
+
+  <!-- RTT -->
+  <div class="flat-section" id="tab-rtt">
+    <div class="section-title">RTT Timeout — وقت انتظار الرد</div>
+    <div class="section-desc">
+      RTT = Round Trip Time = الوقت اللي ياخده الباكيت ليروح للهدف ويرجع. Nmap يحسب هاد الوقت تلقائياً ويعدّل عليه. لكن تقدر تتحكم فيه يدوياً لتسرّع أو تدقّق السكان.
+    </div>
+
+    <div class="rtt-visual">
+      <div class="rtt-title">📡 كيف يشتغل الـ RTT؟</div>
+      <div style="font-size:12px;color:#8b949e;margin-bottom:12px;">
+        Nmap يقيس زمن الرد من أول باكيتات يبعثها، ثم يعدّل الـ timeout تلقائياً. لو الشبكة بطيئة، بيزيد الـ timeout. لو سريعة، بيقلله.
+      </div>
+
+      <div style="background:#0d1117;border-radius:8px;padding:12px;margin:10px 0;">
+        <div style="font-size:12px;color:#58a6ff;font-weight:700;margin-bottom:8px;">مثال: كيف Nmap يحسب RTT</div>
+        <div class="code-block" style="margin:0;">SENT (0.0429s) TCP → 10.129.2.28:21
+RCVD (0.0573s) TCP ← 10.129.2.28:21
+<span style="color:#9fef00;">RTT = 0.0573 - 0.0429 = 0.0144s = ~14ms</span>
+Nmap يستخدم هاد الرقم كـ baseline لحساب الـ timeout</div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div class="rtt-row">
+          <div class="rtt-label">initial-rtt-timeout</div>
+          <div class="rtt-bar-bg">
+            <div class="rtt-bar" style="width:15%;background:#58a6ff;color:#fff;">50ms</div>
+          </div>
+          <div class="rtt-val" style="color:#58a6ff;">50ms</div>
+        </div>
+        <div style="font-size:11px;color:#3b4754;margin-bottom:10px;text-align:right;">نقطة البداية — Nmap يبدأ من هون ويعدّل</div>
+
+        <div class="rtt-row">
+          <div class="rtt-label">max-rtt-timeout</div>
+          <div class="rtt-bar-bg">
+            <div class="rtt-bar" style="width:30%;background:#d29922;color:#0d1117;">100ms</div>
+          </div>
+          <div class="rtt-val" style="color:#d29922;">100ms</div>
+        </div>
+        <div style="font-size:11px;color:#3b4754;margin-bottom:10px;text-align:right;">الحد الأقصى — لو الرد جاء بعده اعتبره timeout</div>
+
+        <div class="rtt-row">
+          <div class="rtt-label">Default max-rtt</div>
+          <div class="rtt-bar-bg">
+            <div class="rtt-bar" style="width:100%;background:#21262d;color:#8b949e;">10,000ms = 10 ثواني</div>
+          </div>
+          <div class="rtt-val" style="color:#8b949e;">10s</div>
+        </div>
+        <div style="font-size:11px;color:#3b4754;margin-bottom:10px;text-align:right;">الافتراضي — طويل جداً على شبكة سريعة</div>
+      </div>
+    </div>
+
+    <table class="opt-table">
+      <tr><th>الخيار</th><th>القيمة الافتراضية</th><th>الاستخدام</th></tr>
+      <tr>
+        <td><span class="opt-name">--initial-rtt-timeout</span></td>
+        <td><span style="color:#d29922;font-family:monospace;">مبني على الشبكة</span></td>
+        <td><span class="opt-desc">حدد نقطة بداية Nmap لحساب الـ RTT. مثال: <code style="color:#58a6ff;">--initial-rtt-timeout 50ms</code></span></td>
+      </tr>
+      <tr>
+        <td><span class="opt-name">--max-rtt-timeout</span></td>
+        <td><span style="color:#d29922;font-family:monospace;">10000ms</span></td>
+        <td><span class="opt-desc">الحد الأقصى للانتظار. قلّله على شبكات سريعة لتسريع السكان. مثال: <code style="color:#58a6ff;">--max-rtt-timeout 100ms</code></span></td>
+      </tr>
+      <tr>
+        <td><span class="opt-name">--min-rtt-timeout</span></td>
+        <td><span style="color:#d29922;font-family:monospace;">100ms</span></td>
+        <td><span class="opt-desc">الحد الأدنى — Nmap لن يقل عنه حتى لو الشبكة سريعة</span></td>
+      </tr>
+    </table>
+
+    <div class="info-box warn">
+      <div class="info-box-title">⚠️ خطر تقليل RTT كثيراً</div>
+      لو حطيت <code>--max-rtt-timeout</code> صغير جداً على شبكة فيها latency، Nmap راح يعتبر كثير من البورتات المفتوحة كـ "timeout" ويظهرها غلط. النتيجة: false negatives — بورتات مفتوحة مش ظاهرة!
+    </div>
+  </div>
+
+  <!-- RATES & RETRIES -->
+  <div class="flat-section" id="tab-rate">
+    <div class="section-title">Rates & Retries — سرعة الإرسال والإعادة</div>
+    <div class="section-desc">
+      أقوى طريقة للتحكم المباشر بسرعة Nmap: كم باكيت في الثانية يبعث، وكم مرة يعيد المحاولة على البورتات اللي ما ردّت.
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;">
+      <div style="background:#0d1a00;border:1px solid #9fef00;border-radius:10px;padding:16px;">
+        <div style="color:#9fef00;font-size:15px;font-weight:700;margin-bottom:10px;">🚀 --min-rate</div>
+        <div style="color:#8b949e;font-size:13px;margin-bottom:10px;">أقل عدد باكيتات في الثانية — Nmap لن يبعث أقل من هاد الرقم.</div>
+        <div class="code-block" style="margin:0;font-size:11px;">--min-rate 300   <span class="comment"># 300 pkt/s</span>
+--min-rate 1000  <span class="comment"># 1000 pkt/s (سريع)</span>
+--min-rate 5000  <span class="comment"># 5000 pkt/s (للـ labs)</span></div>
+        <div style="margin-top:10px;font-size:12px;color:#9fef00;">⚡ تأثير مباشر على وقت السكان</div>
+        <div style="font-size:11px;color:#3b4754;">سكان 65535 بورت:</div>
+        <div style="font-size:11px;color:#8b949e;">300 pkt/s → ~218 ثانية (~3.6 دقيقة)</div>
+        <div style="font-size:11px;color:#8b949e;">5000 pkt/s → ~13 ثانية ⚡</div>
+      </div>
+
+      <div style="background:#1a0000;border:1px solid #f85149;border-radius:10px;padding:16px;">
+        <div style="color:#f85149;font-size:15px;font-weight:700;margin-bottom:10px;">🔁 --max-retries</div>
+        <div style="color:#8b949e;font-size:13px;margin-bottom:10px;">كم مرة Nmap يعيد إرسال الباكيت لبورت ما ردّ عليه.</div>
+        <div class="code-block" style="margin:0;font-size:11px;">--max-retries 10  <span class="comment"># افتراضي</span>
+--max-retries 3   <span class="comment"># أسرع، أقل دقة</span>
+--max-retries 0   <span class="comment"># سريع جداً بس خطر</span></div>
+        <div style="margin-top:10px;font-size:12px;color:#f85149;">⚠️ تقليله يسرّع لكن يزيد false negatives</div>
+        <div style="font-size:11px;color:#3b4754;">مع filtered ports:</div>
+        <div style="font-size:11px;color:#8b949e;">retries=10, timeout=100ms → 1 ثانية لكل بورت filtered</div>
+        <div style="font-size:11px;color:#8b949e;">retries=1, timeout=100ms → 0.2 ثانية لكل بورت filtered</div>
+      </div>
+    </div>
+
+    <div class="rtt-visual">
+      <div class="rtt-title">📊 مقارنة أوقات السكان: نفس الهدف، إعدادات مختلفة</div>
+
+      <div class="tl-row">
+        <div class="tl-label">الافتراضي (-T3)</div>
+        <div class="tl-track"><div class="tl-fill" style="width:100%;background:#21262d;color:#8b949e;">~500 ثانية</div></div>
+        <div class="tl-time">~8 دقائق</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">-T4</div>
+        <div class="tl-track"><div class="tl-fill" style="width:60%;background:#d29922;color:#0d1117;">~150 ثانية</div></div>
+        <div class="tl-time">~2.5 دقيقة</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">--min-rate 1000</div>
+        <div class="tl-track"><div class="tl-fill" style="width:30%;background:#ff7b72;color:#fff;">~65 ثانية</div></div>
+        <div class="tl-time">~1 دقيقة</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-label">--min-rate 5000</div>
+        <div class="tl-track"><div class="tl-fill" style="width:8%;background:#9fef00;color:#0d1117;">13s</div></div>
+        <div class="tl-time">13 ثانية ⚡</div>
+      </div>
+      <div style="font-size:11px;color:#3b4754;margin-top:6px;">* أرقام تقديرية لسكان 65535 بورت TCP على شبكة lab</div>
+    </div>
+
+    <table class="opt-table">
+      <tr><th>الخيار</th><th>الافتراضي</th><th>الشرح</th></tr>
+      <tr>
+        <td><span class="opt-name">--min-rate &lt;num&gt;</span></td>
+        <td><span style="color:#d29922;font-family:monospace;">تلقائي</span></td>
+        <td><span class="opt-desc">أقل معدل إرسال (packets/sec). <span class="opt-note">مثال: 300</span></span></td>
+      </tr>
+      <tr>
+        <td><span class="opt-name">--max-rate &lt;num&gt;</span></td>
+        <td><span style="color:#d29922;font-family:monospace;">تلقائي</span></td>
+        <td><span class="opt-desc">أعلى معدل إرسال — يمنع Nmap من تجاوزه</span></td>
+      </tr>
+      <tr>
+        <td><span class="opt-name">--max-retries &lt;num&gt;</span></td>
+        <td><span style="color:#d29922;font-family:monospace;">10</span></td>
+        <td><span class="opt-desc">عدد مرات إعادة المحاولة. قلّله للسرعة. <span class="opt-note">مثال: 0</span></span></td>
+      </tr>
+      <tr>
+        <td><span class="opt-name">--stats-every=5s</span></td>
+        <td><span style="color:#d29922;font-family:monospace;">—</span></td>
+        <td><span class="opt-desc">اطبع تقدم السكان كل 5 ثواني — مفيد لسكانات الطويلة</span></td>
+      </tr>
+      <tr>
+        <td><span class="opt-name">-v / -vv</span></td>
+        <td><span style="color:#d29922;font-family:monospace;">—</span></td>
+        <td><span class="opt-desc">verbose — اطبع نتائج البورتات لحظة اكتشافها بدون ما تنتظر السكان ينتهي</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- EXAMPLES -->
+  <div class="flat-section" id="tab-examples">
+    <div class="section-title">أمثلة عملية جاهزة للاستخدام</div>
+    <div class="section-desc">أوامر عملية.</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#9fef00;font-weight:700;margin-bottom:8px;">1️⃣ سكان كامل بطيء (الافتراضي)</div>
+      <div class="code-block"><span class="cmd">sudo nmap</span> 10.129.2.0/24 <span class="flag">-p-</span>
+<span class="comment"># بطيء جداً — ممكن ياخد ساعات</span>
+<span class="comment"># الـ max-retries=10, RTT=10s</span></div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#ff7b72;font-weight:700;margin-bottom:8px;">2️⃣ سكان كامل سريع — للـ Labs</div>
+      <div class="code-block"><span class="cmd">sudo nmap</span> 10.129.2.0/24 <span class="flag">-p-</span> \
+  <span class="flag">--min-rate 5000</span> \
+  <span class="flag">--max-retries 3</span> \
+  <span class="flag">--initial-rtt-timeout 50ms</span> \
+  <span class="flag">--max-rtt-timeout 100ms</span> \
+  <span class="flag">-T4</span>
+<span class="comment"># سريع جداً — مناسب لشبكات الـ labs</span></div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#58a6ff;font-weight:700;margin-bottom:8px;">3️⃣ سكان متوازن مع تتبع التقدم</div>
+      <div class="code-block"><span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-p-</span> \
+  <span class="flag">--min-rate 300</span> \
+  <span class="flag">--stats-every=5s</span> \
+  <span class="flag">-v</span>
+<span class="comment"># يطبع تقدم كل 5 ثواني + يظهر البورتات فور اكتشافها</span></div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#d29922;font-weight:700;margin-bottom:8px;">4️⃣ سكان خفي (للـ real pentesting)</div>
+      <div class="code-block"><span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-p-</span> \
+  <span class="flag">-T1</span> \
+  <span class="flag">--max-retries 1</span>
+<span class="comment"># بطيء جداً بس أخفى من IDS</span>
+<span class="comment"># كل بورت بياخد ~15 ثانية</span></div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#9fef00;font-weight:700;margin-bottom:8px;">5️⃣ الكومبو المثالي للـ Labs
+      <div class="code-block"><span class="cmd">sudo nmap</span> -sS -Pn -n <span class="flag">-p-</span> \
+  <span class="flag">--min-rate 5000</span> \
+  <span class="flag">-T4</span> \
+  <span class="flag">-oA full_tcp</span> \
+  10.129.2.28
+
+<span class="comment"># هاد الأمر بيعطيك سكان كامل لكل TCP بورت</span>
+<span class="comment"># في أقل من 30 ثانية</span>
+<span class="comment"># -oA يحفظ النتائج بكل الأنواع تلقائياً</span></div>
+    </div>
+
+    <div class="info-box info">
+      <div class="info-box-title">🎯 الـ Workflow المعتاد</div>
+      <div style="font-size:12px;color:#8b949e;">
+        <strong style="color:#e6edf3;">الخطوة 1:</strong> سكان سريع لكل البورتات <code style="color:#9fef00;">-p- --min-rate 5000</code><br>
+        <strong style="color:#e6edf3;">الخطوة 2:</strong> سكان دقيق على البورتات المكتشفة <code style="color:#9fef00;">-p 22,80,443 -sV -sC</code><br>
+        <strong style="color:#e6edf3;">الخطوة 3:</strong> UDP scan على أهم البورتات <code style="color:#9fef00;">-sU -p 53,161,162</code>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+
+<div class="chapter-divider" id="chapter-evade">
+  <div class="chapter-num">🛡️</div>
+  <div class="chapter-title" style="color:#bc8cff">Firewall &amp; IDS/IPS Evasion</div>
+  <div class="chapter-line"></div>
+</div>
+
+<h2 class="sr-only">شرح شامل لـ Firewall and IDS/IPS Evasion في Nmap من </h2>
+<div class="container">
+
+  <div style="margin-bottom:20px;">
+    <div style="color:#9fef00;font-size:11px;font-weight:700;letter-spacing:2px;margin-bottom:4px;"></div>
+    <div style="font-size:22px;font-weight:700;color:#e6edf3;">Firewall and IDS/IPS Evasion</div>
+    <div style="color:#8b949e;font-size:13px;margin-top:4px;">كيف تتخطى الجدران النارية وأنظمة الكشف — تفصيل كامل</div>
+  </div>
+
+  
+
+  <!-- BASICS -->
+  <div class="flat-section" id="tab-basics">
+    <div class="section-title">Firewall vs IDS vs IPS — شو الفرق؟</div>
+    <div class="section-desc">قبل ما نتعلم كيف نتخطاهم، لازم نفهم كيف يشتغل كل واحد منهم وشو الفرق بينهم.</div>
+
+    <div class="card-grid">
+      <div class="card" style="border-color:#d29922;">
+        <h4 style="color:#d29922;">🧱 Firewall (جدار ناري)</h4>
+        <p>بيفلتر الحركة بناءً على <strong style="color:#e6edf3;">قواعد محددة مسبقاً</strong> — IP، port، protocol. إما يسمح أو يبلوك أو يرفض الباكيت.</p>
+        <div style="margin-top:10px;">
+          <div style="font-size:12px;color:#d29922;font-weight:700;">أنواعه:</div>
+          <div style="font-size:12px;color:#8b949e;">• Packet Filter — يفحص header فقط</div>
+          <div style="font-size:12px;color:#8b949e;">• Stateful — يتابع حالة الاتصال</div>
+          <div style="font-size:12px;color:#8b949e;">• Application Layer (WAF) — يفهم محتوى البروتوكول</div>
+        </div>
+      </div>
+      <div class="card" style="border-color:#f85149;">
+        <h4 style="color:#f85149;">👁️ IDS (Intrusion Detection System)</h4>
+        <p>يراقب الحركة ويكتشف الأنماط المشبوهة ويُنبّه المسؤول. <strong style="color:#e6edf3;">ما يبلوك</strong> — بس يجرس الإنذار.</p>
+        <div style="margin-top:10px;">
+          <div style="font-size:12px;color:#f85149;font-weight:700;">طريقة الكشف:</div>
+          <div style="font-size:12px;color:#8b949e;">• Signature-based — يقارن بأنماط معروفة</div>
+          <div style="font-size:12px;color:#8b949e;">• Anomaly-based — يكتشف السلوك الغير طبيعي</div>
+        </div>
+      </div>
+      <div class="card" style="border-color:#58a6ff;">
+        <h4 style="color:#58a6ff;">🛡️ IPS (Intrusion Prevention System)</h4>
+        <p>مثل IDS لكن <strong style="color:#e6edf3;">يبلوك تلقائياً</strong> لما يكتشف هجوم — بدون تدخل بشري.</p>
+        <div style="margin-top:10px;">
+          <div style="font-size:12px;color:#58a6ff;font-weight:700;">الفرق عن IDS:</div>
+          <div style="font-size:12px;color:#8b949e;">IDS = يشوف ويحكيلك</div>
+          <div style="font-size:12px;color:#8b949e;">IPS = يشوف ويبلوك بنفسه</div>
+        </div>
+      </div>
+      <div class="card" style="border-color:#bc8cff;">
+        <h4 style="color:#bc8cff;">🔀 الفرق العملي للـ Pentester</h4>
+        <p>الـ Firewall بيمنعك من الوصول. الـ IDS/IPS بيكشف إنك تسكن ويُنبّه أو يبلوك.</p>
+        <div style="margin-top:10px;">
+          <div style="font-size:12px;color:#bc8cff;font-weight:700;">هدفك:</div>
+          <div style="font-size:12px;color:#8b949e;">1. تتجاوز الفايروول = تصل للبورتات</div>
+          <div style="font-size:12px;color:#8b949e;">2. تخدع IDS/IPS = ما تكشف نفسك</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Network diagram -->
+    <div class="net-diag">
+      <div class="net-title">🗺️ الشبكة النموذجية — أين تقع كل طبقة حماية</div>
+      <div class="flow-row">
+        <div class="fnode attacker">أنت<br><small>Attacker</small></div>
+        <div class="arrow-h" style="min-width:30px;">
+          <div class="arrow-line-h allowed"></div>
+          <div class="arrow-label-h" style="color:#9fef00;">Packets</div>
+        </div>
+        <div class="fnode internet">الإنترنت</div>
+        <div class="arrow-h" style="min-width:30px;">
+          <div class="arrow-line-h suspicious"></div>
+          <div class="arrow-label-h" style="color:#d29922;">Inspect</div>
+        </div>
+        <div class="fnode firewall">🔥 Firewall</div>
+        <div class="arrow-h" style="min-width:30px;">
+          <div class="arrow-line-h suspicious"></div>
+          <div class="arrow-label-h" style="color:#d29922;">Monitor</div>
+        </div>
+        <div class="fnode ids">👁️ IDS/IPS</div>
+        <div class="arrow-h" style="min-width:30px;">
+          <div class="arrow-line-h allowed"></div>
+          <div class="arrow-label-h" style="color:#9fef00;">Reach</div>
+        </div>
+        <div class="fnode target">🎯 Target</div>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:#8b949e;">
+        الفايروول <strong style="color:#d29922;">يفلتر</strong> الباكيتات. الـ IDS/IPS <strong style="color:#f85149;">يراقب</strong> ما عدا. الهدف: تعدّي الطبقتين.
+      </div>
+    </div>
+
+    <div class="info-box warn">
+      <div class="info-box-title">⚠️ كيف يعرف Nmap إن في فايروول؟</div>
+      لما بورت يظهر <code>filtered</code> = في شي بيبلوك. لما يظهر <code>closed</code> = الرسالة وصلت بدون عائق. الـ filtered هو الإشارة الواضحة لوجود فايروول.
+    </div>
+  </div>
+
+  <!-- DECOYS -->
+  <div class="flat-section" id="tab-decoys">
+    <div class="section-title">Decoys — الطُعم والتمويه</div>
+    <div class="section-desc">أقوى تقنية لإرباك الـ IDS — تبعث السكان وكأنه جاي من عدة IPs في نفس الوقت. المسؤول يشوف كثير من IPs تسكن فما يعرف أيهم أنت!</div>
+
+    <div class="net-diag">
+      <div class="net-title">👥 كيف تشتغل الـ Decoys؟</div>
+      <div style="margin-bottom:10px;font-size:12px;color:#8b949e;">Nmap يبعث باكيتات بـ IPs مزيفة بالإضافة لـ IP الحقيقي. الهدف يستقبل طلبات من كل الـ IPs ويرد عليها — لكن الردود على الـ IPs المزيفة بتروح ع الفاضي.</div>
+
+      <div style="display:flex;flex-direction:column;gap:6px;margin:12px 0;">
+        <div class="flow-row">
+          <div class="fnode decoy" style="min-width:90px;">Decoy 1<br><small>1.2.3.4</small></div>
+          <div class="arrow-h"><div class="arrow-line-h" style="background:#bc8cff;"></div><div class="arrow-label-h" style="color:#bc8cff;">SYN (مزيف)</div></div>
+          <div class="fnode ids">IDS</div>
+          <div class="arrow-h"><div class="arrow-line-h" style="background:#bc8cff;"></div></div>
+          <div class="fnode target">🎯 Target</div>
+        </div>
+        <div class="flow-row">
+          <div class="fnode attacker" style="min-width:90px;">أنت ★<br><small>10.10.14.2</small></div>
+          <div class="arrow-h"><div class="arrow-line-h allowed"></div><div class="arrow-label-h" style="color:#9fef00;">SYN (حقيقي)</div></div>
+          <div class="fnode ids">IDS</div>
+          <div class="arrow-h"><div class="arrow-line-h allowed"></div></div>
+          <div class="fnode target">🎯 Target</div>
+        </div>
+        <div class="flow-row">
+          <div class="fnode decoy" style="min-width:90px;">Decoy 2<br><small>5.6.7.8</small></div>
+          <div class="arrow-h"><div class="arrow-line-h" style="background:#bc8cff;"></div><div class="arrow-label-h" style="color:#bc8cff;">SYN (مزيف)</div></div>
+          <div class="fnode ids">IDS</div>
+          <div class="arrow-h"><div class="arrow-line-h" style="background:#bc8cff;"></div></div>
+          <div class="fnode target">🎯 Target</div>
+        </div>
+        <div style="font-size:12px;color:#d29922;margin-top:8px;">↑ IDS يشوف 3 IPs تسكن في نفس الوقت — صعب يحدد المهاجم الحقيقي!</div>
+      </div>
+    </div>
+
+    <div class="code-block"><span class="comment"># Decoys عشوائية — Nmap يختار IPs عشوائية</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-D RND:5</span>
+<span class="comment"># RND:5 = استخدم 5 IPs عشوائية كـ decoys</span>
+
+<span class="comment"># Decoys محددة يدوياً + أنت في المنتصف</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-D 10.10.10.1,10.10.10.2,ME,10.10.10.3</span>
+<span class="comment"># ME = IP الحقيقي بتاعك في المنتصف</span>
+
+<span class="comment"># مع SYN scan + packet trace لترى الفرق</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-D RND:5 -sS --packet-trace -p 80</span></code></div>
+
+    <div class="net-diag" style="margin-top:14px;">
+      <div class="net-title">📦 مثال packet-trace مع Decoys</div>
+      <div class="code-block" style="margin:0;font-size:11px;">SENT TCP <span style="color:#bc8cff;">1.2.3.4</span>:65320 > 10.129.2.28:80 S    <span class="comment">← decoy 1</span>
+SENT TCP <span style="color:#bc8cff;">5.6.7.8</span>:65320 > 10.129.2.28:80 S    <span class="comment">← decoy 2</span>
+SENT TCP <span style="color:#9fef00;">10.10.14.2</span>:65320 > 10.129.2.28:80 S  <span class="comment">← أنت (الحقيقي)</span>
+SENT TCP <span style="color:#bc8cff;">9.8.7.6</span>:65320 > 10.129.2.28:80 S    <span class="comment">← decoy 3</span>
+
+RCVD TCP 10.129.2.28:80 > <span style="color:#9fef00;">10.10.14.2</span>:65320 SA  <span class="comment">← رد عليك فقط (السريع)</span></div>
+    </div>
+
+    <div class="info-box warn">
+      <div class="info-box-title">⚠️ قيود الـ Decoys</div>
+      <div style="font-size:12px;color:#8b949e;">
+        • الـ IPs المزيفة لازم تكون <strong style="color:#e6edf3;">online</strong> — لو الـ decoy IP مش شغال، قد يكشفك<br>
+        • لا تشتغل مع <strong style="color:#e6edf3;">TCP Connect scan</strong> (-sT) بالكامل — بس مع SYN<br>
+        • بعض الـ IDS الحديثة تكتشف نمط الـ decoys
+      </div>
+    </div>
+  </div>
+
+  <!-- SOURCE PORT -->
+  <div class="flat-section" id="tab-srcport">
+    <div class="section-title">Source Port Manipulation — تزوير منفذ المصدر</div>
+    <div class="section-desc">كثير من الفايروولات تثق ببعض البورتات المعروفة (53, 80, 443) وتسمح لحركتها بالمرور. لو غيّرت source port بتاعك لواحد منهم، ممكن تعدّي الفلتر!</div>
+
+    <div class="card-grid">
+      <div class="card" style="border-color:#9fef00;">
+        <h4 style="color:#9fef00;">🔑 المنطق</h4>
+        <p>الفايروول بيشوف: "هاد الباكيت جاي من port 53 (DNS) — يبدو طبيعي" ويسمح له بالمرور حتى لو هو في الحقيقة Nmap scan.</p>
+      </div>
+      <div class="card" style="border-color:#58a6ff;">
+        <h4 style="color:#58a6ff;">🎯 أكثر البورتات فاعلية</h4>
+        <div style="font-size:13px;color:#8b949e;">
+          <strong style="color:#58a6ff;">53</strong> — DNS (الأشهر)<br>
+          <strong style="color:#58a6ff;">80</strong> — HTTP<br>
+          <strong style="color:#58a6ff;">443</strong> — HTTPS<br>
+          <strong style="color:#58a6ff;">67/68</strong> — DHCP
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block"><span class="comment"># تغيير source port لـ 53 (DNS)</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-g 53</span>
+<span class="comment"># أو</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">--source-port 53</span>
+
+<span class="comment"># مثال كامل مع SYN scan</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-sS -g 53</span> -p 50000 --packet-trace -Pn -n
+
+<span class="comment"># مثال كامل مع ncat بعد اكتشاف البورت</span>
+<span class="cmd">ncat</span> -nv <span class="flag">--source-port 53</span> 10.129.2.28 50000
+<span class="comment"># إذا الفايروول بيسمح DNS يجوز يتصل!</span></div>
+
+    <div class="net-diag">
+      <div class="net-title">📦 مثال عملي</div>
+      <div style="font-size:12px;color:#8b949e;margin-bottom:8px;">بورت 50000 كان filtered مع سكان عادي، لكن مع source port 53:</div>
+      <div class="code-block" style="margin:0;font-size:11px;"><span class="comment"># بدون source port manipulation:</span>
+PORT      STATE     SERVICE
+50000/tcp <span class="red">filtered</span>  ibm-db2
+
+<span class="comment"># مع --source-port 53:</span>
+SENT TCP <span style="color:#9fef00;">10.10.14.2:53</span> > 10.129.2.28:50000 S
+RCVD TCP 10.129.2.28:50000 > 10.10.14.2:53 <span style="color:#9fef00;">SA</span>
+PORT      STATE  SERVICE
+50000/tcp <span class="green">open</span>     ibm-db2
+<span class="comment"># البورت مفتوح فعلاً! الفايروول كان يبلوك فقط الـ source ports العادية</span></div>
+    </div>
+
+    <div class="info-box tip">
+      <div class="info-box-title">💡 نصيحة مهمة جداً</div>
+      بعد اكتشاف source port يشتغل، استخدم <code>ncat</code> أو <code>nc</code> بنفس الـ source port للاتصال الفعلي بالسيرفيس — مش بس للسكان!
+    </div>
+  </div>
+
+  <!-- FRAGMENTATION -->
+  <div class="flat-section" id="tab-frag">
+    <div class="section-title">Fragmentation & MTU — تقطيع الباكيتات</div>
+    <div class="section-desc">بدل ما تبعث باكيت SYN كاملة (44 byte مثلاً)، تقدر تكسّرها لقطع صغيرة. بعض الـ IDS ما يعيد تجميع القطع الصغيرة ويفوّت السكان!</div>
+
+    <div class="net-diag">
+      <div class="net-title">🧩 الفكرة البصرية</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin:10px 0;">
+        <div style="background:#0d1a00;border:1px solid #9fef00;border-radius:6px;padding:8px 14px;font-size:12px;color:#9fef00;font-weight:700;">TCP SYN Packet<br><small style="color:#8b949e;">44 bytes كاملة</small></div>
+        <div style="font-size:20px;color:#30363d;padding:0 8px;">→</div>
+        <div style="background:#1a1200;border:1px dashed #d29922;border-radius:6px;padding:8px 10px;font-size:11px;color:#d29922;">Fragment 1<br>8 bytes</div>
+        <div style="font-size:14px;color:#30363d;">+</div>
+        <div style="background:#1a1200;border:1px dashed #d29922;border-radius:6px;padding:8px 10px;font-size:11px;color:#d29922;">Fragment 2<br>8 bytes</div>
+        <div style="font-size:14px;color:#30363d;">+</div>
+        <div style="background:#1a1200;border:1px dashed #d29922;border-radius:6px;padding:8px 10px;font-size:11px;color:#d29922;">Fragment 3<br>8 bytes</div>
+        <div style="font-size:14px;color:#30363d;">...</div>
+      </div>
+      <div style="font-size:12px;color:#8b949e;">IDS قديم يشوف قطع صغيرة ما يعرف إنها SYN scan — يسمحلها تعدّي</div>
+    </div>
+
+    <div class="code-block"><span class="comment"># تجزئة الباكيتات (8 bytes لكل fragment)</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-f</span>
+
+<span class="comment"># تجزئة أكثر (16 bytes)</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-ff</span>
+
+<span class="comment"># تحديد MTU يدوياً (لازم يكون مضاعف 8)</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">--mtu 8</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">--mtu 16</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">--mtu 32</span>
+
+<span class="comment"># إضافة بيانات عشوائية لتضليل IDS</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">--data-length 200</span>
+<span class="comment"># يضيف 200 byte عشوائية للباكيت — يغير signature التعرف</span></div>
+
+    <table class="t">
+      <tr><th>الخيار</th><th>الحجم</th><th>الاستخدام</th></tr>
+      <tr>
+        <td><code style="color:#58a6ff;">-f</code></td>
+        <td style="color:#8b949e;">8 bytes</td>
+        <td style="color:#8b949e;">تجزئة أساسية — يخدع IDS قديم</td>
+      </tr>
+      <tr>
+        <td><code style="color:#58a6ff;">-ff</code></td>
+        <td style="color:#8b949e;">16 bytes</td>
+        <td style="color:#8b949e;">تجزئة أكثر</td>
+      </tr>
+      <tr>
+        <td><code style="color:#58a6ff;">--mtu 8</code></td>
+        <td style="color:#8b949e;">8 bytes</td>
+        <td style="color:#8b949e;">تحكم يدوي — لازم مضاعف 8</td>
+      </tr>
+      <tr>
+        <td><code style="color:#58a6ff;">--data-length 200</code></td>
+        <td style="color:#8b949e;">+200 bytes</td>
+        <td style="color:#8b949e;">يغير حجم الباكيت ليغش signature-based IDS</td>
+      </tr>
+    </table>
+
+    <div class="info-box info">
+      <div class="info-box-title">ℹ️ واقعياً في 2024+</div>
+      <div style="font-size:12px;color:#8b949e;">الـ IDS الحديثة (Snort, Suricata) تعيد تجميع الـ fragments قبل الفحص — فالتجزئة أقل فاعلية. لكن بعض الفايروولات الرخيصة والقديمة لا تزال تُخدع بها.</div>
+    </div>
+  </div>
+
+  <!-- SCAN TYPES -->
+  <div class="flat-section" id="tab-scantypes">
+    <div class="section-title">Scan Types للتخفي</div>
+    <div class="section-desc">بعض أنواع السكان تعتمد على "استغلال ثغرات" في تطبيق TCP للكشف عن البورتات بطريقة غير مباشرة — يصعب على الـ IDS تصنيفها كـ port scan.</div>
+
+    <div style="margin:12px 0;">
+      <div class="scan-row">
+        <div class="scan-name">-sA (ACK)</div>
+        <div class="scan-desc">يبعث ACK فقط — ما يحدد إذا مفتوح أو مغلق، لكن يكشف قواعد الفايروول. لو رد RST = unfiltered. لو ما رد = filtered.</div>
+        <div class="scan-stealth" style="background:#0d1a00;border:1px solid #9fef00;border-radius:0 6px 6px 0;color:#9fef00;">خفي ✓</div>
+      </div>
+      <div class="scan-row">
+        <div class="scan-name">-sW (Window)</div>
+        <div class="scan-desc">مثل ACK scan لكن يفحص TCP Window size في الرد. على بعض الأنظمة يفرق بين open وclosed من خلال الـ window value.</div>
+        <div class="scan-stealth" style="background:#0d1a00;border:1px solid #9fef00;border-radius:0 6px 6px 0;color:#9fef00;">خفي ✓</div>
+      </div>
+      <div class="scan-row">
+        <div class="scan-name">-sN (NULL)</div>
+        <div class="scan-desc">يبعث TCP packet بدون أي flag. RFC يقول: لو مغلق يرد RST، لو مفتوح أو filtered يصمت. يخدع بعض الفايروولات البسيطة.</div>
+        <div class="scan-stealth" style="background:#0d1a00;border:1px solid #9fef00;border-radius:0 6px 6px 0;color:#9fef00;">خفي ✓</div>
+      </div>
+      <div class="scan-row">
+        <div class="scan-name">-sF (FIN)</div>
+        <div class="scan-desc">يبعث FIN flag فقط — كأنك تحاول تغلق اتصال ما بدأ. نفس منطق NULL scan. يتجاوز فلاتر SYN.</div>
+        <div class="scan-stealth" style="background:#0d1a00;border:1px solid #9fef00;border-radius:0 6px 6px 0;color:#9fef00;">خفي ✓</div>
+      </div>
+      <div class="scan-row">
+        <div class="scan-name">-sX (Xmas)</div>
+        <div class="scan-desc">يبعث FIN+PSH+URG — "كل الأعلام ماشية" كأنها شجرة عيد ميلاد. نفس التأثير. الاسم مصدره أن الـ flags "تضيء" كلها.</div>
+        <div class="scan-stealth" style="background:#0d1a00;border:1px solid #9fef00;border-radius:0 6px 6px 0;color:#9fef00;">خفي ✓</div>
+      </div>
+      <div class="scan-row">
+        <div class="scan-name">-sM (Maimon)</div>
+        <div class="scan-desc">يبعث FIN+ACK. سُمي على اسم مكتشفه Uriel Maimon. على BSD systems قديمة يميز المفتوح من المغلق.</div>
+        <div class="scan-stealth" style="background:#1a1200;border:1px solid #d29922;border-radius:0 6px 6px 0;color:#d29922;">نادر</div>
+      </div>
+      <div class="scan-row">
+        <div class="scan-name">-sI (Idle)</div>
+        <div class="scan-desc">IP ID Idle scan — يستخدم جهاز "zombie" وسيط. أنت ما تبعث للهدف مباشرة. الأخفى على الإطلاق لكن الأصعب إعداداً.</div>
+        <div class="scan-stealth" style="background:#0d1a00;border:1px solid #9fef00;border-radius:0 6px 6px 0;color:#9fef00;">أخفى ⭐</div>
+      </div>
+    </div>
+
+    <div class="net-diag">
+      <div class="net-title">💡 NULL/FIN/Xmas — كيف يعملوا</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <div style="font-size:12px;color:#9fef00;font-weight:700;margin-bottom:6px;">بورت مغلق:</div>
+          <div style="font-size:12px;color:#8b949e;">أنت → FIN/NULL/Xmas<br>الهوست ← RST<br><span style="color:#f85149;">= closed</span></div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#9fef00;font-weight:700;margin-bottom:6px;">بورت مفتوح أو filtered:</div>
+          <div style="font-size:12px;color:#8b949e;">أنت → FIN/NULL/Xmas<br>الهوست: <span style="color:#d29922;">صمت</span> (لا رد)<br><span style="color:#d29922;">= open|filtered</span></div>
+        </div>
+      </div>
+      <div class="info-box warn" style="margin-top:10px;">
+        <div class="info-box-title">⚠️ لا تشتغل على Windows!</div>
+        <div style="font-size:12px;color:#8b949e;">Windows تخرق RFC TCP وترد بـ RST على كل الـ flags الغريبة — حتى للبورتات المفتوحة. هاي السكانات مفيدة فقط على Linux/Unix.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DNS TRICKS -->
+  <div class="flat-section" id="tab-dns">
+    <div class="section-title">DNS & Proxy Tricks</div>
+    <div class="section-desc">تقنيات إضافية لإخفاء هويتك أو تجاوز قيود الشبكة.</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#58a6ff;font-weight:700;font-size:15px;margin-bottom:8px;">1️⃣ DNS Server Manipulation</div>
+      <p style="color:#8b949e;font-size:13px;margin-bottom:8px;">بشكل افتراضي، Nmap يحل أسماء الـ DNS لكل IP يكتشفه — وهاد الطلب DNS يظهر في logs. تقدر تعطيه DNS server خاص بدل الـ default.</p>
+      <div class="code-block"><span class="comment"># استخدم DNS server محدد</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">--dns-server 8.8.8.8</span>
+<span class="comment"># مفيد لو الـ internal DNS server يلوغ طلبات الحل</span>
+
+<span class="comment"># وقف DNS resolution كلياً (أسرع وأخفى)</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-n</span>
+<span class="comment"># -n = لا تحل أي domain names</span></div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#9fef00;font-weight:700;font-size:15px;margin-bottom:8px;">2️⃣ Source IP Spoofing</div>
+      <p style="color:#8b949e;font-size:13px;margin-bottom:8px;">تغيير الـ IP المصدر كلياً. مفيد لو تريد تظهر وكأنك جهاز آخر على الشبكة الداخلية.</p>
+      <div class="code-block"><span class="comment"># تغيير source IP</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-S 10.10.10.200</span>
+<span class="comment"># ⚠️ ما راح تستقبل الردود! الردود بتروح على 10.10.10.200</span>
+<span class="comment"># مفيد فقط للتمويه — مش للسكان الفعلي</span>
+
+<span class="comment"># تحديد الـ network interface</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-e eth0</span></div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="color:#bc8cff;font-weight:700;font-size:15px;margin-bottom:8px;">3️⃣ Proxychains</div>
+      <p style="color:#8b949e;font-size:13px;margin-bottom:8px;">توجيه السكان عبر proxy أو TOR. أقوى تقنية للإخفاء الحقيقي — لكن بطيئة جداً.</p>
+      <div class="code-block"><span class="comment"># نمرر nmap عبر proxychains</span>
+<span class="cmd">proxychains</span> nmap -sT -Pn -n 10.129.2.28 -p 80,443
+<span class="comment"># ⚠️ يشتغل فقط مع TCP Connect scan (-sT)</span>
+<span class="comment"># SYN scan (-sS) لا يشتغل عبر proxychains</span></div>
+    </div>
+
+    <div class="info-box tip">
+      <div class="info-box-title">🎯 ملخص: متى تستخدم إيش؟</div>
+      <div style="font-size:12px;color:#8b949e;">
+        <strong style="color:#e6edf3;">فايروول بسيط بيبلوك SYN:</strong> جرب -sA أو -sF أو -sN<br>
+        <strong style="color:#e6edf3;">فايروول يبلوك حسب source port:</strong> جرب -g 53 أو --source-port 443<br>
+        <strong style="color:#e6edf3;">IDS يكشف السكانات:</strong> جرب -D RND:5 + -T1<br>
+        <strong style="color:#e6edf3;">تريد تخفي IP بالكامل:</strong> proxychains أو -D مع IPs حقيقية<br>
+        <strong style="color:#e6edf3;">IDS يعرف signature الباكيت:</strong> جرب --data-length أو --mtu
+      </div>
+    </div>
+  </div>
+
+  <!-- CHEATSHEET -->
+  <div class="flat-section" id="tab-cheat">
+    <div class="section-title">Cheatsheet الكامل</div>
+
+    <table class="t">
+      <tr><th>الخيار</th><th>الوظيفة</th><th>متى تستخدمه</th></tr>
+      <tr><td><code style="color:#58a6ff;">-D RND:5</code></td><td style="color:#8b949e;">5 decoys عشوائية</td><td style="color:#8b949e;">إرباك IDS وإخفاء IP الحقيقي</td></tr>
+      <tr><td><code style="color:#58a6ff;">-D ip1,ip2,ME</code></td><td style="color:#8b949e;">decoys محددة</td><td style="color:#8b949e;">تحكم كامل بالـ decoys</td></tr>
+      <tr><td><code style="color:#58a6ff;">-g 53 / --source-port 53</code></td><td style="color:#8b949e;">غيّر source port لـ DNS</td><td style="color:#8b949e;">تجاوز فلاتر الفايروول</td></tr>
+      <tr><td><code style="color:#58a6ff;">-S 10.10.10.200</code></td><td style="color:#8b949e;">غيّر source IP</td><td style="color:#8b949e;">تمويه — مش للسكان الفعلي</td></tr>
+      <tr><td><code style="color:#58a6ff;">-e eth0</code></td><td style="color:#8b949e;">حدد الـ interface</td><td style="color:#8b949e;">مع -S لازم تحدد interface</td></tr>
+      <tr><td><code style="color:#58a6ff;">-f / --mtu 8</code></td><td style="color:#8b949e;">جزّئ الباكيتات</td><td style="color:#8b949e;">تجاوز IDS قديم</td></tr>
+      <tr><td><code style="color:#58a6ff;">--data-length 200</code></td><td style="color:#8b949e;">أضف بيانات عشوائية</td><td style="color:#8b949e;">تغيير signature الباكيت</td></tr>
+      <tr><td><code style="color:#58a6ff;">-sA</code></td><td style="color:#8b949e;">ACK scan</td><td style="color:#8b949e;">رسم خريطة الفايروول</td></tr>
+      <tr><td><code style="color:#58a6ff;">-sN / -sF / -sX</code></td><td style="color:#8b949e;">NULL/FIN/Xmas</td><td style="color:#8b949e;">تجاوز SYN filters (Linux فقط)</td></tr>
+      <tr><td><code style="color:#58a6ff;">-sI zombie</code></td><td style="color:#8b949e;">Idle scan</td><td style="color:#8b949e;">الأخفى — عبر zombie host</td></tr>
+      <tr><td><code style="color:#58a6ff;">--dns-server 8.8.8.8</code></td><td style="color:#8b949e;">DNS server مخصص</td><td style="color:#8b949e;">تجاوز internal DNS logging</td></tr>
+      <tr><td><code style="color:#58a6ff;">-n</code></td><td style="color:#8b949e;">لا DNS resolution</td><td style="color:#8b949e;">أسرع + لا DNS logs</td></tr>
+      <tr><td><code style="color:#58a6ff;">-T0 / -T1</code></td><td style="color:#8b949e;">بطيء جداً</td><td style="color:#8b949e;">تجاوز IDS rate-based detection</td></tr>
+    </table>
+
+    <div style="margin-top:16px;color:#9fef00;font-weight:700;font-size:15px;margin-bottom:8px;">🔥 أوامر جاهزة</div>
+    <div class="code-block"><span class="comment"># سكان خفي شامل</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-sS -D RND:5 -g 53 -T2 --data-length 100 -p-</span>
+
+<span class="comment"># رسم خريطة الفايروول</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-sA -Pn -n -p 1-1000</span>
+
+<span class="comment"># تجاوز source port filter</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-g 53</span> -p 50000
+<span class="cmd">ncat</span> -nv <span class="flag">--source-port 53</span> 10.129.2.28 50000
+
+<span class="comment"># NULL scan على Linux target</span>
+<span class="cmd">sudo nmap</span> 10.129.2.28 <span class="flag">-sN --packet-trace -Pn -n</span>
+
+<span class="comment"># عبر proxychains (TCP فقط)</span>
+<span class="cmd">proxychains nmap</span> <span class="flag">-sT -Pn -n</span> 10.129.2.28 -p 80,443,8080</div>
+
+    <div class="info-box danger">
+      <div class="info-box-title">🚨 تحذير</div>
+      هاي التقنيات للاستخدام في بيئات الـ CTF والـ authorized pentesting فقط. استخدامها على شبكات بدون إذن = جريمة.
+    </div>
+  </div>
+
+</div>
+<script>
+function showTab(name){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+
+
+<div style="height:60px"></div>
+
+<script>
+function setCur(el) {
+  document.querySelectorAll('.top-nav a').forEach(a => a.classList.remove('cur'));
+  el.classList.add('cur');
+}
+
+// Toggle expandable cards (port state cards)
+function toggleCard(card) {
+  card.classList.toggle('expanded');
+  const hint = card.querySelector('.expand-hint');
+  if (hint) hint.textContent = card.classList.contains('expanded') ? 'اضغط للطي ▲' : 'اضغط للمزيد ▼';
+}
+
+// Highlight nav on scroll
+const chapters = ['chapter-port','chapter-perf','chapter-evade'];
+const navLinks = document.querySelectorAll('.top-nav a');
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY + 80;
+  let cur = chapters[0];
+  for (const id of chapters) {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollY) cur = id;
+  }
+  navLinks.forEach(a => {
+    a.classList.toggle('cur', a.getAttribute('href') === '#' + cur);
+  });
+}, {passive: true});
+</script>
+</body>
+</html>
