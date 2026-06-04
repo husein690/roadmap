@@ -178,6 +178,172 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <div class="coming-card"><div class="coming-name">IPMI</div><div class="coming-sub">PORT 623</div></div>
   </div>
 
+  <div class="sec-label" style="margin-top:30px;">► KNOWN VULNERABILITIES & CVEs</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:40px;">
+
+    <!-- EternalBlue -->
+    <div style="background:var(--surface);border:1px solid #FF5757;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#FF5757;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">EternalBlue</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #FF5757;color:#FF5757;">CRITICAL</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#FF5757;letter-spacing:1px;margin-bottom:8px;">CVE — MS17-010</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">ثغرة في SMB v1 على Windows. تسمح بتنفيذ كود عن بعد بدون authentication. استُخدمت في هجوم WannaCry 2017 وأصابت مئات الآلاف من الأجهزة.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">SMB v1</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">PORT 445</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">RCE</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">NO AUTH</span>
+      </div>
+    </div>
+
+    <!-- PrintNightmare -->
+    <div style="background:var(--surface);border:1px solid #FF5757;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#FF5757;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">PrintNightmare</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #FF5757;color:#FF5757;">CRITICAL</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#FF5757;letter-spacing:1px;margin-bottom:8px;">CVE-2021-34527</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">ثغرة في Windows Print Spooler عبر SMB share اسمه print$. المهاجم يرفع driver ملغوم — كل جهاز يحمّله يُصاب. يؤدي لـ RCE وPrivilege Escalation لـ SYSTEM.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">SMB print$</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">RCE</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">PRIVESC</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(57,255,20,.3);color:var(--green);">Windows</span>
+      </div>
+    </div>
+
+    <!-- NTLM Relay -->
+    <div style="background:var(--surface);border:1px solid #fbbf24;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#fbbf24;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">NTLM Relay</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #fbbf24;color:#fbbf24;">HIGH</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#fbbf24;letter-spacing:1px;margin-bottom:8px;">SMB Signing Disabled</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">لو SMB signing مش مفعّل، المهاجم يمسك NTLM credentials ويعيد إرسالها لسيرفر ثاني. يدخل بدون ما يعرف الباسورد. يكتشف بـ "signing not required" في Nmap.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">SMB</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">MITM</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">NO PASSWORD</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(57,255,20,.3);color:var(--green);">Windows</span>
+      </div>
+    </div>
+
+    <!-- vsFTPd Backdoor -->
+    <div style="background:var(--surface);border:1px solid #FF5757;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#FF5757;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">vsFTPd Backdoor</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #FF5757;color:#FF5757;">CRITICAL</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#FF5757;letter-spacing:1px;margin-bottom:8px;">CVE-2011-2523</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">إصدار vsFTPd 2.3.4 يحتوي على backdoor مزروع في الكود المصدري. لو أرسلت ":)" في اليوزرنيم يفتح shell على Port 6200. من أشهر الثغرات على Metasploitable.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">FTP</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">PORT 21</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">BACKDOOR</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">RCE</span>
+      </div>
+    </div>
+
+    <!-- FTP Bounce -->
+    <div style="background:var(--surface);border:1px solid #fbbf24;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#fbbf24;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">FTP Bounce Attack</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #fbbf24;color:#fbbf24;">MEDIUM</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#fbbf24;letter-spacing:1px;margin-bottom:8px;">RFC 959 Abuse</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">يستخدم FTP server كـ proxy للوصول لخدمات داخلية. المهاجم يطلب من السيرفر يتصل بجهاز ثاني بدلاً منه — يتجاوز الـ Firewall.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">FTP Active Mode</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">PORT SCAN</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">BYPASS FW</span>
+      </div>
+    </div>
+
+    <!-- BlueKeep -->
+    <div style="background:var(--surface);border:1px solid #FF5757;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#FF5757;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">BlueKeep</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #FF5757;color:#FF5757;">CRITICAL</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#FF5757;letter-spacing:1px;margin-bottom:8px;">CVE-2019-0708</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">ثغرة في RDP على Windows 7/Server 2008. تسمح بتنفيذ كود عن بعد بدون authentication — wormable مثل EternalBlue. تأثر ملايين الجهاز.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">RDP</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">PORT 3389</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">RCE</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">WORMABLE</span>
+      </div>
+    </div>
+
+    <!-- Shellshock -->
+    <div style="background:var(--surface);border:1px solid #FF5757;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#FF5757;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">Shellshock</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #FF5757;color:#FF5757;">CRITICAL</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#FF5757;letter-spacing:1px;margin-bottom:8px;">CVE-2014-6271</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">ثغرة في Bash shell على Linux. لو السيرفر يستخدم Bash في CGI scripts، المهاجم يحقن أوامر عبر HTTP headers ويحصل على RCE مباشرة.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">Bash</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">HTTP/CGI</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">RCE</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(57,255,20,.3);color:var(--green);">Linux</span>
+      </div>
+    </div>
+
+    <!-- WannaCry -->
+    <div style="background:var(--surface);border:1px solid #FF5757;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#FF5757;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">WannaCry</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #FF5757;color:#FF5757;">CRITICAL</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#FF5757;letter-spacing:1px;margin-bottom:8px;">Ransomware — Uses EternalBlue</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">أشهر هجوم ransomware في التاريخ (2017). استخدم EternalBlue للانتشار تلقائياً بين الأجهزة وتشفير الملفات. أصاب أكثر من 200,000 جهاز في 150 دولة.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">SMB v1</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">RANSOMWARE</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">WORM</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(57,255,20,.3);color:var(--green);">Windows</span>
+      </div>
+    </div>
+
+    <!-- Pass-the-Hash -->
+    <div style="background:var(--surface);border:1px solid #fbbf24;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#fbbf24;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">Pass-the-Hash</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #fbbf24;color:#fbbf24;">HIGH</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#fbbf24;letter-spacing:1px;margin-bottom:8px;">NTLM Authentication Abuse</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">بعد ما تسرق NTLM hash من الجهاز، تقدر تستخدمه مباشرة للدخول بدون ما تعرف الباسورد الفعلي. Windows يقبل الـ hash كـ authentication.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">SMB</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">NTLM</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">NO PASSWORD</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(57,255,20,.3);color:var(--green);">Windows</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEVERITY LEGEND -->
+  <div style="background:var(--surface);border:1px solid var(--border);padding:14px;display:flex;gap:20px;flex-wrap:wrap;margin-bottom:30px;">
+    <div style="font-family:var(--tag);font-size:9px;letter-spacing:2px;color:var(--muted);align-self:center;">SEVERITY:</div>
+    <div style="display:flex;align-items:center;gap:6px;font-family:var(--tag);font-size:10px;"><span style="width:10px;height:10px;background:#FF5757;display:inline-block;"></span><span style="color:#FF5757;">CRITICAL — RCE / Wormable</span></div>
+    <div style="display:flex;align-items:center;gap:6px;font-family:var(--tag);font-size:10px;"><span style="width:10px;height:10px;background:#fbbf24;display:inline-block;"></span><span style="color:#fbbf24;">HIGH — Auth Bypass / Relay</span></div>
+    <div style="display:flex;align-items:center;gap:6px;font-family:var(--tag);font-size:10px;"><span style="width:10px;height:10px;background:#39ff14;display:inline-block;"></span><span style="color:#39ff14;">MEDIUM — Info Disclosure</span></div>
+  </div>
+
 </div>
 </body>
 </html>
