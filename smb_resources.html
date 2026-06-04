@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMB — HTB Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #0a0e14;
+  --bg2: #0d1117;
+  --bg3: #161b22;
+  --border: #21262d;
+  --border2: #30363d;
+  --cyan: #00d4ff;
+  --green: #00ff88;
+  --red: #ff4444;
+  --yellow: #ffd700;
+  --purple: #9d4edd;
+  --text: #c9d1d9;
+  --text2: #8b949e;
+  --text3: #6e7681;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Share Tech Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+/* Scanline effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(180deg, #0a0e14 0%, #0d1117 100%);
+  border-bottom: 1px solid var(--cyan);
+  padding: 24px 20px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--green), transparent);
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.header-label {
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.header-label::before { content: '► '; }
+.header-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.badge {
+  padding: 3px 10px;
+  border: 1px solid;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.badge.cyan { border-color: var(--cyan); color: var(--cyan); }
+.badge.green { border-color: var(--green); color: var(--green); }
+.badge.red { border-color: var(--red); color: var(--red); }
+.badge.yellow { border-color: var(--yellow); color: var(--yellow); }
+
+.header-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.header-title span { color: var(--cyan); }
+.header-sub {
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 2px;
+  margin-top: 4px;
+}
+
+/* QUICK FACTS BAR */
+.facts-bar {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border2);
+  margin: 16px 0 0;
+  flex-wrap: wrap;
+}
+.fact-item {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px 14px;
+  border-left: 1px solid var(--border2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fact-item:last-child { border-left: none; }
+.fact-label { font-size: 9px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; }
+.fact-value { font-size: 13px; color: var(--cyan); }
+
+/* NAV TABS */
+.nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border2);
+  padding: 0 20px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text3);
+  padding: 14px 18px;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.nav-btn:hover { color: var(--cyan); border-bottom-color: var(--cyan); }
+.nav-btn.active { color: var(--cyan); border-bottom-color: var(--cyan); background: rgba(0,212,255,0.05); }
+
+/* MAIN CONTENT */
+.content { padding: 20px; max-width: 1100px; margin: 0 auto; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border2);
+}
+.section-header-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+}
+.section-title {
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.section-title::before { content: '[ '; }
+.section-title::after { content: ' ]'; }
+
+/* CARDS */
+.card {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  padding: 16px;
+  margin-bottom: 14px;
+  position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--cyan);
+  opacity: 0.4;
+}
+.card.danger::before { background: var(--red); opacity: 0.6; }
+.card.success::before { background: var(--green); opacity: 0.6; }
+.card.warning::before { background: var(--yellow); opacity: 0.6; }
+
+.card-title {
+  font-size: 12px;
+  color: var(--cyan);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title::before { content: '▸ '; color: var(--green); }
+
+/* CODE BLOCKS */
+.code-block {
+  background: #010409;
+  border: 1px solid var(--border);
+  border-right: 3px solid var(--cyan);
+  padding: 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text);
+  direction: ltr;
+  text-align: left;
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+.code-block .cmd { color: var(--cyan); }
+.code-block .ok { color: var(--green); }
+.code-block .err { color: var(--red); }
+.code-block .cmt { color: var(--text3); }
+.code-block .val { color: var(--yellow); }
+.code-block .str { color: #a5d6ff; }
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 10px 0; }
+th {
+  background: #010409;
+  color: var(--cyan);
+  padding: 8px 12px;
+  text-align: right;
+  border: 1px solid var(--border2);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+td {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+  font-size: 11px;
+}
+tr:nth-child(even) td { background: #0d1117; }
+tr:nth-child(odd) td { background: #010409; }
+td.mono { font-family: 'Share Tech Mono', monospace; color: var(--cyan); }
+td.danger { color: var(--red); }
+td.safe { color: var(--green); }
+td.warn { color: var(--yellow); }
+
+/* ALERT BOXES */
+.alert {
+  padding: 10px 14px;
+  font-size: 11px;
+  margin: 8px 0;
+  border-right: 3px solid;
+  direction: rtl;
+  line-height: 1.6;
+}
+.alert.danger { background: rgba(255,68,68,0.08); border-color: var(--red); color: #ff8888; }
+.alert.success { background: rgba(0,255,136,0.08); border-color: var(--green); color: #88ffbb; }
+.alert.info { background: rgba(0,212,255,0.08); border-color: var(--cyan); color: #88e4ff; }
+.alert.warning { background: rgba(255,215,0,0.08); border-color: var(--yellow); color: #ffe566; }
+
+/* TAGS */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 2px;
+  font-family: 'Share Tech Mono', monospace;
+}
+.tag.cyan { background: rgba(0,212,255,0.1); border: 1px solid var(--cyan); color: var(--cyan); }
+.tag.green { background: rgba(0,255,136,0.1); border: 1px solid var(--green); color: var(--green); }
+.tag.red { background: rgba(255,68,68,0.1); border: 1px solid var(--red); color: var(--red); }
+.tag.yellow { background: rgba(255,215,0,0.1); border: 1px solid var(--yellow); color: var(--yellow); }
+.tag.purple { background: rgba(157,78,221,0.1); border: 1px solid var(--purple); color: var(--purple); }
+
+/* GRID */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 10px 0; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 0; }
+
+/* INFO BOX */
+.info-box {
+  background: #010409;
+  border: 1px solid var(--border2);
+  padding: 12px;
+}
+.info-box-title {
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* ATTACK CHAIN */
+.chain {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.chain-step {
+  flex: 1;
+  min-width: 80px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 10px;
+}
+.chain-step .step-icon { font-size: 18px; margin-bottom: 4px; }
+.chain-step .step-name { color: var(--text); font-size: 10px; }
+.chain-step .step-sub { color: var(--text3); font-size: 9px; margin-top: 2px; }
+.chain-step.highlight { border-color: var(--red); background: rgba(255,68,68,0.05); }
+.chain-arrow { color: var(--cyan); font-size: 14px; padding: 0 4px; }
+
+/* TOOL SELECTOR */
+.tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin: 12px 0; }
+.tool-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text2);
+}
+.tool-btn:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.05); }
+.tool-btn.active { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.05); }
+.tool-btn .tool-icon { font-size: 20px; margin-bottom: 6px; display: block; }
+.tool-panel { display: none; }
+.tool-panel.active { display: block; }
+
+/* METHODOLOGY STEPS */
+.method-step {
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.method-step:last-child { border-bottom: none; }
+.method-num {
+  background: var(--cyan);
+  color: #000;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  margin-top: 2px;
+}
+.method-content { flex: 1; }
+.method-title { color: var(--cyan); font-size: 12px; margin-bottom: 4px; }
+.method-desc { color: var(--text2); font-size: 11px; line-height: 1.6; }
+.method-cmd { margin-top: 6px; }
+
+/* CONVERSATION STYLE */
+.convo { margin: 10px 0; }
+.convo-q {
+  background: rgba(0,212,255,0.05);
+  border: 1px solid var(--cyan);
+  border-radius: 0;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--cyan);
+}
+.convo-q::before { content: '❓ سؤال: '; color: var(--yellow); }
+.convo-a {
+  background: rgba(0,255,136,0.05);
+  border: 1px solid var(--green);
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.convo-a::before { content: '✅ الجواب: '; color: var(--green); }
+
+/* PORT DISPLAY */
+.port-display {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+  direction: ltr;
+}
+.port-box {
+  border: 1px solid;
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 120px;
+}
+.port-box.old { border-color: var(--red); }
+.port-box.new { border-color: var(--green); }
+.port-num { font-size: 20px; font-weight: bold; }
+.port-box.old .port-num { color: var(--red); }
+.port-box.new .port-num { color: var(--green); }
+.port-desc { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+/* LABEL */
+.label { font-size: 9px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; margin: 10px 0 6px; }
+
+/* DIVIDER */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+  margin: 14px 0;
+  opacity: 0.3;
+}
+
+@media (max-width: 600px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .facts-bar { flex-direction: column; }
+  .chain { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-label">HTB Academy · Module 112 · Section 7/21</div>
+    <div class="header-badges">
+      <span class="badge cyan">Footprinting</span>
+      <span class="badge green">Port 445</span>
+      <span class="badge red">High Risk</span>
+      <span class="badge yellow">Windows & Linux</span>
+    </div>
+  </div>
+  <div class="header-title"><span>SMB</span> — SERVER MESSAGE BLOCK</div>
+  <div class="header-sub">PROTOCOL ANALYSIS · ENUMERATION · EXPLOITATION VECTORS</div>
+  <div class="facts-bar">
+    <div class="fact-item"><div class="fact-label">Protocol</div><div class="fact-value">SMB / CIFS</div></div>
+    <div class="fact-item"><div class="fact-label">Ports</div><div class="fact-value">139, 445</div></div>
+    <div class="fact-item"><div class="fact-label">Linux Impl.</div><div class="fact-value">Samba</div></div>
+    <div class="fact-item"><div class="fact-label">Null Session</div><div class="fact-value" style="color:var(--red)">ممكن ⚠️</div></div>
+    <div class="fact-item"><div class="fact-label">RID 500</div><div class="fact-value" style="color:var(--yellow)">Administrator</div></div>
+    <div class="fact-item"><div class="fact-label">C:\ على Samba</div><div class="fact-value" style="color:var(--text2)">= Linux /path/</div></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('samba',this)">Samba & CIFS</button>
+  <button class="nav-btn" onclick="showPanel('versions',this)">Versions</button>
+  <button class="nav-btn" onclick="showPanel('config',this)">Config</button>
+  <button class="nav-btn" onclick="showPanel('danger',this)">Danger Settings</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<div style="padding:12px 20px;border-bottom:1px solid #21262d;"><a href="protocols.html" style="font-family:Share Tech Mono,monospace;font-size:10px;color:#8b949e;text-decoration:none;letter-spacing:2px;padding:5px 12px;border:1px solid #30363d;">◄ BACK</a></div>
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="tab-panel active">
+  <div class="section-header"><div class="section-title">نظرة عامة</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ما هو SMB؟</div>
+    <p style="color:var(--text);font-size:12px;line-height:1.8;margin-bottom:12px;">Server Message Block — بروتوكول Client-Server يتحكم بالوصول للملفات والمجلدات والموارد الشبكية: طابعات، routers، interfaces. يستخدم كمان لتبادل المعلومات بين عمليات النظام.</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">📜 التاريخ</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--text2);">
+          <div style="margin-bottom:4px;"><span style="color:var(--cyan);">OS/2</span> → LAN Manager & LAN Server (أول ظهور)</div>
+          <div style="margin-bottom:4px;"><span style="color:var(--cyan);">Windows</span> → التبني الكامل في كل الإصدارات</div>
+          <div><span style="color:var(--cyan);">Samba</span> → تطبيق مجاني لـ Linux/Unix</div>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">🔌 كيف يشتغل</div>
+        <div style="direction:ltr;display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+          <div style="background:#0d1117;border:1px solid var(--cyan);padding:6px 12px;text-align:center;font-size:11px;color:var(--cyan);">💻 Client</div>
+          <div style="text-align:center;font-size:10px;color:var(--text3);">TCP Three-Way Handshake</div>
+          <div style="text-align:center;color:var(--text3);">↕</div>
+          <div style="background:#0d1117;border:1px solid var(--green);padding:6px 12px;text-align:center;font-size:11px;color:var(--green);">🖥️ SMB Server</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Ports المستخدمة</div>
+    <div class="port-display">
+      <div class="port-box old"><div class="port-num">137</div><div class="port-desc">NetBIOS Name</div></div>
+      <div class="port-box old"><div class="port-num">138</div><div class="port-desc">NetBIOS Datagram</div></div>
+      <div class="port-box old"><div class="port-num">139</div><div class="port-desc">SMBv1 / NetBIOS</div></div>
+      <div class="port-box new"><div class="port-num">445</div><div class="port-desc">SMBv2/v3 / CIFS</div></div>
+    </div>
+    <div class="alert info">💡 لو شفت Port 139 مفتوح وحده = SMBv1 = EternalBlue محتمل 🎯</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ نقاط مهمة — Quick Facts</div>
+    <table>
+      <tr><th>الموضوع</th><th>المعلومة</th><th>أهمية في Pentest</th></tr>
+      <tr><td class="mono">RID 500</td><td style="color:var(--text);">دايماً = Administrator</td><td class="danger">أول RID تستهدفه</td></tr>
+      <tr><td class="mono">C:\ على Samba</td><td style="color:var(--text);">مجرد عرض — الحقيقة Linux path</td><td class="warn">ما يعني Windows!</td></tr>
+      <tr><td class="mono">S-1-1-0</td><td style="color:var(--text);">SID = Everyone</td><td class="danger">أي شخص = full access</td></tr>
+      <tr><td class="mono">signing: false</td><td style="color:var(--text);">ما في توقيع رقمي</td><td class="danger">NTLM Relay ممكن</td></tr>
+      <tr><td class="mono">guest ok = yes</td><td style="color:var(--text);">دخول بدون باسورد</td><td class="danger">Null Session مباشرة</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📂 Shares و ACL</div>
+    <p style="color:var(--text2);font-size:11px;margin-bottom:10px;">السيرفر يشارك أجزاء من نظام الملفات كـ Shares. الـ ACL تحدد من يوصل لإيش:</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">🔐 صلاحيات ACL</div>
+        <div style="font-size:11px;line-height:1.8;">
+          <div><span style="color:var(--cyan);">execute</span> <span style="color:var(--text3);">— تشغيل الملفات</span></div>
+          <div><span style="color:var(--cyan);">read</span> <span style="color:var(--text3);">— قراءة الملفات</span></div>
+          <div><span style="color:var(--cyan);">full access</span> <span style="color:var(--text3);">— كامل الصلاحيات</span></div>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">👥 من يوصل؟</div>
+        <div style="font-size:11px;line-height:1.8;">
+          <div style="color:var(--text2);">👤 Individual Users</div>
+          <div style="color:var(--text2);">👥 User Groups</div>
+          <div style="color:var(--red);">🌐 Everyone ← خطير!</div>
+        </div>
+      </div>
+    </div>
+    <div class="alert danger">⚠️ الـ ACL على الـ Share مش بالضرورة نفس صلاحيات الملفات المحلية!</div>
+  </div>
+</div>
+
+<!-- SAMBA -->
+<div id="panel-samba" class="tab-panel">
+  <div class="section-header"><div class="section-title">Samba & CIFS</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🐧 ما هو Samba؟</div>
+    <p style="color:var(--text);font-size:12px;line-height:1.8;margin-bottom:12px;">Samba هو تطبيق بديل لـ SMB server مطور لأنظمة Unix/Linux. بينفذ بروتوكول CIFS — وهو dialect من SMB v1 طوّره Microsoft أصلاً. هذا يتيح لـ Linux التواصل مع Windows على الشبكة.</p>
+    <div style="direction:ltr;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11px;margin:10px 0;">
+      <div style="background:#010409;border:1px solid var(--red);padding:6px 14px;color:var(--red);">SMB (Windows Only)</div>
+      <div style="color:var(--text3);">→ Samba →</div>
+      <div style="background:#010409;border:1px solid var(--green);padding:6px 14px;color:var(--green);">Linux يفهم SMB ✅</div>
+    </div>
+    <div class="alert info">💡 CIFS ≈ SMB v1 — لهيك Samba يُسمى SMB/CIFS</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏛️ Samba في Active Directory</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--border2);padding:12px;">
+        <div style="color:var(--cyan);font-size:11px;margin-bottom:8px;">▸ Samba v3</div>
+        <div style="color:var(--text2);font-size:11px;line-height:1.6;">يقدر يصير <span style="color:var(--green);">عضو كامل</span> في Active Directory domain — Linux ينضم لشبكة Windows</div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:12px;">
+        <div style="color:var(--cyan);font-size:11px;margin-bottom:8px;">▸ Samba v4</div>
+        <div style="color:var(--text2);font-size:11px;line-height:1.6;">يقدر يشتغل كـ <span style="color:var(--red);">AD Domain Controller</span> كامل — يتحكم بكل الشبكة!</div>
+      </div>
+    </div>
+    <div class="alert danger">🎯 لو لاقيت Samba v4 في الشبكة = DC محتمل = هدف ذهبي</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ الـ Daemons — عمليات الخلفية</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--border2);padding:12px;">
+        <div style="color:var(--yellow);font-family:'Share Tech Mono';font-size:14px;margin-bottom:6px;">smbd</div>
+        <div style="color:var(--text3);font-size:10px;letter-spacing:1px;margin-bottom:8px;">Wظيفة 1 + 2</div>
+        <div style="color:var(--text2);font-size:11px;line-height:1.6;">
+          📁 مشاركة الملفات<br>
+          🖨️ مشاركة الطابعات<br>
+          <span style="color:var(--green);">Port 445</span>
+        </div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:12px;">
+        <div style="color:var(--yellow);font-family:'Share Tech Mono';font-size:14px;margin-bottom:6px;">nmbd</div>
+        <div style="color:var(--text3);font-size:10px;letter-spacing:1px;margin-bottom:8px;">Wظيفة 3 + 4</div>
+        <div style="color:var(--text2);font-size:11px;line-height:1.6;">
+          📛 تسجيل أسماء الأجهزة (NetBIOS)<br>
+          🗺️ تصفح الشبكة (Browsing)<br>
+          <span style="color:var(--green);">Port 137</span>
+        </div>
+      </div>
+    </div>
+    <div class="label">التحقق من الـ Daemons على الجهاز المستهدف:</div>
+    <div class="code-block"><span class="cmd">systemctl list-units | grep -E "smbd|nmbd"</span>
+
+<span class="ok">smbd.service   active running</span>
+<span class="ok">nmbd.service   active running</span>
+<span class="cmt"># لو شغالين = Samba نشط = في shares تستكشفها 🎯</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏘️ Workgroups و NetBIOS</div>
+    <p style="color:var(--text2);font-size:11px;line-height:1.6;margin-bottom:10px;">كل جهاز في الشبكة بيشارك في workgroup — اسم مجموعة يحدد collection من الأجهزة. ممكن يكون في أكثر من workgroup في نفس الشبكة.</p>
+    <div style="direction:ltr;display:flex;align-items:center;gap:10px;font-size:11px;flex-wrap:wrap;">
+      <div style="background:#010409;border:1px solid var(--border2);padding:6px 12px;font-family:'Share Tech Mono';">NetBIOS</div>
+      <div style="color:var(--text3);">→ evolved to →</div>
+      <div style="background:#010409;border:1px solid var(--cyan);padding:6px 12px;font-family:'Share Tech Mono';color:var(--cyan);">WINS</div>
+      <div style="color:var(--text3);font-size:10px;">(Windows Internet Name Service)</div>
+    </div>
+  </div>
+</div>
+
+<!-- VERSIONS -->
+<div id="panel-versions" class="tab-panel">
+  <div class="section-header"><div class="section-title">إصدارات SMB</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">📋 جميع الإصدارات</div>
+    <table>
+      <tr><th>الإصدار</th><th>نظام التشغيل</th><th>الميزات</th><th>الخطر</th></tr>
+      <tr><td><span class="tag red">CIFS</span></td><td style="color:var(--text2);">Windows NT 4.0</td><td style="color:var(--text2);">NetBIOS interface — الإصدار الأصلي</td><td class="danger">⚠️ قديم جداً</td></tr>
+      <tr><td><span class="tag red">SMB 1.0</span></td><td style="color:var(--text2);">Windows 2000</td><td style="color:var(--text2);">أول اتصال مباشر TCP</td><td class="danger">💀 EternalBlue</td></tr>
+      <tr><td><span class="tag yellow">SMB 2.0</span></td><td style="color:var(--text2);">Vista / Server 2008</td><td style="color:var(--text2);">أداء أفضل، signing محسّن</td><td class="warn">محدود</td></tr>
+      <tr><td><span class="tag yellow">SMB 2.1</span></td><td style="color:var(--text2);">Win7 / 2008 R2</td><td style="color:var(--text2);">Locking mechanisms</td><td class="warn">محدود</td></tr>
+      <tr><td><span class="tag green">SMB 3.0</span></td><td style="color:var(--text2);">Win8 / Server 2012</td><td style="color:var(--text2);">Multichannel، تشفير end-to-end</td><td class="safe">أفضل</td></tr>
+      <tr><td><span class="tag green">SMB 3.0.2</span></td><td style="color:var(--text2);">Win8.1 / 2012 R2</td><td style="color:var(--text2);">تحسينات على 3.0</td><td class="safe">أفضل</td></tr>
+      <tr><td><span class="tag green">SMB 3.1.1</span></td><td style="color:var(--text2);">Win10 / 2016</td><td style="color:var(--text2);">Integrity checking، AES-128</td><td class="safe">الأفضل</td></tr>
+    </table>
+    <div class="alert danger">⚠️ إصدار حديث ≠ آمن! الخطر الأكبر في الإعدادات الغلط مش الإصدار</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔍 كيف تعرف الإصدار</div>
+    <div class="code-block"><span class="cmd">sudo nmap 10.129.14.128 -sV -sC -p139,445</span>
+
+PORT    STATE  SERVICE     VERSION
+<span class="ok">139/tcp open   netbios-ssn Samba smbd 4.6.2</span>
+<span class="ok">445/tcp open   netbios-ssn Samba smbd 4.6.2</span>
+
+| smb2-security-mode:
+|   2.02:
+|_  <span class="val">Message signing enabled but not required</span></div>
+    <div class="alert danger">🎯 "signing not required" = NTLM Relay Attack ممكن</div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="panel-config" class="tab-panel">
+  <div class="section-header"><div class="section-title">الإعدادات</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">⚙️ smb.conf — الإعداد الافتراضي</div>
+    <div class="code-block"><span class="cmt"># /etc/samba/smb.conf</span>
+<span class="cmd">cat /etc/samba/smb.conf | grep -v "#\|\;"</span>
+
+[global]
+<span class="val">workgroup</span> = DEV.INFREIGHT.HTB
+<span class="val">server string</span> = DEVSMB
+<span class="val">log file</span> = /var/log/samba/log.%m
+<span class="val">server role</span> = standalone server
+<span class="val">map to guest</span> = bad user
+<span class="val">usershare allow guests</span> = yes
+
+[printers]
+<span class="val">browseable</span> = no
+<span class="val">guest ok</span> = no
+<span class="val">read only</span> = yes
+
+[print$]
+<span class="val">browseable</span> = yes
+<span class="val">guest ok</span> = no</div>
+    <div class="alert info">💡 [global] = إعدادات عامة تطبق على كل الـ shares — كل share يقدر يـ override</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 شرح الإعدادات</div>
+    <table>
+      <tr><th>الإعداد</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">[sharename]</td><td>اسم الـ share على الشبكة</td></tr>
+      <tr><td class="mono">workgroup</td><td>اسم الـ workgroup الذي يظهر للـ clients</td></tr>
+      <tr><td class="mono">path = /path/</td><td>المسار المحلي المشارَك</td></tr>
+      <tr><td class="mono">map to guest = bad user</td><td>يوزر غلط → يحوّله لـ guest تلقائياً</td></tr>
+      <tr><td class="mono">browseable = yes</td><td>يظهر الـ share في القائمة</td></tr>
+      <tr><td class="mono">guest ok = yes</td><td>دخول بدون باسورد</td></tr>
+      <tr><td class="mono">read only = yes</td><td>قراءة فقط</td></tr>
+      <tr><td class="mono">create mask = 0700</td><td>صلاحيات الملفات الجديدة</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- DANGER -->
+<div id="panel-danger" class="tab-panel">
+  <div class="section-header"><div class="section-title">Dangerous Settings</div><div class="section-header-line"></div></div>
+
+  <div class="card danger">
+    <div class="card-title">⚠️ الإعدادات الخطيرة</div>
+    <p style="color:var(--text2);font-size:11px;line-height:1.6;margin-bottom:12px;">كثير admins يشغّلون هاي الإعدادات "للراحة" أو "للاختبار" وينسون — وتبقى هكذا لسنين!</p>
+    <table>
+      <tr><th>الإعداد</th><th>الخطر</th></tr>
+      <tr><td class="mono">browseable = yes</td><td class="danger">أي شخص يتصفح المحتوى</td></tr>
+      <tr><td class="mono">read only = no</td><td class="danger">إنشاء وتعديل الملفات</td></tr>
+      <tr><td class="mono">writable = yes</td><td class="danger">كتابة كاملة</td></tr>
+      <tr><td class="mono">guest ok = yes</td><td class="danger">دخول بدون باسورد</td></tr>
+      <tr><td class="mono">create mask = 0777</td><td class="danger">ملفات جديدة = rwx للجميع</td></tr>
+      <tr><td class="mono">directory mask = 0777</td><td class="danger">مجلدات = rwx للجميع</td></tr>
+      <tr><td class="mono">logon script = script.sh</td><td class="danger">يشغّل script عند كل login = Persistence!</td></tr>
+      <tr><td class="mono">magic script = script.sh</td><td class="danger">تشغيل تلقائي عند إغلاق الـ script</td></tr>
+      <tr><td class="mono">enable privileges = yes</td><td class="warn">يحترم صلاحيات SID معين</td></tr>
+    </table>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 مثال Share خطير — [notes]</div>
+    <div class="code-block">[notes]
+comment = CheckIT
+path = /mnt/notes/
+
+<span class="err">browseable = yes</span>
+<span class="err">read only = no</span>
+<span class="err">writable = yes</span>
+<span class="err">guest ok = yes</span>
+<span class="err">create mask = 0777</span>
+<span class="err">directory mask = 0777</span></div>
+    <div class="alert danger">
+      💀 هاد الـ share يسمح لـ أي شخص بـ:<br>
+      ✗ الدخول بدون باسورد (guest ok = yes)<br>
+      ✗ تصفح كل المحتوى (browseable = yes)<br>
+      ✗ رفع وتعديل وحذف الملفات (writable + 0777)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔒 logon script = Persistence</div>
+    <div style="direction:ltr;display:flex;flex-direction:column;gap:4px;font-size:11px;margin:10px 0;">
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">يوزر يسجل دخول</div>
+      <div style="text-align:center;color:var(--red);">↓</div>
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">script.sh يشتغل تلقائياً على جهازه</div>
+      <div style="text-align:center;color:var(--red);">↓</div>
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">reverse shell → اتصال للمهاجم 💥</div>
+    </div>
+    <div class="alert danger">🎯 حتى لو غيّروا الباسوردات — كل ما حدا يدخل ترجع لك اتصال</div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="tab-panel">
+  <div class="section-header"><div class="section-title">الأدوات</div><div class="section-header-line"></div></div>
+
+  <div class="label">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('nmap',this)"><span class="tool-icon">🔍</span>Nmap</div>
+    <div class="tool-btn" onclick="showTool('smbclient',this)"><span class="tool-icon">🔌</span>smbclient</div>
+    <div class="tool-btn" onclick="showTool('smbmap',this)"><span class="tool-icon">🗺️</span>SMBmap</div>
+    <div class="tool-btn" onclick="showTool('rpcclient',this)"><span class="tool-icon">🛠️</span>rpcclient</div>
+    <div class="tool-btn" onclick="showTool('cme',this)"><span class="tool-icon">⚡</span>CrackMapExec</div>
+    <div class="tool-btn" onclick="showTool('enum4linux',this)"><span class="tool-icon">🔄</span>enum4linux-ng</div>
+    <div class="tool-btn" onclick="showTool('samrdump',this)"><span class="tool-icon">🐍</span>samrdump.py</div>
+    <div class="tool-btn" onclick="showTool('smbstatus',this)"><span class="tool-icon">📊</span>smbstatus</div>
+  </div>
+
+  <!-- NMAP -->
+  <div id="tool-nmap" class="tool-panel active">
+    <div class="card"><div class="card-title">🔍 Nmap — الاكتشاف الأولي</div>
+    <div class="label">الأمر الأساسي:</div>
+    <div class="code-block"><span class="cmd">sudo nmap 10.129.14.128 -sV -sC -p139,445</span>
+
+PORT    STATE  SERVICE     VERSION
+<span class="ok">139/tcp open   netbios-ssn Samba smbd 4.6.2</span>
+<span class="ok">445/tcp open   netbios-ssn Samba smbd 4.6.2</span>
+
+|_nbstat: NetBIOS name: HTB
+| smb2-security-mode:
+|   2.02:
+|_  <span class="val">Message signing enabled but not required</span></div>
+    <div class="alert warning">⚠️ Nmap يعطي معلومات محدودة على SMB — استخدمه للاكتشاف الأولي فقط</div>
+    <table>
+      <tr><th>Flag</th><th>المعنى</th></tr>
+      <tr><td class="mono">-sV</td><td>Version Scan — إصدار الخدمة</td></tr>
+      <tr><td class="mono">-sC</td><td>Default Scripts — تشغيل NSE scripts</td></tr>
+      <tr><td class="mono">-p139,445</td><td>SMB Ports فقط</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <!-- SMBCLIENT -->
+  <div id="tool-smbclient" class="tool-panel">
+    <div class="card"><div class="card-title">🔌 smbclient — التصفح التفاعلي</div>
+    <div class="label">عرض الـ Shares (Null Session):</div>
+    <div class="code-block"><span class="cmd">smbclient -N -L //10.129.14.128</span>
+
+Sharename    Type    Comment
+---------    ----    -------
+<span class="ok">print$       Disk    Printer Drivers</span>
+<span class="ok">home         Disk    INFREIGHT Samba</span>
+<span class="ok">dev          Disk    DEVenv</span>
+<span class="val">notes        Disk    CheckIT</span>
+<span class="ok">IPC$         IPC     IPC Service</span>
+
+SMB1 disabled -- no workgroup available</div>
+    <div class="label">الدخول لـ Share:</div>
+    <div class="code-block"><span class="cmd">smbclient //10.129.14.128/notes</span>
+
+Enter WORKGROUP\username's password:
+<span class="ok">Anonymous login successful</span>
+
+smb: \> <span class="cmd">ls</span>
+  prep-prod.txt N 71 Sun Sep 19 2021
+
+smb: \> <span class="cmd">get prep-prod.txt</span>
+<span class="ok">getting file \prep-prod.txt of size 71</span>
+
+smb: \> <span class="cmd">!cat prep-prod.txt</span>
+<span class="cmt"># ! = تشغيل أمر محلي بدون قطع الاتصال</span></div>
+    <div class="alert info">💡 استخدم <span style="color:var(--cyan);">!</span> قبل أي أمر لتشغيله على جهازك المحلي</div>
+    </div>
+  </div>
+
+  <!-- SMBMAP -->
+  <div id="tool-smbmap" class="tool-panel">
+    <div class="card"><div class="card-title">🗺️ SMBmap — رؤية سريعة للـ Permissions</div>
+    <div class="code-block"><span class="cmd">smbmap -H 10.129.14.128</span>
+
+Disk        Permissions   Comment
+----        -----------   -------
+<span class="err">print$      NO ACCESS     Printer Drivers</span>
+<span class="err">home        NO ACCESS     INFREIGHT Samba</span>
+<span class="err">dev         NO ACCESS     DEVenv</span>
+<span class="ok">notes       READ,WRITE    CheckIT</span>
+<span class="err">IPC$        NO ACCESS     IPC Service</span></div>
+    <div class="alert success">✅ أسرع أداة لتحديد الـ shares المتاحة — ابدأ بها دايماً</div>
+    </div>
+  </div>
+
+  <!-- RPCCLIENT -->
+  <div id="tool-rpcclient" class="tool-panel">
+    <div class="card"><div class="card-title">🛠️ rpcclient — الأقوى للـ Manual Enumeration</div>
+    <div class="label">الاتصال:</div>
+    <div class="code-block"><span class="cmd">rpcclient -U "" 10.129.14.128</span>
+<span class="cmt"># -U "" = Null Session</span>
+
+rpcclient $></div>
+    <div class="label">الأوامر المهمة:</div>
+    <div class="code-block"><span class="cmd">rpcclient $> srvinfo</span>
+DEVSMB  platform_id: 500  os version: 6.1
+
+<span class="cmd">rpcclient $> enumdomusers</span>
+user:[mrb3n]    rid:[0x3e8]
+user:[cry0l1t3] rid:[0x3e9]
+
+<span class="cmd">rpcclient $> queryuser 0x3e9</span>
+User Name    : cry0l1t3
+Password last set: 2021-09-22
+bad_password_count: 0
+
+<span class="cmd">rpcclient $> netshareenumall</span>
+netname: notes    path: C:\mnt\notes\
+netname: dev      path: C:\home\sambauser\dev\
+
+<span class="cmd">rpcclient $> netsharegetinfo notes</span>
+ACE type: ACCESS ALLOWED
+SID: <span class="val">S-1-1-0</span>  <span class="cmt"># Everyone = أي شخص!</span></div>
+    <div class="alert danger">⚠️ C:\ على Samba ≠ Windows — هو Linux path معروض بصيغة Windows!</div>
+    <div class="label">RID Brute Force — اكتشاف مستخدمين مخفيين:</div>
+    <div class="code-block"><span class="cmd">for i in $(seq 500 1100); do
+  rpcclient -N -U "" 10.129.14.128 \
+    -c "queryuser 0x$(printf '%x\n' $i)" \
+    | grep "User Name\|user_rid" && echo ""
+done</span>
+
+User Name : sambauser   rid: 0x1f5
+User Name : mrb3n       rid: 0x3e8
+User Name : cry0l1t3    rid: 0x3e9</div>
+    <div class="alert info">💡 RID 500 = 0x1f4 = Administrator دايماً!</div>
+    </div>
+  </div>
+
+  <!-- CME -->
+  <div id="tool-cme" class="tool-panel">
+    <div class="card"><div class="card-title">⚡ CrackMapExec — Enumeration شامل</div>
+    <div class="code-block"><span class="cmd">crackmapexec smb 10.129.14.128 --shares -u '' -p ''</span>
+
+SMB 10.129.14.128 445 DEVSMB [*] Windows 6.1 Build 0
+                 (<span class="val">signing:False</span>)(<span class="ok">SMBv1:False</span>)
+SMB 10.129.14.128 445 DEVSMB [+] \:
+SMB 10.129.14.128 445 DEVSMB Share    Permissions
+SMB 10.129.14.128 445 DEVSMB notes    <span class="val">READ,WRITE</span>
+SMB 10.129.14.128 445 DEVSMB IPC$</div>
+    <div class="alert danger">🎯 signing:False + notes:READ,WRITE بدون auth = خطر مباشر</div>
+    </div>
+  </div>
+
+  <!-- ENUM4LINUX -->
+  <div id="tool-enum4linux" class="tool-panel">
+    <div class="card"><div class="card-title">🔄 enum4linux-ng — كل شيء دفعة وحدة</div>
+    <div class="label">التثبيت والتشغيل:</div>
+    <div class="code-block"><span class="cmd">git clone https://github.com/cddmp/enum4linux-ng.git
+cd enum4linux-ng && pip3 install -r requirements.txt
+./enum4linux-ng.py 10.129.14.128 -A</span></div>
+    <div class="label">النتيجة الكاملة:</div>
+    <div class="code-block">SMB signing required: <span class="err">false</span>
+Null session allowed: <span class="val">true</span>
+
+OS: Windows 7 / Server 2008 R2
+
+Users: mrb3n (1000), cry0l1t3 (1001)
+
+Shares: notes → Mapping: OK, Listing: OK
+
+<span class="err">min_pw_length: 5</span>
+<span class="err">DOMAIN_PASSWORD_COMPLEX: false</span>
+<span class="err">lockout_threshold: None</span></div>
+    <div class="alert danger">
+      💀 Password Policy خطيرة:<br>
+      ✗ باسورد 5 أحرف فقط<br>
+      ✗ ما في تعقيد مطلوب<br>
+      ✗ ما في حظر = brute-force بلا حدود!
+    </div>
+    </div>
+  </div>
+
+  <!-- SAMRDUMP -->
+  <div id="tool-samrdump" class="tool-panel">
+    <div class="card"><div class="card-title">🐍 samrdump.py — RID Brute Force تلقائي</div>
+    <div class="code-block"><span class="cmd">samrdump.py 10.129.14.128</span>
+
+Found user: mrb3n,    uid = 1000
+Found user: cry0l1t3, uid = 1001
+
+mrb3n/PasswordLastSet:    2021-09-22
+mrb3n/AccountIsDisabled:  <span class="ok">False</span>
+
+cry0l1t3/AccountIsDisabled: <span class="ok">False</span></div>
+    <div class="alert info">💡 AccountIsDisabled: False = الحساب نشط = قابل للـ brute-force</div>
+    </div>
+  </div>
+
+  <!-- SMBSTATUS -->
+  <div id="tool-smbstatus" class="tool-panel">
+    <div class="card"><div class="card-title">📊 smbstatus — من متصل الآن؟ (Admin Side)</div>
+    <div class="code-block"><span class="cmd">root@samba:~# smbstatus</span>
+
+Samba version 4.11.6-Ubuntu
+PID    Username   Group   Machine      Protocol
+-----------------------------------------------
+75691  sambauser  samba   10.10.14.4   SMB3_11
+
+Service  pid    Machine      Connected at
+-----------------------------------------
+<span class="val">notes    75691  10.10.14.4   Sep 23 2021</span>
+
+No locked files</div>
+    <div class="alert info">💡 في pentest: لو وصلت لجهاز = smbstatus يعطيك خريطة من يتصل بمن 🗺️</div>
+    </div>
+  </div>
+
+  <!-- TOOLS COMPARISON -->
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title">📊 متى تستخدم كل أداة؟</div>
+    <table>
+      <tr><th>الأداة</th><th>الأفضل لـ</th><th>ملاحظة</th></tr>
+      <tr><td class="mono">nmap</td><td>الاكتشاف الأولي والإصدار</td><td class="warn">معلومات محدودة</td></tr>
+      <tr><td class="mono">smbmap</td><td>رؤية سريعة للـ permissions</td><td class="safe">ابدأ بها دايماً</td></tr>
+      <tr><td class="mono">smbclient</td><td>تصفح ورفع/تحميل ملفات</td><td class="safe">تفاعلي</td></tr>
+      <tr><td class="mono">rpcclient</td><td>users, groups, ACL تفصيلي</td><td class="safe">الأقوى manual</td></tr>
+      <tr><td class="mono">crackmapexec</td><td>enumeration شامل سريع</td><td class="warn">ضجيج أكثر</td></tr>
+      <tr><td class="mono">enum4linux-ng</td><td>كل شيء دفعة وحدة</td><td class="safe">ابدأ به للسرعة</td></tr>
+      <tr><td class="mono">samrdump.py</td><td>RID brute-force تلقائي</td><td class="safe">من Impacket</td></tr>
+    </table>
+    <div class="alert warning">⚠️ استخدم أكثر من أداة دايماً — كل أداة قد تظهر معلومات مختلفة!</div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="tab-panel">
+  <div class="section-header"><div class="section-title">Methodology — طريقة التفكير</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الهجوم الكاملة</div>
+    <div class="method-step">
+      <div class="method-num">1</div>
+      <div class="method-content">
+        <div class="method-title">Nmap Scan — الاكتشاف الأولي</div>
+        <div class="method-desc">تحقق من ports 139/445، إصدار SMB، وحالة الـ signing</div>
+        <div class="method-cmd">
+          <div class="code-block"><span class="cmd">sudo nmap -sV -sC -p139,445 TARGET</span></div>
+        </div>
+        <div class="alert info" style="margin-top:6px;">
+          👀 تحقق من:<br>
+          • SMBv1 مفتوح؟ → EternalBlue<br>
+          • signing not required? → NTLM Relay
+        </div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">2</div>
+      <div class="method-content">
+        <div class="method-title">SMBmap — رؤية سريعة للـ Permissions</div>
+        <div class="method-desc">شوف كل الـ shares ومن عنده READ/WRITE دفعة وحدة</div>
+        <div class="method-cmd"><div class="code-block"><span class="cmd">smbmap -H TARGET</span></div></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">3</div>
+      <div class="method-content">
+        <div class="method-title">enum4linux-ng — تجميع شامل</div>
+        <div class="method-desc">users, shares, policies, OS info — كل شيء دفعة وحدة</div>
+        <div class="method-cmd"><div class="code-block"><span class="cmd">./enum4linux-ng.py TARGET -A</span></div></div>
+        <div class="alert danger" style="margin-top:6px;">ركز على: lockout_threshold, min_pw_length, DOMAIN_PASSWORD_COMPLEX</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">4</div>
+      <div class="method-content">
+        <div class="method-title">rpcclient — تعمق في المعلومات</div>
+        <div class="method-desc">ACL كاملة، RID brute-force، تفاصيل كل user</div>
+        <div class="method-cmd"><div class="code-block"><span class="cmd">rpcclient -U "" TARGET
+rpcclient $> enumdomusers
+rpcclient $> queryuser 0x3e8
+rpcclient $> netsharegetinfo notes</span></div></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">5</div>
+      <div class="method-content">
+        <div class="method-title">smbclient — دخول الـ Shares</div>
+        <div class="method-desc">تصفح وتحميل الملفات من الـ shares المتاحة</div>
+        <div class="method-cmd"><div class="code-block"><span class="cmd">smbclient //TARGET/notes
+smb: \> ls
+smb: \> get filename.txt
+smb: \> !cat filename.txt</span></div></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">6</div>
+      <div class="method-content">
+        <div class="method-title">بناءً على النتائج — اختر الهجوم</div>
+        <div class="method-desc">كل نتيجة تفتح طريق مختلف:</div>
+        <div style="margin-top:8px;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="tag red">signing false → NTLM Relay</span>
+            <span class="tag red">SMBv1 → EternalBlue</span>
+            <span class="tag red">writable → Upload Payload</span>
+            <span class="tag red">weak policy → Brute Force</span>
+            <span class="tag yellow">users found → Credential Attack</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🧠 قواعد التفكير</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--border2);padding:12px;">
+        <div style="color:var(--cyan);font-size:11px;margin-bottom:8px;">✅ دايماً افعل:</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--text2);">
+          • افحص [global] أول بعدين كل share<br>
+          • حمّل أي ملف مثير للاهتمام فوراً<br>
+          • استخدم أكثر من أداة<br>
+          • ابدأ بالأبسط والأسرع
+        </div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:12px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:8px;">❌ لا تفعل:</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--text2);">
+          • تثق بـ [global] guest ok = no بدون تحقق<br>
+          • تتجاهل أي share حتى الطابعات!<br>
+          • تعتمد على أداة وحدة<br>
+          • تفترض إن إصدار حديث = آمن
+        </div>
+      </div>
+    </div>
+    <div class="alert warning" style="margin-top:10px;">
+      💡 PrintNightmare (CVE-2021-34527) — هجوم عبر print$ share! الطابعات مش "مش مهمة" 🖨️
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⛓️ سيناريو الهجوم الكامل</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Nmap</div><div class="step-sub">139/445</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">📋</div><div class="step-name">enum4linux</div><div class="step-sub">users+policy</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔌</div><div class="step-name">smbclient</div><div class="step-sub">تصفح shares</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">📥</div><div class="step-name">تحميل</div><div class="step-sub">ملفات حساسة</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔑</div><div class="step-name">Brute Force</div><div class="step-sub">usernames</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step highlight"><div class="step-icon">💥</div><div class="step-name">Full Access</div><div class="step-sub">domain!</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="tab-panel">
+  <div class="section-header"><div class="section-title">Explained — شرح بأسلوب السؤال والجواب</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🌐 SMB vs Samba</div>
+    <div class="convo">
+      <div class="convo-q">ليش نحتاج Samba أصلاً؟</div>
+      <div class="convo-a">SMB بناه Microsoft لـ Windows فقط — Linux ما يفهمه بطبيعته. Samba جاء كـ "مترجم" يخلي Linux يحكي نفس لغة Windows على الشبكة.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ما هو CIFS وعلاقته بـ SMB v1؟</div>
+      <div class="convo-a">CIFS هو dialect من SMB — نسخة/تطبيق محدد منه. CIFS يتوافق أساساً مع SMB v1. لهيك لما تشوف Samba تعرف إنه يستخدم CIFS = SMB v1 أساساً، وهاد يعني ثغرات قديمة محتملة مثل EternalBlue.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔌 Ports والإصدارات</div>
+    <div class="convo">
+      <div class="convo-q">لو شفت Port 139 مفتوح بس 445 مغلق — إيش يعني؟</div>
+      <div class="convo-a">يعني SMBv1 موجود على الجهاز. Port 139 = NetBIOS = SMB v1 القديم. أول شي يجي على بالك: EternalBlue (MS17-010).</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ الإعدادات والـ Config</div>
+    <div class="convo">
+      <div class="convo-q">ليش نبدأ بـ [global] أول؟</div>
+      <div class="convo-a">لأنه نقطة البداية — يعطيك الإعدادات العامة. بعدها تشوف كل share لحاله لأن كل share يقدر يـ override الـ global. لو [global] قال guest ok = no بس share معين قال guest ok = yes — الـ share هو اللي يطبق!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ما هو map to guest = bad user؟</div>
+      <div class="convo-a">يعني أي يوزر يحاول يدخل بـ credentials غلط — بدل ما يرفضه، يحوّله لـ guest تلقائياً. يعني الإعداد اللي المفروض يحمي السيرفر يفتح باب خلفي!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🛠️ RPC والـ Enumeration</div>
+    <div class="convo">
+      <div class="convo-q">إيش هو RID وليش مهم؟</div>
+      <div class="convo-a">RID = Relative Identifier — رقم فريد لكل مستخدم. الأهم: RID 500 = Administrator دايماً في أي نظام. نعمل loop من 500 لـ 1100 ونجرب كل رقم لنكتشف مستخدمين مخفيين حتى لو enumdomusers ما أظهرهم.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">C:\ طلعت على Samba — يعني Windows؟</div>
+      <div class="convo-a">لا! Samba على Linux بيعرض المسارات بصيغة Windows للـ clients. C:\mnt\notes\ في الحقيقة هو /mnt/notes/ على Linux. لما تشوف "Samba" في Nmap = Linux مؤكد.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">SID S-1-1-0 يعني إيش؟</div>
+      <div class="convo-a">S-1-1-0 = "Everyone" — يعني كل شخص على الشبكة بدون استثناء. لو شفته في الـ ACL مع ACCESS ALLOWED = أي شخص عنده صلاحية كاملة على الـ share!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔒 Message Signing</div>
+    <div class="convo">
+      <div class="convo-q">إيش هو Message Signing وليش مهم؟</div>
+      <div class="convo-a">توقيع رقمي على كل رسالة — مبني على HMAC hashing. السيرفر يحسب hash(الرسالة + Session Key) ويضيفه كتوقيع. لو "not required" — ما في إلزام للتوقيع = مهاجم يقدر يقف في المنتصف ويعدل الرسائل = NTLM Relay Attack.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش هو NTLM Relay؟</div>
+      <div class="convo-a">موظف يحاول يدخل على السيرفر → المهاجم يمسك الـ credentials → يعيد إرسالها لسيرفر ثاني → يدخل بدون ما يعرف الباسورد الفعلي. نوع من MITM خاص بـ Windows authentication.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ Password Policy</div>
+    <div class="convo">
+      <div class="convo-q">ما أهمية lockout_threshold: None؟</div>
+      <div class="convo-a">يعني ما في حظر بعد محاولات باسورد غلط. لو مع min_pw_length = 5 وCOMPLEX = false — تقدر تجرب آلاف الباسوردات البسيطة (12345، admin، pass1) بلا حدود ومن دون خوف من الحظر!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 Pentest Mindset</div>
+    <div class="convo">
+      <div class="convo-q">ليش ما نتجاهل print$ share؟</div>
+      <div class="convo-a">PrintNightmare (CVE-2021-34527) — هجوم حقيقي اشتغل عبر print$ share! المهاجم يحط driver ملغوم وكل جهاز يحمّله يُصاب. القاعدة: ما في share مش مهم.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إصدار SMB 3.0 حديث = آمن؟</div>
+      <div class="convo-a">لا! الإصدار الحديث يعني ثغرات البروتوكول أقل — بس الإعدادات الغلط تفتح الباب بغض النظر عن الإصدار. guest ok = yes + writable = yes على SMB 3.0 = نفس الخطر!</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end content -->
+
+<script>
+function showPanel(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showTool(name, btn) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tool-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

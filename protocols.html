@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Common Protocols — Husein Sulaiman</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#030810;--surface:#080f1c;--border:#0e2035;
+  --accent:#00d4ff;--orange:#FF6b35;--green:#39ff14;
+  --purple:#a855f7;--pink:#ec4899;--yellow:#fbbf24;
+  --red:#FF5757;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;
+  --mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);
+  background-size:40px 40px;}
+.wrap{max-width:960px;margin:0 auto;padding:44px 18px 90px;position:relative;z-index:1;}
+
+/* BACK BUTTON */
+.back-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);
+  text-decoration:none;padding:6px 14px;border:1px solid var(--muted);
+  margin-bottom:32px;transition:all .2s;
+}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+
+/* HEADER */
+.hdr{text-align:center;margin-bottom:40px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:14px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-name{font-family:var(--mono);font-size:clamp(24px,4vw,42px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 50px rgba(0,212,255,.4);}
+.hdr-name span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:10px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:20px 0;opacity:.3;}
+
+/* SECTION LABEL */
+.sec-label{
+  font-family:var(--tag);font-size:9px;letter-spacing:3px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* PROTOCOL GRID */
+.proto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:40px;}
+
+.proto-card{
+  background:var(--surface);border:1px solid var(--border);
+  padding:20px;cursor:pointer;text-decoration:none;
+  display:block;transition:all .25s;position:relative;overflow:hidden;
+}
+.proto-card::before{
+  content:'';position:absolute;top:0;right:0;width:3px;height:100%;
+  background:var(--accent);opacity:.4;transition:opacity .2s;
+}
+.proto-card:hover{border-color:var(--accent);background:rgba(0,212,255,.04);}
+.proto-card:hover::before{opacity:1;}
+.proto-card.done::before{background:var(--green);opacity:.6;}
+.proto-card.wip::before{background:var(--yellow);opacity:.6;}
+.proto-card.locked{opacity:.4;cursor:not-allowed;pointer-events:none;}
+.proto-card.locked::before{background:var(--muted);opacity:.3;}
+
+.proto-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.proto-icon{font-size:24px;}
+.proto-status{font-family:var(--tag);font-size:9px;letter-spacing:1px;padding:2px 8px;border:1px solid;}
+.proto-status.done{border-color:var(--green);color:var(--green);}
+.proto-status.wip{border-color:var(--yellow);color:var(--yellow);}
+.proto-status.locked{border-color:var(--muted);color:var(--muted);}
+
+.proto-name{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.proto-full{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:10px;}
+.proto-desc{font-size:12px;color:var(--text);line-height:1.6;margin-bottom:12px;}
+.proto-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.ptag{font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid var(--border);color:var(--muted);letter-spacing:1px;}
+.ptag.cyan{border-color:rgba(0,212,255,.3);color:var(--accent);}
+.ptag.red{border-color:rgba(255,87,87,.3);color:var(--red);}
+.ptag.green{border-color:rgba(57,255,20,.3);color:var(--green);}
+
+/* COMING SOON */
+.coming-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:40px;}
+.coming-card{
+  background:var(--surface);border:1px solid var(--border);
+  padding:14px;text-align:center;opacity:.35;
+}
+.coming-name{font-family:var(--mono);font-size:14px;color:var(--muted);margin-bottom:4px;}
+.coming-sub{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:1px;}
+
+/* STATS BAR */
+.stats-bar{
+  background:var(--surface);border:1px solid var(--border);
+  display:flex;flex-wrap:wrap;margin-bottom:30px;
+}
+.stat{flex:1;min-width:100px;padding:14px 18px;border-left:1px solid var(--border);}
+.stat:last-child{border-left:none;}
+.stat-val{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent);}
+.stat-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:4px;}
+
+@media(max-width:600px){.proto-grid{grid-template-columns:1fr;}.coming-grid{grid-template-columns:repeat(3,1fr);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a href="index.html" class="back-btn">◄ BACK TO ROADMAP</a>
+
+  <div class="hdr">
+    <div class="hdr-tag">► LEARNING RESOURCES</div>
+    <div class="hdr-name">COMMON <span>PROTOCOLS</span></div>
+    <div class="hdr-sub">NETWORK PROTOCOLS · FOOTPRINTING · HTB ACADEMY MODULE 112</div>
+    <div class="divider"></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">Completed</div></div>
+    <div class="stat"><div class="stat-val">10+</div><div class="stat-lbl">Coming Soon</div></div>
+    <div class="stat"><div class="stat-val">112</div><div class="stat-lbl">HTB Module</div></div>
+    <div class="stat"><div class="stat-val">21</div><div class="stat-lbl">Total Sections</div></div>
+  </div>
+
+  <div class="sec-label">► AVAILABLE PROTOCOLS</div>
+
+  <div class="proto-grid">
+
+    <!-- FTP -->
+    <a href="ftp_resources.html" class="proto-card done">
+      <div class="proto-header">
+        <div class="proto-icon">📁</div>
+        <div class="proto-status done">COMPLETE</div>
+      </div>
+      <div class="proto-name">FTP</div>
+      <div class="proto-full">FILE TRANSFER PROTOCOL</div>
+      <div class="proto-desc">بروتوكول نقل الملفات — من أقدم البروتوكولات. يستخدم Port 21 للأوامر و Port 20 للبيانات. Anonymous login، Active/Passive modes، وثغرات RCE.</div>
+      <div class="proto-tags">
+        <span class="ptag cyan">PORT 21/20</span>
+        <span class="ptag red">ANONYMOUS LOGIN</span>
+        <span class="ptag red">CLEAR-TEXT</span>
+        <span class="ptag green">VSFTPD</span>
+      </div>
+    </a>
+
+    <!-- SMB -->
+    <a href="smb_resources.html" class="proto-card done">
+      <div class="proto-header">
+        <div class="proto-icon">🖥️</div>
+        <div class="proto-status done">COMPLETE</div>
+      </div>
+      <div class="proto-name">SMB</div>
+      <div class="proto-full">SERVER MESSAGE BLOCK</div>
+      <div class="proto-desc">بروتوكول مشاركة الملفات على الشبكة. Samba على Linux، إصدارات متعددة، RID enumeration، Null Sessions، وثغرات EternalBlue وNTLM Relay.</div>
+      <div class="proto-tags">
+        <span class="ptag cyan">PORT 445/139</span>
+        <span class="ptag red">NTLM RELAY</span>
+        <span class="ptag red">ETERNALBLUE</span>
+        <span class="ptag green">SAMBA</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="sec-label">► COMING SOON</div>
+  <div class="coming-grid">
+    <div class="coming-card" style="opacity:.6;cursor:pointer;" onclick="location.href='nmap_resources.html'"><div class="coming-name" style="color:#39ff14;">Nmap</div><div class="coming-sub" style="color:#39ff14;">COMPLETE ✓</div></div>
+    <div class="coming-card"><div class="coming-name">NFS</div><div class="coming-sub">PORT 2049</div></div>
+    <div class="coming-card"><div class="coming-name">DNS</div><div class="coming-sub">PORT 53</div></div>
+    <div class="coming-card"><div class="coming-name">SMTP</div><div class="coming-sub">PORT 25</div></div>
+    <div class="coming-card"><div class="coming-name">IMAP</div><div class="coming-sub">PORT 143</div></div>
+    <div class="coming-card"><div class="coming-name">SNMP</div><div class="coming-sub">PORT 161</div></div>
+    <div class="coming-card"><div class="coming-name">MySQL</div><div class="coming-sub">PORT 3306</div></div>
+    <div class="coming-card"><div class="coming-name">MSSQL</div><div class="coming-sub">PORT 1433</div></div>
+    <div class="coming-card"><div class="coming-name">RDP</div><div class="coming-sub">PORT 3389</div></div>
+    <div class="coming-card"><div class="coming-name">WinRM</div><div class="coming-sub">PORT 5985</div></div>
+    <div class="coming-card"><div class="coming-name">IPMI</div><div class="coming-sub">PORT 623</div></div>
+  </div>
+
+</div>
+</body>
+</html>
