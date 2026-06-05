@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNS — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14;--bg2:#0d1117;--bg3:#161b22;--border:#21262d;--border2:#30363d;
+  --cyan:#00d4ff;--green:#00ff88;--red:#ff4444;--yellow:#ffd700;--purple:#9d4edd;
+  --text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.back-bar{padding:12px 20px;border-bottom:1px solid var(--border2);}
+.back-btn{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border2);transition:all .2s;}
+.back-btn:hover{color:var(--cyan);border-color:var(--cyan);}
+.header{background:linear-gradient(180deg,#0a0e14 0%,#0d1117 100%);border-bottom:1px solid var(--cyan);padding:24px 20px 20px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--green),transparent);}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.header-label{font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.header-label::before{content:'► ';}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.badge{padding:3px 10px;border:1px solid;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.badge.cyan{border-color:var(--cyan);color:var(--cyan);}
+.badge.green{border-color:var(--green);color:var(--green);}
+.badge.red{border-color:var(--red);color:var(--red);}
+.badge.yellow{border-color:var(--yellow);color:var(--yellow);}
+.header-title{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:4px;color:#fff;text-transform:uppercase;}
+.header-title span{color:var(--cyan);}
+.header-sub{font-size:11px;color:var(--text2);letter-spacing:2px;margin-top:4px;}
+.facts-bar{display:flex;gap:0;border:1px solid var(--border2);margin:16px 0 0;flex-wrap:wrap;}
+.fact-item{flex:1;min-width:110px;padding:10px 14px;border-left:1px solid var(--border2);display:flex;flex-direction:column;gap:4px;}
+.fact-item:last-child{border-left:none;}
+.fact-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.fact-value{font-size:13px;color:var(--cyan);}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 20px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:14px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:all .2s;}
+.nav-btn:hover{color:var(--cyan);border-bottom-color:var(--cyan);}
+.nav-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,.05);}
+.content{padding:20px;max-width:1100px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border2);}
+.section-header-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.section-title{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.section-title::before{content:'[ ';}
+.section-title::after{content:' ]';}
+.card{background:var(--bg3);border:1px solid var(--border2);padding:16px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--cyan);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card-title{font-size:12px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code-block{background:#010409;border:1px solid var(--border);border-right:3px solid var(--cyan);padding:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.6;margin:8px 0;}
+.code-block .cmd{color:var(--cyan);}
+.code-block .ok{color:var(--green);}
+.code-block .err{color:var(--red);}
+.code-block .cmt{color:var(--text3);}
+.code-block .val{color:var(--yellow);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:#010409;color:var(--cyan);padding:8px 12px;text-align:right;border:1px solid var(--border2);letter-spacing:1px;text-transform:uppercase;font-size:10px;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);vertical-align:top;font-size:11px;}
+tr:nth-child(even) td{background:#0d1117;}
+tr:nth-child(odd) td{background:#010409;}
+td.mono{font-family:'Share Tech Mono',monospace;color:var(--cyan);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;direction:rtl;line-height:1.6;}
+.alert.danger{background:rgba(255,68,68,.08);border-color:var(--red);color:#ff8888;}
+.alert.success{background:rgba(0,255,136,.08);border-color:var(--green);color:#88ffbb;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--cyan);color:#88e4ff;}
+.alert.warning{background:rgba(255,215,0,.08);border-color:var(--yellow);color:#ffe566;}
+.tag{display:inline-block;padding:2px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin:2px;font-family:'Share Tech Mono',monospace;}
+.tag.cyan{background:rgba(0,212,255,.1);border:1px solid var(--cyan);color:var(--cyan);}
+.tag.green{background:rgba(0,255,136,.1);border:1px solid var(--green);color:var(--green);}
+.tag.red{background:rgba(255,68,68,.1);border:1px solid var(--red);color:var(--red);}
+.tag.yellow{background:rgba(255,215,0,.1);border:1px solid var(--yellow);color:var(--yellow);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:#010409;border:1px solid var(--border2);padding:12px;}
+.info-box-title{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:var(--bg3);border:1px solid var(--border2);padding:10px 8px;text-align:center;font-size:10px;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;}
+.chain-step .step-sub{color:var(--text3);font-size:9px;margin-top:2px;}
+.chain-step.highlight{border-color:var(--red);background:rgba(255,68,68,.05);}
+.chain-arrow{color:var(--cyan);font-size:14px;padding:0 4px;}
+.method-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.method-step:last-child{border-bottom:none;}
+.method-num{background:var(--cyan);color:#000;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+.method-content{flex:1;}
+.method-title{color:var(--cyan);font-size:12px;margin-bottom:4px;}
+.method-desc{color:var(--text2);font-size:11px;line-height:1.6;}
+.convo{margin:10px 0;}
+.convo-q{background:rgba(0,212,255,.05);border:1px solid var(--cyan);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--cyan);}
+.convo-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.convo-a{background:rgba(0,255,136,.05);border:1px solid var(--green);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.convo-a::before{content:'✅ الجواب: ';color:var(--green);}
+.label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0;}
+.tool-btn{background:var(--bg3);border:1px solid var(--border2);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);}
+.tool-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.05);}
+.tool-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.05);}
+.tool-btn .tool-icon{font-size:20px;margin-bottom:6px;display:block;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+.record-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:12px 0;}
+.record-card{background:#010409;border:1px solid var(--border2);padding:12px;position:relative;}
+.record-card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;opacity:.6;}
+.record-card.a-rec::before{background:var(--cyan);}
+.record-card.mx-rec::before{background:var(--red);}
+.record-card.ns-rec::before{background:var(--yellow);}
+.record-card.txt-rec::before{background:var(--purple);}
+.record-card.cname-rec::before{background:var(--green);}
+.record-card.ptr-rec::before{background:#f97316;}
+.record-card.soa-rec::before{background:var(--text2);}
+.record-name{font-family:'Share Tech Mono',monospace;font-size:18px;font-weight:bold;color:#fff;margin-bottom:4px;}
+.record-pentest{font-size:10px;margin-top:8px;padding:6px 8px;border-radius:0;background:rgba(255,68,68,.08);border-right:2px solid var(--red);color:#ff8888;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}.record-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="back-bar"><a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a></div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-label">HTB Academy · Module 112 · Section 9/21</div>
+    <div class="header-badges">
+      <span class="badge cyan">Footprinting</span>
+      <span class="badge green">Port 53</span>
+      <span class="badge red">Zone Transfer</span>
+      <span class="badge yellow">Recon</span>
+    </div>
+  </div>
+  <div class="header-title"><span>DNS</span> — DOMAIN NAME SYSTEM</div>
+  <div class="header-sub">PROTOCOL ANALYSIS · RECORDS · ZONE TRANSFER · SUBDOMAIN ENUM</div>
+  <div class="facts-bar">
+    <div class="fact-item"><div class="fact-label">Port</div><div class="fact-value">TCP/UDP 53</div></div>
+    <div class="fact-item"><div class="fact-label">Root Servers</div><div class="fact-value">13 فقط</div></div>
+    <div class="fact-item"><div class="fact-label">Encrypted?</div><div class="fact-value" style="color:var(--red)">لا ⚠️</div></div>
+    <div class="fact-item"><div class="fact-label">AXFR</div><div class="fact-value" style="color:var(--red)">Zone Transfer</div></div>
+    <div class="fact-item"><div class="fact-label">NS = DC?</div><div class="fact-value" style="color:var(--yellow)">غالباً ✅</div></div>
+    <div class="fact-item"><div class="fact-label">Tool</div><div class="fact-value">dig / dnsenum</div></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('servers',this)">Server Types</button>
+  <button class="nav-btn" onclick="showPanel('records',this)">DNS Records</button>
+  <button class="nav-btn" onclick="showPanel('config',this)">Config</button>
+  <button class="nav-btn" onclick="showPanel('danger',this)">Danger Settings</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="tab-panel active">
+  <div class="section-header"><div class="section-title">نظرة عامة</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ما هو DNS؟</div>
+    <p style="color:var(--text);font-size:12px;line-height:1.8;margin-bottom:12px;">Domain Name System — يحول أسماء الدومينات لـ IP addresses. ما عنده قاعدة بيانات مركزية — موزع على آلاف السيرفرات حول العالم مثل مكتبة بها كتب هاتف كثيرة.</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">كيف يشتغل</div>
+        <div style="direction:ltr;display:flex;flex-direction:column;gap:4px;font-size:11px;margin-top:6px;">
+          <div style="background:rgba(0,212,255,.08);border:1px solid var(--cyan);padding:6px 10px;color:var(--cyan);">أنت تكتب: google.com</div>
+          <div style="text-align:center;color:var(--text3);">↓</div>
+          <div style="background:#0d1117;border:1px solid var(--border2);padding:6px 10px;color:var(--text2);">Resolver يسأل DNS Server</div>
+          <div style="text-align:center;color:var(--text3);">↓</div>
+          <div style="background:#0d1117;border:1px solid var(--border2);padding:6px 10px;color:var(--text2);">DNS يجاوب: 142.250.185.46</div>
+          <div style="text-align:center;color:var(--text3);">↓</div>
+          <div style="background:rgba(0,255,136,.08);border:1px solid var(--green);padding:6px 10px;color:var(--green);">جهازك يتصل بالـ IP ✅</div>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">ليش مهم في Pentest؟</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--text2);margin-top:4px;">
+          <div style="margin-bottom:6px;">🗺️ <span style="color:var(--cyan);">Zone Transfer</span> = خريطة كاملة للشبكة</div>
+          <div style="margin-bottom:6px;">🎯 <span style="color:var(--cyan);">NS Record</span> = غالباً Domain Controller</div>
+          <div style="margin-bottom:6px;">📧 <span style="color:var(--cyan);">MX Record</span> = mail server = phishing</div>
+          <div>🔍 <span style="color:var(--cyan);">TXT Record</span> = خدمات + IPs داخلية</div>
+        </div>
+      </div>
+    </div>
+    <div class="alert danger">⚠️ DNS غير مشفر افتراضياً — كل استعلام يمشي clear-text على الشبكة!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔌 /etc/resolv.conf — مهم في Pentest</div>
+    <div class="code-block"><span class="cmd">cat /etc/resolv.conf</span>
+
+nameserver <span class="val">8.8.8.8</span>    <span class="cmt">← Google DNS</span>
+nameserver <span class="val">1.1.1.1</span>    <span class="cmt">← Cloudflare DNS</span></div>
+    <div class="alert info">💡 لو وصلت لجهاز مخترق — cat /etc/resolv.conf يكشف DNS server الداخلي = غالباً Domain Controller! 🎯</div>
+  </div>
+</div>
+
+<!-- SERVER TYPES -->
+<div id="panel-servers" class="tab-panel">
+  <div class="section-header"><div class="section-title">أنواع DNS Servers</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">📋 الأنواع الستة</div>
+    <table>
+      <tr><th>النوع</th><th>الوظيفة</th><th>أهمية في Pentest</th></tr>
+      <tr>
+        <td><span class="tag yellow">Root Server</span></td>
+        <td>مسؤول عن الـ TLDs (.com, .se, .htb). 13 سيرفر فقط في العالم تديرهم ICANN</td>
+        <td class="warn">آخر من يُسأل</td>
+      </tr>
+      <tr>
+        <td><span class="tag cyan">Authoritative</span></td>
+        <td>المصدر الرسمي لـ zone معين. جوابه = حقيقي 100%</td>
+        <td class="danger">هدف الـ Zone Transfer!</td>
+      </tr>
+      <tr>
+        <td><span class="tag red">Non-authoritative</span></td>
+        <td>يجمع معلومات من سيرفرات ثانية — ممكن تكون قديمة (outdated)</td>
+        <td style="color:var(--text2);">معلومات ممكن تكون غلط</td>
+      </tr>
+      <tr>
+        <td><span class="tag green">Caching</span></td>
+        <td>يحفظ الإجابات مؤقتاً حسب الـ TTL</td>
+        <td class="warn">DNS Cache Poisoning</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text2);">Forwarding</td>
+        <td>يحول السؤال لسيرفر ثاني فقط</td>
+        <td style="color:var(--text2);">محدود</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text2);">Resolver</td>
+        <td>على جهازك أو الـ router — أول من يستقبل سؤالك</td>
+        <td class="safe">/etc/resolv.conf = DC!</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔄 مسار الـ DNS Query الكامل</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">💻</div><div class="step-name">جهازك</div><div class="step-sub">google.com؟</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔄</div><div class="step-name">Resolver</div><div class="step-sub">/etc/resolv.conf</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">💾</div><div class="step-name">Cache</div><div class="step-sub">موجود؟</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🌍</div><div class="step-name">Root Server</div><div class="step-sub">اسأل .com</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">✅</div><div class="step-name">Authoritative</div><div class="step-sub">142.250.x.x</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⏱️ TTL — Time To Live</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">مدة صلاحية المعلومة في الـ cache. بعد انتهاؤها يُحذف ويُطلب من جديد.</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">TTL طويل (86400 = يوم)</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">
+          المعلومة تبقى في الـ cache يوم كامل<br>
+          <span style="color:var(--red);">DNS Cache Poisoning تأثيره أطول!</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">TTL قصير (60 ثانية)</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">
+          الشركة تغير IPs كثيراً<br>
+          <span style="color:var(--cyan);">= Load Balancer أو Cloud Infrastructure</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DNS RECORDS -->
+<div id="panel-records" class="tab-panel">
+  <div class="section-header"><div class="section-title">DNS Records</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🗺️ السيناريو — تهاجم inlanefreight.com</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">كل record = سؤال مختلف عن البنية التحتية للشركة:</p>
+    <div class="code-block"><span class="cmt"># خريطة كاملة من DNS records:</span>
+dig A inlanefreight.com      <span class="cmt">→ IP الموقع الرئيسي</span>
+dig MX inlanefreight.com     <span class="cmt">→ mail server = phishing target</span>
+dig NS inlanefreight.com     <span class="cmt">→ DNS servers = غالباً DC!</span>
+dig TXT inlanefreight.com    <span class="cmt">→ خدمات + IPs داخلية</span>
+dig axfr inlanefreight.com   <span class="cmt">→ كل شيء دفعة وحدة 💥</span></div>
+  </div>
+
+  <div class="record-grid">
+    <div class="record-card a-rec">
+      <div class="record-name">A</div>
+      <div style="font-size:10px;color:var(--cyan);margin-bottom:6px;">IPv4 Address</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6;">يحول domain → IPv4</div>
+      <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">dig A google.com
+→ 142.250.185.46</div>
+      <div class="record-pentest">🎯 IP داخلي (10.x.x.x) = جهاز على الشبكة الداخلية</div>
+    </div>
+
+    <div class="record-card a-rec">
+      <div class="record-name">AAAA</div>
+      <div style="font-size:10px;color:var(--cyan);margin-bottom:6px;">IPv6 Address</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6;">نفس A بس لـ IPv6 (128-bit)</div>
+      <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">dig AAAA google.com
+→ 2607:f8b0:4004::71</div>
+      <div class="record-pentest">🎯 نادر الاستخدام في pentest</div>
+    </div>
+
+    <div class="record-card mx-rec">
+      <div class="record-name">MX</div>
+      <div style="font-size:10px;color:var(--red);margin-bottom:6px;">Mail Exchange</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6;">اسم الـ mail server للدومين</div>
+      <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">dig MX inlanefreight.com
+→ mail1.inlanefreight.com</div>
+      <div class="record-pentest">🎯 Phishing + Username Enumeration من الإيميلات</div>
+    </div>
+
+    <div class="record-card ns-rec">
+      <div class="record-name">NS</div>
+      <div style="font-size:10px;color:var(--yellow);margin-bottom:6px;">Name Server</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6;">أسماء الـ DNS servers للدومين</div>
+      <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">dig NS inlanefreight.com
+→ ns1.inlanefreight.com
+→ ns2.inlanefreight.com</div>
+      <div class="record-pentest">🎯 غالباً = Domain Controller! + هدف Zone Transfer</div>
+    </div>
+
+    <div class="record-card txt-rec">
+      <div class="record-name">TXT</div>
+      <div style="font-size:10px;color:var(--purple);margin-bottom:6px;">Text Record</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6;">معلومات متنوعة: SPF, DMARC, verification</div>
+      <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">"v=spf1 ip4:10.129.124.8"
+"atlassian-domain-verification=..."
+"MS=ms97310371"</div>
+      <div class="record-pentest">🎯 يكشف: خدمات الشركة (Atlassian, Microsoft) + IPs داخلية!</div>
+    </div>
+
+    <div class="record-card cname-rec">
+      <div class="record-name">CNAME</div>
+      <div style="font-size:10px;color:var(--green);margin-bottom:6px;">Canonical Name (Alias)</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6;">اسم بديل لدومين ثاني</div>
+      <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">ftp.inlanefreight.com
+→ CNAME → server1.inlanefreight.com</div>
+      <div class="record-pentest">🎯 خدمات متعددة على نفس الجهاز = اخترق واحد = اخترق الكل</div>
+    </div>
+
+    <div class="record-card ptr-rec">
+      <div class="record-name">PTR</div>
+      <div style="font-size:10px;color:#f97316;margin-bottom:6px;">Pointer (Reverse Lookup)</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6;">عكس A — يحول IP → domain</div>
+      <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">dig PTR 10.129.34.16
+→ dc1.internal.inlanefreight.htb</div>
+      <div class="record-pentest">🎯 من IPs تعرف وظيفة الجهاز (dc1=DC, vpn=VPN...)</div>
+    </div>
+
+    <div class="record-card soa-rec">
+      <div class="record-name">SOA</div>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:6px;">Start of Authority</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6;">مين المسؤول عن الـ DNS zone</div>
+      <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">dig soa inlanefreight.com
+→ ns-161.awsdns-20.com.
+   awsdns-hostmaster@amazon.com</div>
+      <div class="record-pentest">🎯 إيميل المسؤول + cloud provider (AWS/Azure/GCP)</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="panel-config" class="tab-panel">
+  <div class="section-header"><div class="section-title">الإعدادات — Bind9</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ملفات الإعداد</div>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">أشهر DNS server على Linux هو <span style="color:var(--cyan);">Bind9</span>. ملفاته الرئيسية:</p>
+    <table>
+      <tr><th>الملف</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">named.conf.local</td><td>تعريف الـ zones المحلية</td></tr>
+      <tr><td class="mono">named.conf.options</td><td>الإعدادات العامة</td></tr>
+      <tr><td class="mono">named.conf.log</td><td>إعدادات الـ logging</td></tr>
+      <tr><td class="mono">/etc/bind/db.domain.com</td><td>Zone file — كل الـ records</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Zone File مثال</div>
+    <div class="code-block"><span class="cmd">cat /etc/bind/db.domain.com</span>
+
+$ORIGIN domain.com
+$TTL 86400
+@ IN SOA dns1.domain.com. hostmaster.domain.com. (
+         2001062501 ; serial
+         21600      ; refresh 6h
+         3600       ; retry 1h
+         604800     ; expire 1 week
+         86400 )    ; min TTL
+
+IN NS  ns1.domain.com.
+IN NS  ns2.domain.com.
+IN MX  10 mx.domain.com.
+IN A   10.129.14.5
+
+server1  IN A     10.129.14.5
+server2  IN A     10.129.14.7
+ftp      IN CNAME server1
+www      IN CNAME server2</div>
+    <div class="alert info">💡 Zone file = دفتر هاتف السيرفر — كل الأسماء والـ IPs</div>
+  </div>
+</div>
+
+<!-- DANGER -->
+<div id="panel-danger" class="tab-panel">
+  <div class="section-header"><div class="section-title">Dangerous Settings</div><div class="section-header-line"></div></div>
+
+  <div class="card danger">
+    <div class="card-title">⚠️ الإعدادات الخطيرة</div>
+    <table>
+      <tr><th>الإعداد</th><th>الخطر</th></tr>
+      <tr><td class="mono">allow-query { any; }</td><td class="danger">أي شخص يسأل السيرفر</td></tr>
+      <tr><td class="mono">allow-recursion { any; }</td><td class="danger">أي شخص يسأل recursive queries = DNS Amplification Attack</td></tr>
+      <tr><td class="mono">allow-transfer { any; }</td><td class="danger">أي شخص يطلب Zone Transfer كامل 💀</td></tr>
+      <tr><td class="mono">zone-statistics yes</td><td class="warn">يكشف إحصائيات الـ zone</td></tr>
+    </table>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 allow-transfer = any</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">الإعداد الأخطر — يسمح لأي شخص بـ Zone Transfer:</p>
+    <div class="code-block"><span class="cmd">dig axfr inlanefreight.htb @10.129.14.128</span>
+
+app.inlanefreight.htb.       → <span class="val">10.129.18.15</span>
+internal.inlanefreight.htb.  → <span class="val">10.129.1.6</span>
+mail1.inlanefreight.htb.     → <span class="val">10.129.18.201</span>
+ns.inlanefreight.htb.        → <span class="val">10.129.34.136</span></div>
+    <div class="label">Zone داخلية:</div>
+    <div class="code-block"><span class="cmd">dig axfr internal.inlanefreight.htb @10.129.14.128</span>
+
+<span class="err">dc1.internal</span>  → <span class="val">10.129.34.16</span>   <span class="cmt">← Domain Controller!</span>
+<span class="err">dc2.internal</span>  → <span class="val">10.129.34.11</span>   <span class="cmt">← Domain Controller!</span>
+mail1.internal → <span class="val">10.129.18.200</span>
+vpn.internal   → <span class="val">10.129.1.6</span>
+wsus.internal  → <span class="val">10.129.18.2</span>    <span class="cmt">← Windows Update Server</span>
+ws1.internal   → <span class="val">10.129.1.34</span>    <span class="cmt">← Workstation</span>
+ws2.internal   → <span class="val">10.129.1.35</span></div>
+    <div class="alert danger">💥 خريطة كاملة للشبكة الداخلية دفعة وحدة! dc1, dc2 = أهداف أولى</div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="tab-panel">
+  <div class="section-header"><div class="section-title">الأدوات</div><div class="section-header-line"></div></div>
+
+  <div class="label">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('dig',this)"><span class="tool-icon">🔍</span>dig</div>
+    <div class="tool-btn" onclick="showTool('axfr',this)"><span class="tool-icon">💥</span>Zone Transfer</div>
+    <div class="tool-btn" onclick="showTool('dnsenum',this)"><span class="tool-icon">🔄</span>dnsenum</div>
+    <div class="tool-btn" onclick="showTool('bruteforce',this)"><span class="tool-icon">⚡</span>Brute Force</div>
+  </div>
+
+  <!-- DIG -->
+  <div id="tool-dig" class="tool-panel active">
+    <div class="card"><div class="card-title">🔍 dig — الأداة الأساسية</div>
+    <div class="label">استعلامات مهمة:</div>
+    <div class="code-block"><span class="cmt"># NS records — إيجاد الـ DNS servers (= DC؟)</span>
+<span class="cmd">dig ns inlanefreight.htb @10.129.14.128</span>
+
+<span class="cmt"># ANY — كل الـ records دفعة</span>
+<span class="cmd">dig any inlanefreight.htb @10.129.14.128</span>
+
+<span class="cmt"># إصدار الـ DNS server</span>
+<span class="cmd">dig CH TXT version.bind 10.129.14.128</span>
+→ "9.10.6-P1-Debian"
+
+<span class="cmt"># SOA — مين المسؤول</span>
+<span class="cmd">dig soa inlanefreight.htb @10.129.14.128</span>
+
+<span class="cmt"># PTR — من IP لاسم</span>
+<span class="cmd">dig PTR 10.129.34.16</span>
+→ dc1.internal.inlanefreight.htb</div>
+    <div class="alert info">💡 @ في الأمر = حدد السيرفر اللي تسأله مباشرة</div>
+    </div>
+  </div>
+
+  <!-- AXFR -->
+  <div id="tool-axfr" class="tool-panel">
+    <div class="card"><div class="card-title">💥 Zone Transfer — AXFR</div>
+    <div class="code-block"><span class="cmt"># Zone Transfer على الدومين الخارجي:</span>
+<span class="cmd">dig axfr inlanefreight.htb @10.129.14.128</span>
+
+<span class="cmt"># Zone Transfer على الدومين الداخلي:</span>
+<span class="cmd">dig axfr internal.inlanefreight.htb @10.129.14.128</span>
+
+<span class="cmt"># لو نجح — تشوف كل الأجهزة:</span>
+<span class="ok">dc1.internal  → 10.129.34.16</span>  <span class="cmt">← DC!</span>
+<span class="ok">dc2.internal  → 10.129.34.11</span>  <span class="cmt">← DC!</span>
+<span class="ok">vpn.internal  → 10.129.1.6</span>
+<span class="ok">wsus.internal → 10.129.18.2</span></div>
+    <div class="alert danger">💀 Zone Transfer ناجح = خريطة كاملة للشبكة الداخلية!</div>
+    </div>
+  </div>
+
+  <!-- DNSENUM -->
+  <div id="tool-dnsenum" class="tool-panel">
+    <div class="card"><div class="card-title">🔄 dnsenum — كل شيء تلقائي</div>
+    <div class="code-block"><span class="cmd">dnsenum --dnsserver 10.129.14.128 \
+        --enum -p 0 -s 0 \
+        -o subdomains.txt \
+        -f /opt/useful/seclists/Discovery/DNS/subdomains-top1million-110000.txt \
+        inlanefreight.htb</span>
+
+<span class="cmt"># تلقائياً:</span>
+<span class="ok">✓ NS records</span>
+<span class="ok">✓ MX records</span>
+<span class="ok">✓ Zone Transfer محاولة</span>
+<span class="ok">✓ Subdomain Brute Force</span>
+
+ns.inlanefreight.htb.    → 10.129.34.136
+mail1.inlanefreight.htb. → 10.129.18.201
+app.inlanefreight.htb.   → 10.129.18.15</div>
+    <div class="alert success">✅ dnsenum يجمع كل شيء دفعة وحدة — ابدأ بها!</div>
+    </div>
+  </div>
+
+  <!-- BRUTEFORCE -->
+  <div id="tool-bruteforce" class="tool-panel">
+    <div class="card"><div class="card-title">⚡ Subdomain Brute Force</div>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">لو Zone Transfer فشل — جرب آلاف الأسماء واحدة وحدة:</p>
+    <div class="code-block"><span class="cmt"># Bash Loop:</span>
+<span class="cmd">for sub in $(cat /opt/useful/seclists/Discovery/DNS/subdomains-top1million-110000.txt); do
+  dig $sub.inlanefreight.htb @10.129.14.128 \
+  | grep -v ';\|SOA' \
+  | sed -r '/^\s*$/d' \
+  | grep $sub | tee -a subdomains.txt
+done</span>
+
+<span class="ok">ns.inlanefreight.htb.    IN A  10.129.34.136</span>
+<span class="ok">mail1.inlanefreight.htb. IN A  10.129.18.201</span>
+<span class="ok">app.inlanefreight.htb.   IN A  10.129.18.15</span></div>
+    <div class="alert info">💡 SecLists = قوائم جاهزة للـ pentest. تثبيت: <code>sudo apt install seclists</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="tab-panel">
+  <div class="section-header"><div class="section-title">Methodology</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الـ DNS Footprinting</div>
+    <div class="method-step">
+      <div class="method-num">1</div>
+      <div class="method-content">
+        <div class="method-title">NS Records — إيجاد الـ DNS Servers</div>
+        <div class="method-desc">أول خطوة — الـ NS servers هي هدفك الأساسي</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">dig ns inlanefreight.htb @10.129.14.128</span></div>
+        <div class="alert warning" style="margin-top:6px;">في شبكة Windows: NS server = Domain Controller غالباً 🎯</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">2</div>
+      <div class="method-content">
+        <div class="method-title">Zone Transfer — الخريطة الكاملة</div>
+        <div class="method-desc">جرب AXFR — لو نجح انتهى الأمر!</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">dig axfr inlanefreight.htb @10.129.14.128
+dig axfr internal.inlanefreight.htb @10.129.14.128</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">3</div>
+      <div class="method-content">
+        <div class="method-title">ANY Query — كل الـ Records</div>
+        <div class="method-desc">اجمع كل المعلومات المتاحة</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">dig any inlanefreight.htb @10.129.14.128</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">4</div>
+      <div class="method-content">
+        <div class="method-title">لو Zone Transfer فشل — Brute Force</div>
+        <div class="method-desc">استخدم SecLists لإيجاد subdomains مخفية</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">dnsenum --dnsserver 10.129.14.128 --enum \
+-f /opt/useful/seclists/Discovery/DNS/subdomains-top1million-110000.txt \
+inlanefreight.htb</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">5</div>
+      <div class="method-content">
+        <div class="method-title">PTR Lookup على الـ IPs</div>
+        <div class="method-desc">من IPs عرّف وظيفة كل جهاز</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">dig PTR 10.129.34.16
+→ dc1.internal.inlanefreight.htb</span></div>
+        <div class="alert danger" style="margin-top:6px;">dc1/dc2 = Domain Controllers = أهداف أولى 💥</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗺️ ما تكشفه DNS كاملاً</div>
+    <div class="code-block"><span class="cmt"># من DNS records فقط تعرف:</span>
+NS  → ns1.inlanefreight.com = <span class="val">10.129.34.136</span>  <span class="cmt">← DC!</span>
+MX  → mail1.inlanefreight.com                  <span class="cmt">← Mail = Phishing</span>
+TXT → "ip4:10.129.124.8"                       <span class="cmt">← IP داخلي!</span>
+TXT → "atlassian-domain-verification=..."      <span class="cmt">← يستخدمون Jira</span>
+TXT → "MS=ms97310371"                          <span class="cmt">← Microsoft 365</span>
+AXFR→ dc1, dc2, vpn, wsus, ws1, ws2           <span class="cmt">← كل البنية!</span></div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="tab-panel">
+  <div class="section-header"><div class="section-title">Explained — Q&A</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🌐 الأساسيات</div>
+    <div class="convo">
+      <div class="convo-q">ليش DNS موزع على آلاف السيرفرات؟</div>
+      <div class="convo-a">سببين: أولاً السرعة — تتصل بالأقرب لك. ثانياً الموثوقية — لو سيرفر واحد وقع الباقين يكملون. لو كان سيرفر واحد فقط، أي هجوم عليه = الإنترنت كله يتوقف!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ليش /etc/resolv.conf مهم في pentest؟</div>
+      <div class="convo-a">لو وصلت لجهاز مخترق وشفت resolv.conf — الـ nameserver فيه هو DNS server الشبكة الداخلية. في شبكات Windows هاد غالباً = Domain Controller. يعطيك IP الـ DC مباشرة!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 DNS Records</div>
+    <div class="convo">
+      <div class="convo-q">ليش NS record يشير غالباً لـ Domain Controller؟</div>
+      <div class="convo-a">لأن الـ Domain Controller يشغّل خدمة DNS داخلياً. في شبكات Windows، DC يحل أسماء الأجهزة الداخلية. فالـ NS server هو نفسه الـ DC في معظم الحالات.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش تستفيد من TXT record في الـ pentest؟</div>
+      <div class="convo-a">يكشف خدمات الشركة (Atlassian = Jira، MS = Microsoft 365، mailgun = email service) وأهم شيء: IPs داخلية في SPF records. "ip4:10.129.124.8" = IP جهاز داخلي مكشوف!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💥 Zone Transfer</div>
+    <div class="convo">
+      <div class="convo-q">ما هو Zone Transfer وليش خطير؟</div>
+      <div class="convo-a">Zone Transfer = مزامنة DNS records بين Primary وSecondary servers. لو allow-transfer = any، أي شخص يطلب نسخة كاملة من كل الـ records. يعني: dc1, dc2, vpn, mail, wsus, ws1, ws2 كل البنية التحتية دفعة وحدة!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ما معنى @ في أمر dig؟</div>
+      <div class="convo-a">يحدد أي DNS server تسأل مباشرة. بدونه dig يسأل الـ DNS الافتراضي (8.8.8.8) اللي ما يعرف الدومينات الداخلية. مع @ تسأل السيرفر الداخلي اللي يعرف كل شيء.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">لو Zone Transfer فشل — إيش البديل؟</div>
+      <div class="convo-a">Subdomain Brute Force — تجرب 110,000 اسم من SecLists واحداً وحدة. أبطأ بكثير لكن يكشف subdomains مخفية مثل admin.company.com أو dev.company.com.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPanel(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showTool(name,btn){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
