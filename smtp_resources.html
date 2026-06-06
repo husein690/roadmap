@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMTP — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e14;--bg2:#0d1117;--bg3:#161b22;--border:#21262d;--border2:#30363d;--cyan:#00d4ff;--green:#00ff88;--red:#ff4444;--yellow:#ffd700;--purple:#9d4edd;--text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.back-bar{padding:12px 20px;border-bottom:1px solid var(--border2);}
+.back-btn{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border2);transition:all .2s;}
+.back-btn:hover{color:var(--cyan);border-color:var(--cyan);}
+.header{background:linear-gradient(180deg,#0a0e14 0%,#0d1117 100%);border-bottom:1px solid var(--cyan);padding:24px 20px 20px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--green),transparent);}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.header-label{font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.header-label::before{content:'► ';}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.badge{padding:3px 10px;border:1px solid;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.badge.cyan{border-color:var(--cyan);color:var(--cyan);}
+.badge.green{border-color:var(--green);color:var(--green);}
+.badge.red{border-color:var(--red);color:var(--red);}
+.badge.yellow{border-color:var(--yellow);color:var(--yellow);}
+.header-title{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:4px;color:#fff;text-transform:uppercase;}
+.header-title span{color:var(--cyan);}
+.header-sub{font-size:11px;color:var(--text2);letter-spacing:2px;margin-top:4px;}
+.facts-bar{display:flex;gap:0;border:1px solid var(--border2);margin:16px 0 0;flex-wrap:wrap;}
+.fact-item{flex:1;min-width:110px;padding:10px 14px;border-left:1px solid var(--border2);display:flex;flex-direction:column;gap:4px;}
+.fact-item:last-child{border-left:none;}
+.fact-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.fact-value{font-size:13px;color:var(--cyan);}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 20px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:14px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:all .2s;}
+.nav-btn:hover{color:var(--cyan);border-bottom-color:var(--cyan);}
+.nav-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,.05);}
+.content{padding:20px;max-width:1100px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border2);}
+.section-header-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.section-title{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.section-title::before{content:'[ ';}
+.section-title::after{content:' ]';}
+.card{background:var(--bg3);border:1px solid var(--border2);padding:16px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--cyan);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card-title{font-size:12px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code-block{background:#010409;border:1px solid var(--border);border-right:3px solid var(--cyan);padding:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.6;margin:8px 0;}
+.code-block .cmd{color:var(--cyan);}
+.code-block .ok{color:var(--green);}
+.code-block .err{color:var(--red);}
+.code-block .cmt{color:var(--text3);}
+.code-block .val{color:var(--yellow);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:#010409;color:var(--cyan);padding:8px 12px;text-align:right;border:1px solid var(--border2);letter-spacing:1px;text-transform:uppercase;font-size:10px;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);vertical-align:top;font-size:11px;}
+tr:nth-child(even) td{background:#0d1117;}
+tr:nth-child(odd) td{background:#010409;}
+td.mono{font-family:'Share Tech Mono',monospace;color:var(--cyan);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;direction:rtl;line-height:1.6;}
+.alert.danger{background:rgba(255,68,68,.08);border-color:var(--red);color:#ff8888;}
+.alert.success{background:rgba(0,255,136,.08);border-color:var(--green);color:#88ffbb;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--cyan);color:#88e4ff;}
+.alert.warning{background:rgba(255,215,0,.08);border-color:var(--yellow);color:#ffe566;}
+.tag{display:inline-block;padding:2px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin:2px;font-family:'Share Tech Mono',monospace;}
+.tag.cyan{background:rgba(0,212,255,.1);border:1px solid var(--cyan);color:var(--cyan);}
+.tag.green{background:rgba(0,255,136,.1);border:1px solid var(--green);color:var(--green);}
+.tag.red{background:rgba(255,68,68,.1);border:1px solid var(--red);color:var(--red);}
+.tag.yellow{background:rgba(255,215,0,.1);border:1px solid var(--yellow);color:var(--yellow);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:#010409;border:1px solid var(--border2);padding:12px;}
+.info-box-title{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:var(--bg3);border:1px solid var(--border2);padding:10px 8px;text-align:center;font-size:10px;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;}
+.chain-step .step-sub{color:var(--text3);font-size:9px;margin-top:2px;}
+.chain-step.highlight{border-color:var(--red);background:rgba(255,68,68,.05);}
+.chain-arrow{color:var(--cyan);font-size:14px;padding:0 4px;}
+.method-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.method-step:last-child{border-bottom:none;}
+.method-num{background:var(--cyan);color:#000;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+.method-content{flex:1;}
+.method-title{color:var(--cyan);font-size:12px;margin-bottom:4px;}
+.method-desc{color:var(--text2);font-size:11px;line-height:1.6;}
+.convo{margin:10px 0;}
+.convo-q{background:rgba(0,212,255,.05);border:1px solid var(--cyan);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--cyan);}
+.convo-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.convo-a{background:rgba(0,255,136,.05);border:1px solid var(--green);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.convo-a::before{content:'✅ الجواب: ';color:var(--green);}
+.label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0;}
+.tool-btn{background:var(--bg3);border:1px solid var(--border2);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);}
+.tool-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.05);}
+.tool-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.05);}
+.tool-btn .tool-icon{font-size:20px;margin-bottom:6px;display:block;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<div class="back-bar"><a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a></div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-label">HTB Academy · Module 112 · Section 10/21</div>
+    <div class="header-badges">
+      <span class="badge cyan">Footprinting</span>
+      <span class="badge green">Port 25/587/465</span>
+      <span class="badge red">Open Relay</span>
+      <span class="badge yellow">Mail Spoofing</span>
+    </div>
+  </div>
+  <div class="header-title"><span>SMTP</span> — SIMPLE MAIL TRANSFER PROTOCOL</div>
+  <div class="header-sub">EMAIL ANALYSIS · USER ENUM · OPEN RELAY · SPOOFING</div>
+  <div class="facts-bar">
+    <div class="fact-item"><div class="fact-label">Port قديم</div><div class="fact-value">TCP 25</div></div>
+    <div class="fact-item"><div class="fact-label">Port حديث</div><div class="fact-value">TCP 587</div></div>
+    <div class="fact-item"><div class="fact-label">SSL/TLS</div><div class="fact-value">TCP 465</div></div>
+    <div class="fact-item"><div class="fact-label">Encrypted?</div><div class="fact-value" style="color:var(--red)">لا افتراضياً ⚠️</div></div>
+    <div class="fact-item"><div class="fact-label">Linux Server</div><div class="fact-value">Postfix</div></div>
+    <div class="fact-item"><div class="fact-label">Open Relay</div><div class="fact-value" style="color:var(--red)">mynetworks=0/0</div></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('flow',this)">Mail Flow</button>
+  <button class="nav-btn" onclick="showPanel('commands',this)">Commands</button>
+  <button class="nav-btn" onclick="showPanel('config',this)">Config</button>
+  <button class="nav-btn" onclick="showPanel('danger',this)">Danger Settings</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="tab-panel active">
+  <div class="section-header"><div class="section-title">نظرة عامة</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ما هو SMTP؟</div>
+    <p style="color:var(--text);font-size:12px;line-height:1.8;margin-bottom:12px;">Simple Mail Transfer Protocol — بروتوكول إرسال الإيميلات عبر الشبكة. يشتغل بين الـ client والـ mail server، وبين سيرفرين SMTP. بدون تشفير افتراضياً — كل شيء يمشي clear-text.</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">الـ Ports</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;direction:ltr;">
+          <div style="background:rgba(255,68,68,.08);border:1px solid var(--red);padding:8px;font-size:11px;">
+            <div style="color:var(--red);">PORT 25 — قديم</div>
+            <div style="color:var(--text3);">سيرفر → سيرفر، بدون تشفير</div>
+          </div>
+          <div style="background:rgba(0,212,255,.08);border:1px solid var(--cyan);padding:8px;font-size:11px;">
+            <div style="color:var(--cyan);">PORT 587 — STARTTLS</div>
+            <div style="color:var(--text3);">Client → سيرفر، يبدأ عادي ثم يشفر</div>
+          </div>
+          <div style="background:rgba(0,255,136,.08);border:1px solid var(--green);padding:8px;font-size:11px;">
+            <div style="color:var(--green);">PORT 465 — SSL/TLS</div>
+            <div style="color:var(--text3);">Client → سيرفر، مشفر من البداية</div>
+          </div>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">SMTP vs ESMTP</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--text2);margin-top:6px;">
+          <div style="margin-bottom:8px;"><span style="color:var(--red);">SMTP عادي:</span><br>بدون تشفير، بدون authentication</div>
+          <div><span style="color:var(--green);">ESMTP (Extended):</span><br>+ STARTTLS = تشفير<br>+ AUTH PLAIN = authentication<br><span style="color:var(--cyan);">لما الناس يقولوا SMTP = يقصدون ESMTP</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ عيبان أساسيان في SMTP</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--red);padding:12px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:8px;">❌ العيب 1 — ما في تأكيد وصول</div>
+        <div style="color:var(--text2);font-size:11px;line-height:1.6;">ترسل إيميل — SMTP ما يخبرك إذا وصل. لو ما وصل: رسالة خطأ بالإنجليزي بدون تنسيق موحد.</div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--red);padding:12px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:8px;">❌ العيب 2 — ما في authentication</div>
+        <div style="color:var(--text2);font-size:11px;line-height:1.6;">أي شخص يقول "أنا ceo@company.com" — SMTP ما يتحقق! = Mail Spoofing مجاني 💀</div>
+      </div>
+    </div>
+    <div class="alert info" style="margin-top:10px;">
+      💡 الحلول: <span style="color:var(--cyan);">DKIM</span> (توقيع رقمي) + <span style="color:var(--cyan);">SPF</span> (تحديد IPs المسموح لها) — بس على جانب المستلم فقط، ما يمنعون Open Relay!
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔒 STARTTLS vs SSL/TLS</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--yellow);padding:12px;">
+        <div style="color:var(--yellow);font-size:12px;margin-bottom:8px;">Port 587 — STARTTLS</div>
+        <div style="direction:ltr;font-size:11px;line-height:1.8;color:var(--text2);">
+          الاتصال يبدأ عادي (plaintext)<br>
+          Client يرسل STARTTLS<br>
+          <span style="color:var(--yellow);">بعدها يتحول للتشفير</span><br>
+          "ابدأ عادي بعدين شفّر"
+        </div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--green);padding:12px;">
+        <div style="color:var(--green);font-size:12px;margin-bottom:8px;">Port 465 — SSL/TLS</div>
+        <div style="direction:ltr;font-size:11px;line-height:1.8;color:var(--text2);">
+          التشفير يبدأ من أول لحظة<br>
+          ما في لحظة plaintext أبداً<br>
+          <span style="color:var(--green);">"شفّر من البداية" ✅</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIL FLOW -->
+<div id="panel-flow" class="tab-panel">
+  <div class="section-header"><div class="section-title">مسار الإيميل</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">📧 المكونات الأربعة</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">💻</div><div class="step-name">MUA</div><div class="step-sub">Mail User Agent<br>Gmail/Outlook</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🚪</div><div class="step-name">MSA</div><div class="step-sub">Submission Agent<br>يتحقق منك</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">📮</div><div class="step-name">MTA</div><div class="step-sub">Transfer Agent<br>ساعي البريد</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">📬</div><div class="step-name">MDA</div><div class="step-sub">Delivery Agent<br>يحط في الصندوق</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step highlight"><div class="step-icon">📥</div><div class="step-name">Mailbox</div><div class="step-sub">POP3/IMAP</div></div>
+    </div>
+    <div class="alert danger">🎯 Open Relay = MTA بدون MSA — ما في تحقق من المرسل = أي شخص يرسل لأي شخص!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🌍 مثال — من Gmail لـ Outlook</div>
+    <div style="direction:ltr;display:flex;flex-direction:column;gap:4px;font-size:11px;">
+      <div style="background:#010409;border:1px solid var(--cyan);padding:8px 12px;color:var(--cyan);">1. أنت (MUA) تكتب الإيميل في Gmail</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">2. Gmail SMTP (MTA) يستقبله — Port 587</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">3. Gmail يبحث في DNS عن MX record لـ outlook.com</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">4. Gmail SMTP يتصل بـ Outlook SMTP — Port 25</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--green);padding:8px 12px;color:var(--green);">5. MDA يحط الإيميل في صندوق المستلم ✅</div>
+    </div>
+    <div class="alert info">💡 سيرفرين SMTP على الأقل — Gmail يصير "client" لما يتصل بـ Outlook!</div>
+  </div>
+</div>
+
+<!-- COMMANDS -->
+<div id="panel-commands" class="tab-panel">
+  <div class="section-header"><div class="section-title">SMTP Commands</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">📋 جميع الأوامر</div>
+    <table>
+      <tr><th>الأمر</th><th>الوظيفة</th><th>أهمية Pentest</th></tr>
+      <tr><td class="mono">HELO</td><td>تعريف نفسك — SMTP قديم</td><td style="color:var(--text2);">محدود</td></tr>
+      <tr><td class="mono">EHLO</td><td>تعريف نفسك — ESMTP، يعرض الميزات</td><td class="danger">يكشف VRFY وAUTH!</td></tr>
+      <tr><td class="mono">MAIL FROM</td><td>تحديد المرسل</td><td class="danger">Spoofing — أي إيميل مزيف</td></tr>
+      <tr><td class="mono">RCPT TO</td><td>تحديد المستلم</td><td style="color:var(--text2);">تحديد الهدف</td></tr>
+      <tr><td class="mono">DATA</td><td>بدء كتابة الإيميل (ينتهي بـ .)</td><td style="color:var(--text2);">محتوى الإيميل</td></tr>
+      <tr><td class="mono">VRFY</td><td>التحقق من وجود يوزر</td><td class="danger">User Enumeration 🎯</td></tr>
+      <tr><td class="mono">EXPN</td><td>عرض أعضاء mailing list</td><td class="danger">كشف أسماء + إيميلات</td></tr>
+      <tr><td class="mono">RSET</td><td>إلغاء الإيميل الحالي بدون قطع الاتصال</td><td style="color:var(--text2);">ابدأ من جديد</td></tr>
+      <tr><td class="mono">NOOP</td><td>ping للسيرفر — منع timeout</td><td style="color:var(--text2);">إبقاء الاتصال</td></tr>
+      <tr><td class="mono">QUIT</td><td>إنهاء الاتصال</td><td style="color:var(--text2);">إغلاق الجلسة</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 HELO vs EHLO</div>
+    <div class="grid-2">
+      <div>
+        <div class="label">HELO — قديم:</div>
+        <div class="code-block">HELO mail1.inlanefreight.htb
+
+<span class="ok">250 mail1.inlanefreight.htb</span>
+<span class="cmt">← يرجع الاسم فقط</span></div>
+      </div>
+      <div>
+        <div class="label">EHLO — حديث (ESMTP):</div>
+        <div class="code-block">EHLO mail1
+
+<span class="ok">250-mail1.inlanefreight.htb</span>
+<span class="val">250-PIPELINING</span>
+<span class="val">250-SIZE 10240000</span>
+<span class="val">250-VRFY</span>        <span class="cmt">← User Enum!</span>
+<span class="val">250-STARTTLS</span>
+<span class="val">250-AUTH PLAIN</span>
+<span class="ok">250 CHUNKING</span></div>
+      </div>
+    </div>
+    <div class="alert danger">🎯 VRFY في القائمة = User Enumeration مفعّل!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👤 VRFY — User Enumeration</div>
+    <div class="code-block"><span class="cmd">telnet 10.129.14.128 25</span>
+<span class="ok">220 ESMTP Server</span>
+
+<span class="cmd">VRFY root</span>
+<span class="ok">252 2.0.0 root</span>          <span class="cmt">← ممكن موجود</span>
+
+<span class="cmd">VRFY cry0l1t3</span>
+<span class="ok">252 2.0.0 cry0l1t3</span>      <span class="cmt">← ممكن موجود</span>
+
+<span class="cmd">VRFY aaaaaaaaaaaaaaaa</span>
+<span class="ok">252 2.0.0 aaaaaaaaaaaaa</span>  <span class="cmt">← السيرفر يكذب!</span></div>
+    <div class="alert warning">
+      ⚠️ كودات الرد:<br>
+      252 = "ممكن موجود" — مش دايماً صادق!<br>
+      250 = موجود 100%<br>
+      550 = غير موجود
+    </div>
+    <div class="alert danger">🎯 دايماً جرب VRFY على اسم عشوائي واضح — لو رجع 252 = السيرفر يكذب!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📤 إرسال إيميل كامل عبر telnet</div>
+    <div class="code-block"><span class="cmd">telnet 10.129.14.128 25</span>
+<span class="ok">220 ESMTP Server</span>
+
+<span class="cmt"># 1. تعريف نفسك</span>
+<span class="cmd">EHLO inlanefreight.htb</span>
+<span class="ok">250-mail1.inlanefreight.htb</span>
+
+<span class="cmt"># 2. تحديد المرسل (ممكن تزوّره!)</span>
+<span class="cmd">MAIL FROM: &lt;cry0l1t3@inlanefreight.htb&gt;</span>
+<span class="ok">250 2.1.0 Ok</span>
+
+<span class="cmt"># 3. تحديد المستلم</span>
+<span class="cmd">RCPT TO: &lt;mrb3n@inlanefreight.htb&gt; NOTIFY=success,failure</span>
+<span class="ok">250 2.1.5 Ok</span>
+
+<span class="cmt"># 4. بدء كتابة الإيميل</span>
+<span class="cmd">DATA</span>
+<span class="val">354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;</span>
+
+From: &lt;cry0l1t3@inlanefreight.htb&gt;
+To: &lt;mrb3n@inlanefreight.htb&gt;
+Subject: DB Access
+Date: Tue, 28 Sept 2021 16:32:51 +0200
+
+Hey man, the DB creds don't work. Did you change them?
+<span class="cmd">.</span>
+<span class="ok">250 2.0.0 Ok: queued as 6E1CF1681AB</span>
+
+<span class="cmd">QUIT</span>
+<span class="ok">221 2.0.0 Bye</span></div>
+    <div class="alert info">💡 النقطة . وحدها على سطر = نهاية الإيميل. NOTIFY=success,failure = أخبرني لو وصل أو لم يصل.</div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="panel-config" class="tab-panel">
+  <div class="section-header"><div class="section-title">الإعدادات — Postfix</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ملف الإعداد</div>
+    <div class="code-block"><span class="cmd">cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"</span>
+
+smtpd_banner = ESMTP Server       <span class="cmt">← ما يكشف الإصدار ✅</span>
+myhostname = mail1.inlanefreight.htb
+mynetworks = 127.0.0.0/8 10.129.0.0/16  <span class="cmt">← محدود ✅</span>
+mydestination = $myhostname, localhost
+masquerade_domains = $myhostname
+mailbox_size_limit = 0
+smtp_bind_address = <span class="err">0.0.0.0</span>        <span class="cmt">← يستمع على كل interfaces!</span>
+inet_protocols = ipv4
+smtpd_helo_restrictions = reject_invalid_hostname
+home_mailbox = /home/postfix</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 شرح الإعدادات المهمة</div>
+    <table>
+      <tr><th>الإعداد</th><th>الوظيفة</th><th>الخطر</th></tr>
+      <tr><td class="mono">smtpd_banner</td><td>ما يظهر عند الاتصال</td><td class="safe">لو بدون إصدار = جيد ✅</td></tr>
+      <tr><td class="mono">myhostname</td><td>اسم السيرفر</td><td class="safe">يكشف اسم الجهاز</td></tr>
+      <tr><td class="mono">mynetworks</td><td>من يقدر يرسل عبر السيرفر</td><td class="danger">0.0.0.0/0 = Open Relay 💀</td></tr>
+      <tr><td class="mono">smtp_bind_address</td><td>أي interface يستمع عليها</td><td class="warn">0.0.0.0 = كل interfaces</td></tr>
+      <tr><td class="mono">smtpd_helo_restrictions</td><td>قيود على HELO</td><td class="safe">reject_invalid = حماية</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- DANGER -->
+<div id="panel-danger" class="tab-panel">
+  <div class="section-header"><div class="section-title">Dangerous Settings</div><div class="section-header-line"></div></div>
+
+  <div class="card danger">
+    <div class="card-title">💀 Open Relay — أخطر إعداد</div>
+    <div class="grid-2">
+      <div>
+        <div class="label">الإعداد الخطير:</div>
+        <div class="code-block"><span class="err">mynetworks = 0.0.0.0/0</span>
+<span class="cmt">← أي IP في العالم
+يقدر يرسل عبر هاد السيرفر!</span></div>
+        <div class="alert danger">💀 Open Relay = أي شخص يرسل إيميلات مزيفة بدون authentication!</div>
+      </div>
+      <div>
+        <div class="label">الإعداد الآمن:</div>
+        <div class="code-block"><span class="ok">mynetworks = 127.0.0.0/8</span>
+<span class="ok">              10.129.0.0/16</span>
+<span class="cmt">← localhost والشبكة الداخلية فقط ✅</span></div>
+        <div class="alert success">✅ محدود = فقط الأجهزة الداخلية تقدر ترسل</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">🎭 Mail Spoofing + Phishing</div>
+    <div style="direction:ltr;display:flex;flex-direction:column;gap:4px;font-size:11px;">
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">Open Relay مفتوح</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">MAIL FROM: &lt;ceo@company.com&gt; ← مزيف!</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">RCPT TO: &lt;all-employees@company.com&gt;</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">"أرسل بياناتك البنكية فوراً" 💀</div>
+    </div>
+    <div class="alert danger">
+      🎯 أنواع الهجمات:<br>
+      Phishing = إيميل لعدد كبير<br>
+      Spear Phishing = مستهدف لشخص معين<br>
+      Whaling = مستهدف لمدير كبير (CEO/CFO)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🛡️ DKIM و SPF — الحماية الجزئية</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">SPF</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">يحدد أي IPs مسموح لها ترسل باسم الدومين. المستلم يتحقق — لو IP غريب = spam.</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">DKIM</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">توقيع رقمي على الإيميل. المستلم يتحقق إن الإيميل جاء فعلاً من هاد الدومين.</div>
+      </div>
+    </div>
+    <div class="alert warning">⚠️ SPF وDKIM على جانب المستلم فقط — ما يمنعون Open Relay! وجودهم لا يلغي خطر الـ Spoofing على سيرفرات ما عندها هاي الحماية.</div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="tab-panel">
+  <div class="section-header"><div class="section-title">الأدوات</div><div class="section-header-line"></div></div>
+
+  <div class="label">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('nmap',this)"><span class="tool-icon">🔍</span>Nmap</div>
+    <div class="tool-btn" onclick="showTool('telnet',this)"><span class="tool-icon">💻</span>telnet</div>
+    <div class="tool-btn" onclick="showTool('relay',this)"><span class="tool-icon">📡</span>Open Relay</div>
+  </div>
+
+  <div id="tool-nmap" class="tool-panel active">
+    <div class="card"><div class="card-title">🔍 Nmap على SMTP</div>
+    <div class="code-block"><span class="cmd">sudo nmap 10.129.14.128 -sC -sV -p25</span>
+
+PORT   STATE SERVICE VERSION
+<span class="ok">25/tcp open  smtp    Postfix smtpd</span>
+|_smtp-commands: mail1.inlanefreight.htb,
+  PIPELINING, SIZE 10240000,
+  <span class="val">VRFY</span>,       <span class="cmt">← User Enum مفعّل!</span>
+  ETRN, ENHANCEDSTATUSCODES,
+  8BITMIME, DSN, SMTPUTF8, CHUNKING</div>
+    <div class="alert danger">🎯 VRFY في القائمة = ابدأ User Enumeration فوراً!</div>
+    <div class="alert info">💡 smtpd_banner = "ESMTP Server" بدون إصدار — الـ admin أخفى الإصدار. لو ظهر "Postfix 3.4.13" = ابحث عن CVEs!</div>
+    </div>
+  </div>
+
+  <div id="tool-telnet" class="tool-panel">
+    <div class="card"><div class="card-title">💻 telnet — User Enumeration بـ VRFY</div>
+    <div class="code-block"><span class="cmd">telnet 10.129.14.128 25</span>
+<span class="ok">220 ESMTP Server</span>
+
+<span class="cmt"># أول شي — تحقق إذا السيرفر صادق:</span>
+<span class="cmd">VRFY xxxxxxxxxxxxxxxxxxx</span>
+<span class="ok">550 5.1.1 unknown</span>  <span class="cmt">← صادق ✅</span>
+<span class="cmt"># لو رجع 252 = السيرفر يكذب!</span>
+
+<span class="cmt"># بعدها جرب الأسماء الحقيقية:</span>
+<span class="cmd">VRFY root</span>
+<span class="ok">252 2.0.0 root</span>      <span class="cmt">← ممكن موجود</span>
+
+<span class="cmd">VRFY cry0l1t3</span>
+<span class="ok">252 2.0.0 cry0l1t3</span>  <span class="cmt">← ممكن موجود</span></div>
+    <div class="alert info">💡 استخدم EXPN للـ mailing lists:<br>EXPN support → يعرض كل الأعضاء</div>
+    </div>
+  </div>
+
+  <div id="tool-relay" class="tool-panel">
+    <div class="card"><div class="card-title">📡 Nmap — Open Relay Detection</div>
+    <div class="code-block"><span class="cmd">sudo nmap 10.129.14.128 -p25 --script smtp-open-relay -v</span>
+
+PORT   STATE SERVICE
+25/tcp open  smtp
+| smtp-open-relay: <span class="err">Server is an open relay (16/16 tests)</span>
+| MAIL FROM:&lt;&gt; -&gt; RCPT TO:&lt;relaytest@nmap.scanme.org&gt;
+| MAIL FROM:&lt;antispam@nmap.scanme.org&gt; -&gt; RCPT TO:&lt;...&gt;
+| MAIL FROM:&lt;antispam@ESMTP&gt; -&gt; RCPT TO:&lt;...&gt;
+|_ ... (16 tests total)</div>
+    <div class="alert danger">💀 16/16 = Open Relay كامل! أي شخص يرسل إيميلات مزيفة عبر هاد السيرفر</div>
+    <div class="alert info">💡 -v = verbose — يعرض تفاصيل كل test مش بس النتيجة</div>
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="tab-panel">
+  <div class="section-header"><div class="section-title">Methodology</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الـ SMTP Footprinting</div>
+    <div class="method-step">
+      <div class="method-num">1</div>
+      <div class="method-content">
+        <div class="method-title">Nmap Scan</div>
+        <div class="method-desc">اكتشاف Port 25 + إصدار + الأوامر المدعومة</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">sudo nmap -sC -sV -p25 TARGET</span></div>
+        <div class="alert info" style="margin-top:6px;">👀 VRFY في القائمة؟ → User Enum ممكن</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">2</div>
+      <div class="method-content">
+        <div class="method-title">EHLO — تحقق من الميزات</div>
+        <div class="method-desc">شوف كل الميزات المدعومة</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">telnet TARGET 25
+EHLO test</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">3</div>
+      <div class="method-content">
+        <div class="method-title">VRFY — User Enumeration</div>
+        <div class="method-desc">جرب أسماء من LinkedIn أو قوائم شائعة</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">VRFY root
+VRFY admin
+VRFY john.smith</span></div>
+        <div class="alert danger" style="margin-top:6px;">⚠️ تحقق أول بـ VRFY على اسم عشوائي — السيرفر ممكن يكذب!</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">4</div>
+      <div class="method-content">
+        <div class="method-title">Open Relay Check</div>
+        <div class="method-desc">تحقق إذا السيرفر Open Relay</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">sudo nmap TARGET -p25 --script smtp-open-relay -v</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">5</div>
+      <div class="method-content">
+        <div class="method-title">لو Open Relay — Mail Spoofing</div>
+        <div class="method-desc">ترسل إيميل مزيف بهوية موثوقة</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">MAIL FROM: &lt;ceo@company.com&gt;
+RCPT TO: &lt;target@company.com&gt;</span></div>
+        <div class="alert danger" style="margin-top:6px;">🎯 Spear Phishing بهوية المدير = أخطر هجوم!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="tab-panel">
+  <div class="section-header"><div class="section-title">Explained — Q&A</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🌐 الأساسيات</div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين Port 587 وPort 465؟</div>
+      <div class="convo-a">587 يستخدم STARTTLS — يبدأ الاتصال عادي بعدين يتحول للتشفير. 465 يستخدم SSL/TLS — مشفر من أول لحظة. الاثنين مشفرين بس وقت بدء التشفير مختلف.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ليش SMTP ما عنده authentication افتراضياً؟</div>
+      <div class="convo-a">لأنه بروتوكول قديم (1982) — صُمم قبل ما الأمان يكون أولوية. الحل جاء لاحقاً بـ ESMTP وAUTH PLAIN. لكن لا يزال بدون authentication للاتصالات بين السيرفرات.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎭 Mail Spoofing</div>
+    <div class="convo">
+      <div class="convo-q">هل SPF وDKIM يمنعون Mail Spoofing كلياً؟</div>
+      <div class="convo-a">لا — يعملان على جانب المستلم فقط. لو Open Relay موجود المهاجم يرسل الإيميل المزيف. بعض المستلمين SPF/DKIM يكشفه ويحطه في spam. بعضهم ما عندهم SPF/DKIM = الإيميل يوصل مباشرة!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين Phishing وSpear Phishing؟</div>
+      <div class="convo-a">Phishing = إيميل لعدد كبير من الناس بشكل عام "فزت بجائزة". Spear Phishing = مستهدف لشخص معين بمعلومات شخصية "عزيزي John، بخصوص مشروعك مع قسم IT". الثاني أخطر لأنه مقنع ومخصص.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👤 VRFY و EXPN</div>
+    <div class="convo">
+      <div class="convo-q">ليش لا نثق بنتائج VRFY دايماً؟</div>
+      <div class="convo-a">بعض السيرفرات مضبوطة تقول 252 حتى لو اليوزر ما موجود! جرب VRFY على اسم عشوائي واضح — لو رجع 252 = السيرفر يكذب وما تقدر تثق بالنتائج.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين VRFY وEXPN؟</div>
+      <div class="convo-a">VRFY يتحقق من يوزر واحد. EXPN يوسّع mailing list — يعرض كل الأشخاص فيها. EXPN أخطر لأنه يكشف أسماء + إيميلات دفعة وحدة.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📤 إرسال إيميل</div>
+    <div class="convo">
+      <div class="convo-q">ليش الإيميل ينتهي بنقطة . وحدها؟</div>
+      <div class="convo-a">لأن DATA يقول للسيرفر "ابدأ الاستقبال" — السيرفر ما يعرف متى تنتهي. النقطة على سطر وحدها = إشارة "انتهيت". بعدها السيرفر يرسل 250 Ok: queued.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش يعني NOTIFY=success,failure؟</div>
+      <div class="convo-a">يطلب من السيرفر إرسال إشعار: success = لو الإيميل وصل، failure = لو ما وصل. مفيد في pentest لتأكيد إن الإيميل المزيف وصل للهدف.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPanel(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showTool(name,btn){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
