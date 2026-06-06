@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNMP — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e14;--bg2:#0d1117;--bg3:#161b22;--border:#21262d;--border2:#30363d;--cyan:#00d4ff;--green:#00ff88;--red:#ff4444;--yellow:#ffd700;--purple:#9d4edd;--text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.back-bar{padding:12px 20px;border-bottom:1px solid var(--border2);}
+.back-btn{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border2);transition:all .2s;}
+.back-btn:hover{color:var(--cyan);border-color:var(--cyan);}
+.header{background:linear-gradient(180deg,#0a0e14 0%,#0d1117 100%);border-bottom:1px solid var(--cyan);padding:24px 20px 20px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--green),transparent);}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.header-label{font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.header-label::before{content:'► ';}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.badge{padding:3px 10px;border:1px solid;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.badge.cyan{border-color:var(--cyan);color:var(--cyan);}
+.badge.green{border-color:var(--green);color:var(--green);}
+.badge.red{border-color:var(--red);color:var(--red);}
+.badge.yellow{border-color:var(--yellow);color:var(--yellow);}
+.header-title{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:4px;color:#fff;text-transform:uppercase;}
+.header-title span{color:var(--cyan);}
+.header-sub{font-size:11px;color:var(--text2);letter-spacing:2px;margin-top:4px;}
+.facts-bar{display:flex;gap:0;border:1px solid var(--border2);margin:16px 0 0;flex-wrap:wrap;}
+.fact-item{flex:1;min-width:110px;padding:10px 14px;border-left:1px solid var(--border2);display:flex;flex-direction:column;gap:4px;}
+.fact-item:last-child{border-left:none;}
+.fact-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.fact-value{font-size:13px;color:var(--cyan);}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 20px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:14px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:all .2s;}
+.nav-btn:hover{color:var(--cyan);border-bottom-color:var(--cyan);}
+.nav-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,.05);}
+.content{padding:20px;max-width:1100px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border2);}
+.section-header-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.section-title{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.section-title::before{content:'[ ';}
+.section-title::after{content:' ]';}
+.card{background:var(--bg3);border:1px solid var(--border2);padding:16px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--cyan);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card-title{font-size:12px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code-block{background:#010409;border:1px solid var(--border);border-right:3px solid var(--cyan);padding:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.6;margin:8px 0;}
+.code-block .cmd{color:var(--cyan);}
+.code-block .ok{color:var(--green);}
+.code-block .err{color:var(--red);}
+.code-block .cmt{color:var(--text3);}
+.code-block .val{color:var(--yellow);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:#010409;color:var(--cyan);padding:8px 12px;text-align:right;border:1px solid var(--border2);letter-spacing:1px;text-transform:uppercase;font-size:10px;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);vertical-align:top;font-size:11px;}
+tr:nth-child(even) td{background:#0d1117;}
+tr:nth-child(odd) td{background:#010409;}
+td.mono{font-family:'Share Tech Mono',monospace;color:var(--cyan);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;direction:rtl;line-height:1.6;}
+.alert.danger{background:rgba(255,68,68,.08);border-color:var(--red);color:#ff8888;}
+.alert.success{background:rgba(0,255,136,.08);border-color:var(--green);color:#88ffbb;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--cyan);color:#88e4ff;}
+.alert.warning{background:rgba(255,215,0,.08);border-color:var(--yellow);color:#ffe566;}
+.tag{display:inline-block;padding:2px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin:2px;font-family:'Share Tech Mono',monospace;}
+.tag.cyan{background:rgba(0,212,255,.1);border:1px solid var(--cyan);color:var(--cyan);}
+.tag.green{background:rgba(0,255,136,.1);border:1px solid var(--green);color:var(--green);}
+.tag.red{background:rgba(255,68,68,.1);border:1px solid var(--red);color:var(--red);}
+.tag.yellow{background:rgba(255,215,0,.1);border:1px solid var(--yellow);color:var(--yellow);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:#010409;border:1px solid var(--border2);padding:12px;}
+.info-box-title{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:var(--bg3);border:1px solid var(--border2);padding:10px 8px;text-align:center;font-size:10px;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;}
+.chain-step .step-sub{color:var(--text3);font-size:9px;margin-top:2px;}
+.chain-step.highlight{border-color:var(--red);background:rgba(255,68,68,.05);}
+.chain-arrow{color:var(--cyan);font-size:14px;padding:0 4px;}
+.method-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.method-step:last-child{border-bottom:none;}
+.method-num{background:var(--cyan);color:#000;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+.method-content{flex:1;}
+.method-title{color:var(--cyan);font-size:12px;margin-bottom:4px;}
+.method-desc{color:var(--text2);font-size:11px;line-height:1.6;}
+.convo{margin:10px 0;}
+.convo-q{background:rgba(0,212,255,.05);border:1px solid var(--cyan);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--cyan);}
+.convo-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.convo-a{background:rgba(0,255,136,.05);border:1px solid var(--green);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.convo-a::before{content:'✅ الجواب: ';color:var(--green);}
+.label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0;}
+.tool-btn{background:var(--bg3);border:1px solid var(--border2);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);}
+.tool-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.05);}
+.tool-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.05);}
+.tool-btn .tool-icon{font-size:20px;margin-bottom:6px;display:block;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<div class="back-bar"><a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a></div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-label">HTB Academy · Module 112 · Section 12/21</div>
+    <div class="header-badges">
+      <span class="badge cyan">Footprinting</span>
+      <span class="badge green">UDP 161/162</span>
+      <span class="badge red">No Auth v1/v2</span>
+      <span class="badge yellow">Community String</span>
+    </div>
+  </div>
+  <div class="header-title"><span>SNMP</span> — SIMPLE NETWORK MANAGEMENT PROTOCOL</div>
+  <div class="header-sub">NETWORK MONITORING · MIB/OID · COMMUNITY STRINGS · ENUMERATION</div>
+  <div class="facts-bar">
+    <div class="fact-item"><div class="fact-label">Port Requests</div><div class="fact-value">UDP 161</div></div>
+    <div class="fact-item"><div class="fact-label">Port Traps</div><div class="fact-value">UDP 162</div></div>
+    <div class="fact-item"><div class="fact-label">Transport</div><div class="fact-value" style="color:var(--yellow);">UDP فقط</div></div>
+    <div class="fact-item"><div class="fact-label">Default String</div><div class="fact-value" style="color:var(--red);">"public" ⚠️</div></div>
+    <div class="fact-item"><div class="fact-label">v1/v2c Auth</div><div class="fact-value" style="color:var(--red);">لا يوجد!</div></div>
+    <div class="fact-item"><div class="fact-label">Best Version</div><div class="fact-value" style="color:var(--green);">SNMPv3</div></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('mib',this)">MIB & OID</button>
+  <button class="nav-btn" onclick="showPanel('versions',this)">Versions</button>
+  <button class="nav-btn" onclick="showPanel('config',this)">Config</button>
+  <button class="nav-btn" onclick="showPanel('danger',this)">Danger Settings</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="tab-panel active">
+  <div class="section-header"><div class="section-title">نظرة عامة</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ما هو SNMP؟</div>
+    <p style="color:var(--text);font-size:12px;line-height:1.8;margin-bottom:12px;">Simple Network Management Protocol — بروتوكول لمراقبة وإدارة أجهزة الشبكة عن بعد. يشمل: routers, switches, servers, IoT devices. يختلف عن SSH في إنه يراقب مئات الأجهزة دفعة وحدة بدون تدخل يدوي.</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">SNMP vs SSH</div>
+        <div style="font-size:11px;line-height:1.8;color:var(--text2);">
+          <div style="margin-bottom:8px;"><span style="color:var(--cyan);">SSH:</span> تدخل على جهاز واحد وتشغّل أوامر يدوياً</div>
+          <div><span style="color:var(--green);">SNMP:</span> تراقب وتدير مئات الأجهزة من مكان واحد تلقائياً</div>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">🔌 Ports</div>
+        <div style="display:flex;flex-direction:column;gap:8px;direction:ltr;margin-top:6px;">
+          <div style="background:rgba(0,212,255,.08);border:1px solid var(--cyan);padding:8px;font-size:11px;">
+            <div style="color:var(--cyan);">UDP 161 — Requests</div>
+            <div style="color:var(--text3);">أنت تسأل → الجهاز يجاوب (pull)</div>
+          </div>
+          <div style="background:rgba(255,215,0,.08);border:1px solid var(--yellow);padding:8px;font-size:11px;">
+            <div style="color:var(--yellow);">UDP 162 — Traps</div>
+            <div style="color:var(--text3);">الجهاز يرسل تنبيه تلقائياً (push)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="alert info">💡 SNMP يستخدم UDP لأنه أسرع وأخف — مراقبة مئات الأجهزة بدون TCP overhead</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 Community String — كلمة المرور البسيطة</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">Community String = باسورد بسيط للوصول للمعلومات. يمشي <strong style="color:var(--red);">clear-text</strong> على الشبكة!</p>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--green);padding:12px;">
+        <div style="color:var(--green);font-size:11px;margin-bottom:8px;">ro = Read Only</div>
+        <div class="code-block" style="margin:0;border-right:none;padding:6px 8px;font-size:10px;">rocommunity public</div>
+        <div style="color:var(--text3);font-size:10px;margin-top:6px;">قراءة المعلومات فقط</div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--red);padding:12px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:8px;">rw = Read + Write 💀</div>
+        <div class="code-block" style="margin:0;border-right:none;padding:6px 8px;font-size:10px;">rwcommunity public</div>
+        <div style="color:var(--text3);font-size:10px;margin-top:6px;">قراءة + تعديل الإعدادات!</div>
+      </div>
+    </div>
+    <div class="alert danger">⚠️ "public" هو الـ Community String الافتراضي — كثير admins ما يغيرونه!</div>
+  </div>
+</div>
+
+<!-- MIB & OID -->
+<div id="panel-mib" class="tab-panel">
+  <div class="section-header"><div class="section-title">MIB & OID</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">📚 MIB — Management Information Base</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">قاموس موحد لكل الأجهزة — يضمن إن Cisco, HP, Dell, Linux, Windows كلهم يتكلمون نفس اللغة مع SNMP.</p>
+    <div class="alert info">💡 MIB = كتاب الهاتف. OID = رقم الهاتف. تعرف الرقم → توصل للمعلومة على أي جهاز في العالم!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔢 OID — Object Identifier</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">عنوان رقمي ثابت وموحد لكل معلومة — شجرة هرمية مثل مسارات الملفات:</p>
+    <div class="code-block"><span class="cmt"># كل المعلومات تحت نفس "المجلد":</span>
+1.3.6.1.2.1.1.*  ← System Information
+
+1.3.6.1.2.1.1.1.0 = <span class="val">sysDescr</span>    <span class="cmt">← وصف النظام + OS version</span>
+1.3.6.1.2.1.1.3.0 = <span class="val">sysUpTime</span>   <span class="cmt">← وقت التشغيل</span>
+1.3.6.1.2.1.1.4.0 = <span class="val">sysContact</span>  <span class="cmt">← إيميل المسؤول 🎯</span>
+1.3.6.1.2.1.1.5.0 = <span class="val">sysName</span>     <span class="cmt">← اسم الجهاز</span>
+1.3.6.1.2.1.1.6.0 = <span class="val">sysLocation</span> <span class="cmt">← الموقع</span>
+
+1.3.6.1.2.1.25.6.* ← <span class="val">Installed Software</span>  <span class="cmt">← packages مثبتة 🎯</span>
+1.3.6.1.2.1.25.4.* ← <span class="val">Running Processes</span>   <span class="cmt">← processes شغّالة</span>
+1.3.6.1.2.1.2.*    ← <span class="val">Network Interfaces</span>  <span class="cmt">← الشبكة</span></div>
+    <div class="alert danger">🎯 من OID واحد تعرف: email المسؤول = username + كل software = CVEs محتملة!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 مثال من snmpwalk حقيقي</div>
+    <div class="code-block">iso.3.6.1.2.1.1.1.0 = STRING: <span class="ok">"Linux htb 5.11.0-34-generic x86_64"</span>
+iso.3.6.1.2.1.1.4.0 = STRING: <span class="val">"mrb3n@inlanefreight.htb"</span>  <span class="cmt">← username!</span>
+iso.3.6.1.2.1.1.5.0 = STRING: <span class="ok">"htb"</span>
+iso.3.6.1.2.1.1.6.0 = STRING: <span class="ok">"Sitting on the Dock of the Bay"</span>
+
+<span class="cmt"># Software مثبت:</span>
+iso.3.6.1.2.1.25.6.3.1.2.1235 = STRING: <span class="val">"proftpd-basic_1.3.6c"</span>  <span class="cmt">← FTP!</span>
+iso.3.6.1.2.1.25.6.3.1.2.1243 = STRING: <span class="ok">"python3_3.8.2"</span>
+iso.3.6.1.2.1.25.6.3.1.2.1234 = STRING: <span class="ok">"procps_2:3.3.16"</span></div>
+    <div class="alert danger">🎯 mrb3n@inlanefreight.htb = username للـ brute force على كل الخدمات! proftpd = FTP server مثبت = هدف جديد!</div>
+  </div>
+</div>
+
+<!-- VERSIONS -->
+<div id="panel-versions" class="tab-panel">
+  <div class="section-header"><div class="section-title">إصدارات SNMP</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">📋 المقارنة الكاملة</div>
+    <table>
+      <tr><th>الإصدار</th><th>Authentication</th><th>تشفير</th><th>الخطر</th></tr>
+      <tr>
+        <td><span class="tag red">SNMPv1</span></td>
+        <td class="danger">لا يوجد!</td>
+        <td class="danger">لا — clear-text</td>
+        <td class="danger">أي شخص يقرأ ويعدل</td>
+      </tr>
+      <tr>
+        <td><span class="tag yellow">SNMPv2c</span></td>
+        <td class="warn">Community String فقط</td>
+        <td class="danger">لا — clear-text</td>
+        <td class="danger">String قابل للـ sniffing</td>
+      </tr>
+      <tr>
+        <td><span class="tag green">SNMPv3</span></td>
+        <td class="safe">username + password ✅</td>
+        <td class="safe">نعم — pre-shared key ✅</td>
+        <td class="safe">الأأمن — بس أصعب إعداد</td>
+      </tr>
+    </table>
+    <div class="alert warning">⚠️ كثير شركات لا تزال على v2c لأن التحديث لـ v3 معقد ويحتاج خبرة وتغيير مئات الأجهزة!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Traps — Port 162</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">Port 161 — Pull (عادي)</div>
+        <div style="direction:ltr;font-size:11px;line-height:1.8;color:var(--text2);">
+          أنت تسأل → الجهاز يجاوب<br>
+          "إيش CPU usage؟" → "45%"
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Port 162 — Push (Traps)</div>
+        <div style="direction:ltr;font-size:11px;line-height:1.8;color:var(--text2);">
+          الجهاز يرسل تلقائياً بدون طلب<br>
+          "تنبيه: CPU وصل 95%!"<br>
+          "تنبيه: خلل في الشبكة!"
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="panel-config" class="tab-panel">
+  <div class="section-header"><div class="section-title">الإعدادات — snmpd.conf</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ملف الإعداد الافتراضي</div>
+    <div class="code-block"><span class="cmd">cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'</span>
+
+sysLocation    Sitting on the Dock of the Bay
+sysContact     Me &lt;me@example.org&gt;
+sysServices    72
+master         agentx
+agentaddress   127.0.0.1,[::1]
+
+view systemonly included .1.3.6.1.2.1.1
+view systemonly included .1.3.6.1.2.1.25.1
+
+<span class="ok">rocommunity  public  default  -V systemonly</span>  <span class="cmt">← قراءة فقط ✅</span>
+<span class="ok">rocommunity6 public  default  -V systemonly</span>  <span class="cmt">← IPv6</span>
+<span class="ok">rouser authPrivUser authpriv -V systemonly</span>   <span class="cmt">← SNMPv3 user</span></div>
+    <div class="alert info">💡 -V systemonly = محدود لمعلومات النظام الأساسية فقط — هاد نسبياً آمن</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 شرح الإعدادات</div>
+    <table>
+      <tr><th>الإعداد</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">sysLocation</td><td>موقع الجهاز — يظهر في SNMP queries</td></tr>
+      <tr><td class="mono">sysContact</td><td>إيميل المسؤول — مهم في الـ pentest!</td></tr>
+      <tr><td class="mono">agentaddress</td><td>على أي IP يستمع SNMP</td></tr>
+      <tr><td class="mono">rocommunity</td><td class="safe">قراءة فقط بـ Community String</td></tr>
+      <tr><td class="mono">rwcommunity</td><td class="danger">قراءة + كتابة — خطير!</td></tr>
+      <tr><td class="mono">-V systemonly</td><td class="safe">تحديد الـ OIDs المتاحة</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- DANGER -->
+<div id="panel-danger" class="tab-panel">
+  <div class="section-header"><div class="section-title">Dangerous Settings</div><div class="section-header-line"></div></div>
+
+  <div class="card danger">
+    <div class="card-title">💀 الإعدادات الخطيرة</div>
+    <table>
+      <tr><th>الإعداد</th><th>الخطر</th></tr>
+      <tr><td class="mono">rwuser noauth</td><td class="danger">وصول كامل للـ OID tree بدون authentication!</td></tr>
+      <tr><td class="mono">rwcommunity public 0.0.0.0</td><td class="danger">قراءة + كتابة من أي IP في العالم!</td></tr>
+      <tr><td class="mono">rwcommunity6 public ::</td><td class="danger">نفس الخطر على IPv6</td></tr>
+    </table>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💥 ليش rw خطير جداً؟</div>
+    <div style="direction:ltr;display:flex;flex-direction:column;gap:4px;font-size:11px;">
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">rwcommunity public 0.0.0.0 مفعّل</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">تغيير routing tables على الـ router</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">تغيير الـ Community String</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">تعطيل الجهاز بالكامل</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">تحكم كامل بالشبكة 💥</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="tab-panel">
+  <div class="section-header"><div class="section-title">الأدوات</div><div class="section-header-line"></div></div>
+
+  <div class="label">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('snmpwalk',this)"><span class="tool-icon">🚶</span>snmpwalk</div>
+    <div class="tool-btn" onclick="showTool('onesixtyone',this)"><span class="tool-icon">🔍</span>onesixtyone</div>
+    <div class="tool-btn" onclick="showTool('braa',this)"><span class="tool-icon">⚡</span>braa</div>
+  </div>
+
+  <!-- SNMPWALK -->
+  <div id="tool-snmpwalk" class="tool-panel active">
+    <div class="card"><div class="card-title">🚶 snmpwalk — الأشمل</div>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">يمشي على كل الـ OID tree ويطلع كل المعلومات المتاحة:</p>
+    <div class="code-block"><span class="cmd">snmpwalk -v2c -c public 10.129.14.128</span>
+
+<span class="cmt"># النتيجة:</span>
+iso.3.6.1.2.1.1.1.0 = <span class="ok">"Linux htb 5.11.0-34-generic x86_64"</span>
+iso.3.6.1.2.1.1.4.0 = <span class="val">"mrb3n@inlanefreight.htb"</span>  <span class="cmt">← email المسؤول!</span>
+iso.3.6.1.2.1.1.5.0 = <span class="ok">"htb"</span>
+iso.3.6.1.2.1.25.6.3.1.2.1235 = <span class="val">"proftpd-basic_1.3.6c"</span>  <span class="cmt">← FTP installed!</span>
+iso.3.6.1.2.1.25.6.3.1.2.1243 = <span class="ok">"python3_3.8.2"</span></div>
+    <div class="alert info">
+      💡 Flags:<br>
+      -v2c = إصدار SNMPv2c<br>
+      -c public = Community String<br>
+    </div>
+    </div>
+  </div>
+
+  <!-- ONESIXTYONE -->
+  <div id="tool-onesixtyone" class="tool-panel">
+    <div class="card"><div class="card-title">🔍 onesixtyone — Brute Force Community String</div>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">لو ما تعرف الـ Community String — جرب قائمة:</p>
+    <div class="label">التثبيت:</div>
+    <div class="code-block"><span class="cmd">sudo apt install onesixtyone</span></div>
+    <div class="label">الاستخدام:</div>
+    <div class="code-block"><span class="cmd">onesixtyone -c /opt/useful/seclists/Discovery/SNMP/snmp.txt 10.129.14.128</span>
+
+Scanning 1 hosts, 3220 communities
+<span class="ok">10.129.14.128 [public] Linux htb 5.11.0-37-generic</span>
+<span class="cmt">              ^^^^^^^^</span>
+<span class="cmt">              لاقى Community String = "public"!</span></div>
+    <div class="alert success">✅ لاقيت الـ Community String → هلأ استخدم snmpwalk أو braa</div>
+    </div>
+  </div>
+
+  <!-- BRAA -->
+  <div id="tool-braa" class="tool-panel">
+    <div class="card"><div class="card-title">⚡ braa — أسرع من snmpwalk</div>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">بعد ما تعرف الـ Community String — يجيب المعلومات بشكل مختصر وأسرع:</p>
+    <div class="label">التثبيت:</div>
+    <div class="code-block"><span class="cmd">sudo apt install braa</span></div>
+    <div class="label">الاستخدام:</div>
+    <div class="code-block"><span class="cmt"># Syntax:</span>
+<span class="cmd">braa &lt;community string&gt;@&lt;IP&gt;:.1.3.6.*</span>
+
+<span class="cmt"># مثال:</span>
+<span class="cmd">braa public@10.129.14.128:.1.3.6.*</span>
+
+<span class="ok">10.129.14.128:20ms:.1.3.6.1.2.1.1.1.0:Linux htb 5.11.0-34-generic x86_64</span>
+<span class="ok">10.129.14.128:20ms:.1.3.6.1.2.1.1.4.0:</span><span class="val">mrb3n@inlanefreight.htb</span>
+<span class="ok">10.129.14.128:20ms:.1.3.6.1.2.1.1.5.0:htb</span>
+<span class="ok">10.129.14.128:20ms:.1.3.6.1.2.1.1.6.0:US</span></div>
+    <div class="alert info">💡 braa أسرع من snmpwalk — مناسب لو عندك أجهزة كثيرة تفحصها</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title">📊 ترتيب استخدام الأدوات</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">onesixtyone</div><div class="step-sub">اكتشف Community String</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🚶</div><div class="step-name">snmpwalk</div><div class="step-sub">كل المعلومات شامل</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step highlight"><div class="step-icon">⚡</div><div class="step-name">braa</div><div class="step-sub">سريع على أجهزة كثيرة</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="tab-panel">
+  <div class="section-header"><div class="section-title">Methodology</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الـ SNMP Footprinting</div>
+    <div class="method-step">
+      <div class="method-num">1</div>
+      <div class="method-content">
+        <div class="method-title">Nmap — اكتشاف SNMP</div>
+        <div class="method-desc">تحقق إذا SNMP مفتوح</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">sudo nmap -sU -p161 TARGET</span></div>
+        <div class="alert info" style="margin-top:6px;">💡 -sU = UDP scan (SNMP يشتغل على UDP)</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">2</div>
+      <div class="method-content">
+        <div class="method-title">onesixtyone — اكتشاف Community String</div>
+        <div class="method-desc">جرب "public" أول، لو ما شتغل استخدم wordlist</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">onesixtyone -c /opt/useful/seclists/Discovery/SNMP/snmp.txt TARGET</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">3</div>
+      <div class="method-content">
+        <div class="method-title">snmpwalk — جمع كل المعلومات</div>
+        <div class="method-desc">بعد ما تعرف الـ Community String</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">snmpwalk -v2c -c public TARGET</span></div>
+        <div class="alert danger" style="margin-top:6px;">
+          🎯 ابحث عن:<br>
+          • sysContact = email المسؤول = username<br>
+          • Installed packages = CVEs محتملة<br>
+          • Running processes = خدمات مثبتة
+        </div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">4</div>
+      <div class="method-content">
+        <div class="method-title">تحقق من rw access</div>
+        <div class="method-desc">لو rwcommunity مفعّل = تحكم بالجهاز!</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">snmpwalk -v2c -c private TARGET</span>
+<span class="cmt"># جرب "private" كـ rw community string</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="tab-panel">
+  <div class="section-header"><div class="section-title">Explained — Q&A</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🌐 الأساسيات</div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين SNMP وSSH؟</div>
+      <div class="convo-a">SSH = تدخل على جهاز واحد وتشغّل أوامر يدوياً. SNMP = تراقب وتدير مئات الأجهزة من مكان واحد تلقائياً. مسؤول الشبكة بدل ما يدخل SSH على 100 جهاز، يفتح برنامج SNMP واحد يشوف كلهم.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ليش SNMP يستخدم UDP بدل TCP؟</div>
+      <div class="convo-a">لأنه أسرع وأخف. SNMP يراقب مئات الأجهزة — لو TCP كل جهاز يحتاج handshake = overhead ضخم. كمان لو packet تنبيه ضاعت، ما مهم — الـ packet الجاية راح تقول نفس الشيء أو أسوأ.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔢 MIB و OID</div>
+    <div class="convo">
+      <div class="convo-q">هل أرقام OID تختلف بين Cisco وLinux؟</div>
+      <div class="convo-a">لا — الأرقام ثابتة وموحدة على كل الأجهزة! 1.3.6.1.2.1.1.4.0 = sysContact على Cisco وLinux وWindows. هاد هو هدف MIB — معيار عالمي موحد. الاستثناء: 1.3.6.1.4.1.* = أرقام خاصة بكل شركة.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 Community String</div>
+    <div class="convo">
+      <div class="convo-q">ليش "public" خطير كـ Community String؟</div>
+      <div class="convo-a">لأنه الافتراضي على معظم الأجهزة وكثير admins ما يغيرونه. كمان يمشي clear-text على الشبكة — أي sniffing يكشفه. snmpwalk -v2c -c public TARGET = تقرأ كل معلومات الجهاز بدون أي باسورد حقيقي!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين ro وrw؟</div>
+      <div class="convo-a">ro = read only: تقرأ المعلومات فقط. rw = read write: تقرأ وتعدّل إعدادات الجهاز! لو rwcommunity مفعّل تقدر تغير routing tables، تعطّل الجهاز، تغير الـ community string نفسه = تحكم كامل بالشبكة.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPanel(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showTool(name,btn){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
