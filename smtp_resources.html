@@ -466,6 +466,7 @@ home_mailbox = /home/postfix</div>
     <div class="tool-btn active" onclick="showTool('nmap',this)"><span class="tool-icon">🔍</span>Nmap</div>
     <div class="tool-btn" onclick="showTool('telnet',this)"><span class="tool-icon">💻</span>telnet</div>
     <div class="tool-btn" onclick="showTool('relay',this)"><span class="tool-icon">📡</span>Open Relay</div>
+    <div class="tool-btn" onclick="showTool('userenum',this)"><span class="tool-icon">👤</span>User Enum</div>
   </div>
 
   <div id="tool-nmap" class="tool-panel active">
@@ -517,6 +518,39 @@ PORT   STATE SERVICE
 |_ ... (16 tests total)</div>
     <div class="alert danger">💀 16/16 = Open Relay كامل! أي شخص يرسل إيميلات مزيفة عبر هاد السيرفر</div>
     <div class="alert info">💡 -v = verbose — يعرض تفاصيل كل test مش بس النتيجة</div>
+    </div>
+  </div>
+
+  <div id="tool-userenum" class="tool-panel">
+    <div class="card"><div class="card-title">👤 smtp-user-enum — User Enumeration</div>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">أداة متخصصة لـ SMTP User Enumeration باستخدام VRFY أو EXPN أو RCPT:</p>
+    <div class="label">الأمر الأساسي:</div>
+    <div class="code-block"><span class="cmd">smtp-user-enum -M VRFY -U footprinting-wordlist.txt -t 10.129.14.128</span>
+
+######## Scan started ########
+<span class="ok">10.129.14.128: robin exists</span>
+<span class="ok">10.129.14.128: admin exists</span>
+10.129.14.128: john &lt;no result&gt;
+######## 2 results ########</div>
+    <div class="label">مع verbose وtimeout:</div>
+    <div class="code-block"><span class="cmd">smtp-user-enum -M VRFY -U footprinting-wordlist.txt -t 10.129.14.128 -v -w 15</span>
+
+<span class="cmt"># -v  = verbose (شوف المحاولات)</span>
+<span class="cmt"># -w 15 = انتظر 15 ثانية لكل رد (للسيرفرات البطيئة)</span></div>
+    <div class="label">خيارات الـ Method:</div>
+    <table>
+      <tr><th>Flag</th><th>الطريقة</th><th>الاستخدام</th></tr>
+      <tr><td class="mono">-M VRFY</td><td>VRFY command</td><td>الأكثر شيوعاً</td></tr>
+      <tr><td class="mono">-M EXPN</td><td>EXPN command</td><td>للـ mailing lists</td></tr>
+      <tr><td class="mono">-M RCPT</td><td>RCPT TO command</td><td>لو VRFY مغلق</td></tr>
+    </table>
+    <div class="alert warning">
+      ⚠️ تنبيهات مهمة:<br>
+      • HTB توفر wordlist خاصة في Resources — استخدمها أول<br>
+      • usernames غالباً = أسماء الموظفين (john.smith, jsmith)<br>
+      • بعض السيرفرات بطيئة — زد الـ timeout بـ -w<br>
+      • تحقق يدوياً أول: VRFY على اسم عشوائي — لو رجع 252 = السيرفر يكذب!
+    </div>
     </div>
   </div>
 </div>
