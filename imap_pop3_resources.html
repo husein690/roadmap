@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMAP/POP3 — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e14;--bg2:#0d1117;--bg3:#161b22;--border:#21262d;--border2:#30363d;--cyan:#00d4ff;--green:#00ff88;--red:#ff4444;--yellow:#ffd700;--purple:#9d4edd;--text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.back-bar{padding:12px 20px;border-bottom:1px solid var(--border2);}
+.back-btn{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border2);transition:all .2s;}
+.back-btn:hover{color:var(--cyan);border-color:var(--cyan);}
+.header{background:linear-gradient(180deg,#0a0e14 0%,#0d1117 100%);border-bottom:1px solid var(--cyan);padding:24px 20px 20px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--green),transparent);}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.header-label{font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.header-label::before{content:'► ';}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.badge{padding:3px 10px;border:1px solid;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.badge.cyan{border-color:var(--cyan);color:var(--cyan);}
+.badge.green{border-color:var(--green);color:var(--green);}
+.badge.red{border-color:var(--red);color:var(--red);}
+.badge.yellow{border-color:var(--yellow);color:var(--yellow);}
+.header-title{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:4px;color:#fff;text-transform:uppercase;}
+.header-title span{color:var(--cyan);}
+.header-sub{font-size:11px;color:var(--text2);letter-spacing:2px;margin-top:4px;}
+.facts-bar{display:flex;gap:0;border:1px solid var(--border2);margin:16px 0 0;flex-wrap:wrap;}
+.fact-item{flex:1;min-width:110px;padding:10px 14px;border-left:1px solid var(--border2);display:flex;flex-direction:column;gap:4px;}
+.fact-item:last-child{border-left:none;}
+.fact-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.fact-value{font-size:13px;color:var(--cyan);}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 20px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:14px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:all .2s;}
+.nav-btn:hover{color:var(--cyan);border-bottom-color:var(--cyan);}
+.nav-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,.05);}
+.content{padding:20px;max-width:1100px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border2);}
+.section-header-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.section-title{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.section-title::before{content:'[ ';}
+.section-title::after{content:' ]';}
+.card{background:var(--bg3);border:1px solid var(--border2);padding:16px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--cyan);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card-title{font-size:12px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code-block{background:#010409;border:1px solid var(--border);border-right:3px solid var(--cyan);padding:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.6;margin:8px 0;}
+.code-block .cmd{color:var(--cyan);}
+.code-block .ok{color:var(--green);}
+.code-block .err{color:var(--red);}
+.code-block .cmt{color:var(--text3);}
+.code-block .val{color:var(--yellow);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:#010409;color:var(--cyan);padding:8px 12px;text-align:right;border:1px solid var(--border2);letter-spacing:1px;text-transform:uppercase;font-size:10px;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);vertical-align:top;font-size:11px;}
+tr:nth-child(even) td{background:#0d1117;}
+tr:nth-child(odd) td{background:#010409;}
+td.mono{font-family:'Share Tech Mono',monospace;color:var(--cyan);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;direction:rtl;line-height:1.6;}
+.alert.danger{background:rgba(255,68,68,.08);border-color:var(--red);color:#ff8888;}
+.alert.success{background:rgba(0,255,136,.08);border-color:var(--green);color:#88ffbb;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--cyan);color:#88e4ff;}
+.alert.warning{background:rgba(255,215,0,.08);border-color:var(--yellow);color:#ffe566;}
+.tag{display:inline-block;padding:2px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin:2px;font-family:'Share Tech Mono',monospace;}
+.tag.cyan{background:rgba(0,212,255,.1);border:1px solid var(--cyan);color:var(--cyan);}
+.tag.green{background:rgba(0,255,136,.1);border:1px solid var(--green);color:var(--green);}
+.tag.red{background:rgba(255,68,68,.1);border:1px solid var(--red);color:var(--red);}
+.tag.yellow{background:rgba(255,215,0,.1);border:1px solid var(--yellow);color:var(--yellow);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:#010409;border:1px solid var(--border2);padding:12px;}
+.info-box-title{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.method-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.method-step:last-child{border-bottom:none;}
+.method-num{background:var(--cyan);color:#000;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+.method-content{flex:1;}
+.method-title{color:var(--cyan);font-size:12px;margin-bottom:4px;}
+.method-desc{color:var(--text2);font-size:11px;line-height:1.6;}
+.convo{margin:10px 0;}
+.convo-q{background:rgba(0,212,255,.05);border:1px solid var(--cyan);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--cyan);}
+.convo-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.convo-a{background:rgba(0,255,136,.05);border:1px solid var(--green);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.convo-a::before{content:'✅ الجواب: ';color:var(--green);}
+.label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0;}
+.tool-btn{background:var(--bg3);border:1px solid var(--border2);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);}
+.tool-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.05);}
+.tool-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.05);}
+.tool-btn .tool-icon{font-size:20px;margin-bottom:6px;display:block;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="back-bar"><a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a></div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-label">HTB Academy · Module 112 · Section 11/21</div>
+    <div class="header-badges">
+      <span class="badge cyan">Footprinting</span>
+      <span class="badge green">Port 143/993</span>
+      <span class="badge yellow">Port 110/995</span>
+      <span class="badge red">Credential Leak</span>
+    </div>
+  </div>
+  <div class="header-title"><span>IMAP</span> / <span>POP3</span></div>
+  <div class="header-sub">EMAIL RETRIEVAL · COMMANDS · DEBUG SETTINGS · FOOTPRINTING</div>
+  <div class="facts-bar">
+    <div class="fact-item"><div class="fact-label">IMAP Port</div><div class="fact-value">143 / 993</div></div>
+    <div class="fact-item"><div class="fact-label">POP3 Port</div><div class="fact-value">110 / 995</div></div>
+    <div class="fact-item"><div class="fact-label">TLS Ports</div><div class="fact-value" style="color:var(--green);">993, 995</div></div>
+    <div class="fact-item"><div class="fact-label">Linux Server</div><div class="fact-value">Dovecot</div></div>
+    <div class="fact-item"><div class="fact-label">IMAP vs POP3</div><div class="fact-value" style="color:var(--yellow);">sync vs download</div></div>
+    <div class="fact-item"><div class="fact-label">Danger</div><div class="fact-value" style="color:var(--red);">auth_debug 💀</div></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('commands',this)">Commands</button>
+  <button class="nav-btn" onclick="showPanel('danger',this)">Danger Settings</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="tab-panel active">
+  <div class="section-header"><div class="section-title">نظرة عامة</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">IMAP vs POP3 — الفرق الأساسي</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--cyan);padding:14px;">
+        <div style="color:var(--cyan);font-size:13px;font-weight:bold;margin-bottom:10px;">📬 IMAP — حديث</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8;">
+          ✅ الإيميلات تبقى على السيرفر<br>
+          ✅ تزامن كامل بين كل الأجهزة<br>
+          ✅ يدعم المجلدات والتنظيم<br>
+          ✅ بحث مباشر على السيرفر<br>
+          ✅ أكثر من مستخدم في نفس الوقت<br>
+          ⚠️ يحتاج مساحة أكبر على السيرفر
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--cyan);">Port 143 / 993 (TLS)</div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--yellow);padding:14px;">
+        <div style="color:var(--yellow);font-size:13px;font-weight:bold;margin-bottom:10px;">📥 POP3 — قديم</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8;">
+          ❌ يحمّل الإيميلات ويحذفها من السيرفر<br>
+          ❌ لا يدعم المجلدات<br>
+          ❌ لا تزامن بين الأجهزة<br>
+          ✅ Privacy أكثر — ما في شيء على السيرفر<br>
+          ✅ يشتغل بدون اتصال دائم
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--yellow);">Port 110 / 995 (TLS)</div>
+      </div>
+    </div>
+    <div class="alert info">💡 Gmail, Outlook, Yahoo — كلهم يستخدمون IMAP للتزامن بين الأجهزة</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📧 علاقة SMTP + IMAP مع بعض</div>
+    <div style="direction:ltr;display:flex;flex-direction:column;gap:4px;font-size:11px;">
+      <div style="background:rgba(0,212,255,.08);border:1px solid var(--cyan);padding:8px 12px;color:var(--cyan);">أنت ترسل إيميل من التليفون</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">SMTP يرسله للمستلم</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">IMAP يحفظ نسخة في مجلد "Sent"</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:rgba(0,255,136,.08);border:1px solid var(--green);padding:8px 12px;color:var(--green);">تفتح الكمبيوتر = الإيميل المرسل موجود هناك كمان ✅</div>
+    </div>
+    <div class="alert info">💡 SMTP = للإرسال فقط. IMAP = للحفظ والتزامن. الاثنين مع بعض = تجربة كاملة</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔌 Ports</div>
+    <table>
+      <tr><th>البروتوكول</th><th>Port عادي</th><th>Port مشفر (TLS)</th></tr>
+      <tr><td style="color:var(--cyan);">IMAP</td><td class="mono">143</td><td><span class="tag green">993</span></td></tr>
+      <tr><td style="color:var(--yellow);">POP3</td><td class="mono">110</td><td><span class="tag green">995</span></td></tr>
+    </table>
+    <div class="alert warning">⚠️ بدون TLS = كل إيميلاتك وباسورداتك تمشي clear-text على الشبكة!</div>
+  </div>
+</div>
+
+<!-- COMMANDS -->
+<div id="panel-commands" class="tab-panel">
+  <div class="section-header"><div class="section-title">Commands</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">📋 IMAP Commands</div>
+    <div class="alert info">💡 كل أمر IMAP يبدأ برقم — عشان السيرفر يعرف أي رد لأي أمر لو أرسلت أوامر كثيرة دفعة وحدة!</div>
+    <table>
+      <tr><th>الأمر</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">1 LOGIN user pass</td><td>تسجيل الدخول</td></tr>
+      <tr><td class="mono">1 LIST "" *</td><td>عرض كل المجلدات</td></tr>
+      <tr><td class="mono">1 LSUB "" *</td><td>عرض المجلدات المشترك فيها (للمزامنة)</td></tr>
+      <tr><td class="mono">1 SELECT INBOX</td><td>فتح مجلد معين للوصول للإيميلات</td></tr>
+      <tr><td class="mono">1 FETCH 1 all</td><td>جيب كل تفاصيل الإيميل رقم 1</td></tr>
+      <tr><td class="mono">1 CREATE "Work"</td><td>إنشاء مجلد جديد</td></tr>
+      <tr><td class="mono">1 DELETE "Work"</td><td>حذف مجلد</td></tr>
+      <tr><td class="mono">1 RENAME "Old" "New"</td><td>تغيير اسم مجلد</td></tr>
+      <tr><td class="mono">1 UNSELECT INBOX</td><td>الخروج من المجلد المحدد</td></tr>
+      <tr><td class="mono">1 CLOSE</td><td>حذف الإيميلات المعلّمة للحذف</td></tr>
+      <tr><td class="mono">1 LOGOUT</td><td>إغلاق الاتصال</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 POP3 Commands</div>
+    <table>
+      <tr><th>الأمر</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">USER username</td><td>تعريف اليوزر</td></tr>
+      <tr><td class="mono">PASS password</td><td>الباسورد</td></tr>
+      <tr><td class="mono">STAT</td><td>عدد الإيميلات + الحجم الكلي</td></tr>
+      <tr><td class="mono">LIST</td><td>قائمة الإيميلات مع حجم كل واحد</td></tr>
+      <tr><td class="mono">RETR id</td><td>تحميل إيميل معين</td></tr>
+      <tr><td class="mono">DELE id</td><td>حذف إيميل</td></tr>
+      <tr><td class="mono">CAPA</td><td>إيش يدعم السيرفر؟</td></tr>
+      <tr><td class="mono">RSET</td><td>إلغاء الحذف المعلّق</td></tr>
+      <tr><td class="mono">QUIT</td><td>إغلاق الاتصال</td></tr>
+    </table>
+    <div class="alert info">
+      💡 STAT vs LIST:<br>
+      STAT → عدد + حجم كلي (مثلاً: 2 إيميل، 1840 bytes)<br>
+      LIST → حجم كل إيميل لحاله (1: 922 bytes, 2: 918 bytes)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 مثال عملي — IMAP كامل</div>
+    <div class="code-block"><span class="cmt"># الاتصال:</span>
+<span class="cmd">openssl s_client -connect 10.129.14.128:imaps</span>
+<span class="ok">* OK IMAP4 ready</span>
+
+<span class="cmt"># تسجيل دخول:</span>
+<span class="cmd">1 LOGIN cry0l1t3 1234</span>
+<span class="ok">1 OK Logged in</span>
+
+<span class="cmt"># شوف المجلدات:</span>
+<span class="cmd">1 LIST "" *</span>
+<span class="ok">* LIST (\HasNoChildren) "." Important</span>
+<span class="ok">* LIST (\HasNoChildren) "." INBOX</span>
+
+<span class="cmt"># افتح INBOX:</span>
+<span class="cmd">1 SELECT INBOX</span>
+<span class="ok">* 3 EXISTS  ← 3 إيميلات!</span>
+
+<span class="cmt"># اقرأ إيميل رقم 1:</span>
+<span class="cmd">1 FETCH 1 all</span>
+<span class="ok">From: john@company.com</span>
+<span class="ok">Subject: DB Credentials</span>
+<span class="val">Username: admin  Password: P@ssw0rd123</span>
+
+<span class="cmd">1 LOGOUT</span>
+<span class="ok">* BYE Logging out</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 مثال عملي — POP3 كامل</div>
+    <div class="code-block"><span class="cmt"># الاتصال:</span>
+<span class="cmd">openssl s_client -connect 10.129.14.128:pop3s</span>
+<span class="ok">+OK POP3 Server ready</span>
+
+<span class="cmt"># تسجيل دخول:</span>
+<span class="cmd">USER cry0l1t3</span>
+<span class="ok">+OK</span>
+<span class="cmd">PASS 1234</span>
+<span class="ok">+OK Logged in</span>
+
+<span class="cmt"># إحصائيات:</span>
+<span class="cmd">STAT</span>
+<span class="ok">+OK 2 1840</span>  <span class="cmt">← 2 إيميل، 1840 bytes</span>
+
+<span class="cmt"># قائمة تفصيلية:</span>
+<span class="cmd">LIST</span>
+<span class="ok">+OK 2 messages</span>
+<span class="ok">1 922</span>
+<span class="ok">2 918</span>
+
+<span class="cmt"># قراءة إيميل:</span>
+<span class="cmd">RETR 1</span>
+<span class="ok">+OK message follows</span>
+<span class="ok">From: john@company.com</span>
+<span class="val">Subject: Confidential</span>
+
+<span class="cmd">QUIT</span>
+<span class="ok">+OK Bye</span></div>
+  </div>
+</div>
+
+<!-- DANGER -->
+<div id="panel-danger" class="tab-panel">
+  <div class="section-header"><div class="section-title">Dangerous Settings</div><div class="section-header-line"></div></div>
+
+  <div class="card danger">
+    <div class="card-title">💀 إعدادات الـ Debug الخطيرة</div>
+    <table>
+      <tr><th>الإعداد</th><th>ما يسجله في الـ Log</th><th>الخطر</th></tr>
+      <tr>
+        <td class="mono">auth_debug</td>
+        <td style="color:var(--text2);">كل أحداث المصادقة<br><span style="color:var(--text3);font-size:10px;">Login: user=cry0l1t3 method=PLAIN</span></td>
+        <td class="warn">يكشف usernames</td>
+      </tr>
+      <tr>
+        <td class="mono">auth_debug_passwords</td>
+        <td style="color:var(--text2);">الباسوردات كاملة!<br><span style="color:var(--red);font-size:10px;">cry0l1t3 tried password: 1234</span></td>
+        <td class="danger">💀 باسوردات كاملة!</td>
+      </tr>
+      <tr>
+        <td class="mono">auth_verbose</td>
+        <td style="color:var(--text2);">المحاولات الفاشلة<br><span style="color:var(--text3);font-size:10px;">auth failed: user=admin reason=Password mismatch</span></td>
+        <td class="warn">يكشف محاولات brute force</td>
+      </tr>
+      <tr>
+        <td class="mono">auth_verbose_passwords</td>
+        <td style="color:var(--text2);">الباسورد مقطوع<br><span style="color:var(--text3);font-size:10px;">password=Su****</span></td>
+        <td class="warn">يعطي فكرة عن الباسورد</td>
+      </tr>
+      <tr>
+        <td class="mono">auth_anonymous_username</td>
+        <td style="color:var(--text2);">يسمح بدخول مجهول<br><span style="color:var(--text3);font-size:10px;">LOGIN anonymous = مسموح!</span></td>
+        <td class="danger">دخول بدون باسورد!</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">🎯 سيناريو الاستغلال</div>
+    <div style="direction:ltr;display:flex;flex-direction:column;gap:4px;font-size:11px;">
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">auth_debug_passwords = yes (مفعّل!)</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--text2);">وصلت لجهاز على الشبكة</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:8px 12px;color:var(--cyan);">cat /var/log/mail.log</div>
+      <div style="text-align:center;color:var(--text3);">↓</div>
+      <div style="background:#010409;border:1px solid var(--red);padding:8px 12px;color:var(--red);">
+        cry0l1t3:1234<br>
+        john:Summer2021<br>
+        admin:P@ssw0rd<br>
+        💀 كل credentials الشركة!
+      </div>
+    </div>
+    <div class="alert danger">⚠️ Debug settings للمطورين فقط — يجب إغلاقها في Production!</div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="tab-panel">
+  <div class="section-header"><div class="section-title">الأدوات</div><div class="section-header-line"></div></div>
+
+  <div class="label">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('nmap',this)"><span class="tool-icon">🔍</span>Nmap</div>
+    <div class="tool-btn" onclick="showTool('curl',this)"><span class="tool-icon">🌐</span>cURL</div>
+    <div class="tool-btn" onclick="showTool('openssl',this)"><span class="tool-icon">🔒</span>openssl</div>
+    <div class="tool-btn" onclick="showTool('ncat',this)"><span class="tool-icon">🔌</span>ncat</div>
+  </div>
+
+  <!-- NMAP -->
+  <div id="tool-nmap" class="tool-panel active">
+    <div class="card"><div class="card-title">🔍 Nmap على IMAP/POP3</div>
+    <div class="code-block"><span class="cmd">sudo nmap 10.129.14.128 -sV -p110,143,993,995 -sC</span>
+
+PORT    STATE SERVICE  VERSION
+<span class="ok">110/tcp open  pop3     Dovecot pop3d</span>
+<span class="ok">143/tcp open  imap     Dovecot imapd</span>
+<span class="ok">993/tcp open  ssl/imap Dovecot imapd</span>
+<span class="ok">995/tcp open  ssl/pop3 Dovecot pop3d</span>
+
+ssl-cert:
+  CN=<span class="val">mail1.inlanefreight.htb</span>
+  O=Inlanefreight
+  ST=California
+  emailAddress=<span class="err">cry0l1t3@inlanefreight.htb</span>  <span class="cmt">← username!</span></div>
+    <div class="alert danger">🎯 emailAddress في الـ certificate = username جاهز للاستخدام فوراً!</div>
+    <div class="alert info">💡 جرب username = password → cry0l1t3:cry0l1t3 أو robin:robin</div>
+    </div>
+  </div>
+
+  <!-- CURL -->
+  <div id="tool-curl" class="tool-panel">
+    <div class="card"><div class="card-title">🌐 cURL مع IMAP</div>
+    <div class="label">عرض المجلدات:</div>
+    <div class="code-block"><span class="cmd">curl -k 'imaps://10.129.14.128' --user cry0l1t3:1234</span>
+
+<span class="ok">* LIST (\HasNoChildren) "." Important</span>
+<span class="ok">* LIST (\HasNoChildren) "." INBOX</span></div>
+    <div class="label">مع -v للتفاصيل الكاملة:</div>
+    <div class="code-block"><span class="cmd">curl -k 'imaps://10.129.14.128' --user cry0l1t3:1234 -v</span>
+
+* TLSv1.3 / TLS_AES_256_GCM_SHA384
+* subject: CN=mail1.inlanefreight.htb
+           <span class="val">emailAddress=cry0l1t3@inlanefreight.htb</span>
+* OK Logged in
+* LIST Important
+* LIST INBOX</div>
+    <div class="alert info">
+      💡 خيارات curl:<br>
+      -k = تجاهل SSL certificate errors (self-signed)<br>
+      -v = verbose — تفاصيل TLS + certificate<br>
+      imaps:// = Port 993 مع TLS<br>
+      imap://  = Port 143 بدون TLS
+    </div>
+    <div class="label">قراءة إيميل محدد:</div>
+    <div class="code-block"><span class="cmd">curl -k 'imaps://10.129.14.128/INBOX;MAILINDEX=1' --user cry0l1t3:1234</span></div>
+    </div>
+  </div>
+
+  <!-- OPENSSL -->
+  <div id="tool-openssl" class="tool-panel">
+    <div class="card"><div class="card-title">🔒 openssl — اتصال يدوي</div>
+    <div class="label">IMAP مع TLS:</div>
+    <div class="code-block"><span class="cmd">openssl s_client -connect 10.129.14.128:imaps</span>
+
+<span class="cmt"># بعد الاتصال:</span>
+<span class="ok">* OK IMAP4 ready</span>
+<span class="cmd">1 LOGIN cry0l1t3 1234</span>
+<span class="ok">1 OK Logged in</span>
+<span class="cmd">1 LIST "" *</span>
+<span class="ok">* LIST (\HasNoChildren) "." INBOX</span>
+<span class="cmd">1 SELECT INBOX</span>
+<span class="ok">* 3 EXISTS</span>
+<span class="cmd">1 FETCH 1 all</span>
+<span class="ok">From: john@company.com</span>
+<span class="cmd">1 LOGOUT</span></div>
+    <div class="label">POP3 مع TLS:</div>
+    <div class="code-block"><span class="cmd">openssl s_client -connect 10.129.14.128:pop3s</span>
+
+<span class="ok">+OK POP3 Server ready</span>
+<span class="cmd">USER cry0l1t3</span>
+<span class="ok">+OK</span>
+<span class="cmd">PASS 1234</span>
+<span class="ok">+OK Logged in</span>
+<span class="cmd">LIST</span>
+<span class="cmd">RETR 1</span>
+<span class="cmd">QUIT</span></div>
+    <div class="alert info">💡 openssl يعرض تفاصيل TLS كاملة + certificate — مفيد لجمع معلومات</div>
+    </div>
+  </div>
+
+  <!-- NCAT -->
+  <div id="tool-ncat" class="tool-panel">
+    <div class="card"><div class="card-title">🔌 ncat — اتصال نظيف وسريع</div>
+    <div class="label">IMAP مع TLS:</div>
+    <div class="code-block"><span class="cmd">ncat --ssl 10.129.14.128 993</span>
+
+<span class="ok">* OK IMAP4 ready</span>
+<span class="cmd">1 LOGIN cry0l1t3 1234</span>
+<span class="ok">1 OK Logged in</span>
+<span class="cmd">1 LIST "" *</span>
+<span class="ok">* LIST (\HasNoChildren) "." Important</span>
+<span class="ok">* LIST (\HasNoChildren) "." INBOX</span>
+<span class="cmd">1 SELECT INBOX</span>
+<span class="ok">* 3 EXISTS</span>
+<span class="cmd">1 FETCH 1 all</span>
+<span class="cmd">1 LOGOUT</span></div>
+    <div class="label">POP3 مع TLS:</div>
+    <div class="code-block"><span class="cmd">ncat --ssl 10.129.14.128 995</span>
+
+<span class="ok">+OK POP3 Server ready</span>
+<span class="cmd">USER cry0l1t3</span>
+<span class="ok">+OK</span>
+<span class="cmd">PASS 1234</span>
+<span class="ok">+OK Logged in</span>
+<span class="cmd">STAT</span>
+<span class="ok">+OK 2 1840</span>
+<span class="cmd">LIST</span>
+<span class="cmd">RETR 1</span>
+<span class="cmd">QUIT</span></div>
+    <div class="alert info">
+      💡 الفرق بين ncat وopenssl:<br>
+      openssl = يعرض تفاصيل TLS + certificate (مفيد للمعلومات)<br>
+      ncat --ssl = اتصال نظيف بدون ضجيج (مفيد للتفاعل السريع)
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="tab-panel">
+  <div class="section-header"><div class="section-title">Methodology</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الـ IMAP/POP3 Footprinting</div>
+    <div class="method-step">
+      <div class="method-num">1</div>
+      <div class="method-content">
+        <div class="method-title">Nmap Scan</div>
+        <div class="method-desc">اكتشاف الـ ports + SSL certificate + username</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">sudo nmap -sV -p110,143,993,995 -sC TARGET</span></div>
+        <div class="alert danger" style="margin-top:6px;">👀 emailAddress في الـ certificate = username مجاني 🎯</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">2</div>
+      <div class="method-content">
+        <div class="method-title">جرب username = password</div>
+        <div class="method-desc">ناس كثير يستخدمون اليوزرنيم كباسورد</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">curl -k 'imaps://TARGET' --user robin:robin</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">3</div>
+      <div class="method-content">
+        <div class="method-title">اتصل واقرأ الإيميلات</div>
+        <div class="method-desc">لو عندك credentials — اقرأ كل الإيميلات</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">ncat --ssl TARGET 993
+1 LOGIN user pass
+1 LIST "" *
+1 SELECT INBOX
+1 FETCH 1 all</span></div>
+        <div class="alert danger" style="margin-top:6px;">🎯 ابحث عن: passwords, credentials, internal docs, confidential info</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">4</div>
+      <div class="method-content">
+        <div class="method-title">تحقق من الـ Debug Logs</div>
+        <div class="method-desc">لو وصلت للجهاز — شوف الـ logs</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">cat /var/log/mail.log | grep "password"</span></div>
+        <div class="alert danger" style="margin-top:6px;">💀 auth_debug_passwords = باسوردات كاملة في الـ log!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="tab-panel">
+  <div class="section-header"><div class="section-title">Explained — Q&A</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🌐 IMAP vs POP3</div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق الأساسي بين IMAP وPOP3؟</div>
+      <div class="convo-a">IMAP = الإيميلات تبقى على السيرفر وتتزامن بين كل الأجهزة. POP3 = يحمّل الإيميلات على جهازك ويحذفها من السيرفر. Gmail وOutlook يستخدمون IMAP للتزامن.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ليش لا يزال POP3 موجود إذا IMAP أفضل؟</div>
+      <div class="convo-a">سببين: أولاً سيرفرات قديمة ما تدعم IMAP. ثانياً بعض الناس يفضلونه للـ privacy — الإيميلات تنزل على جهازهم وتُحذف من السيرفر، لو السيرفر اتخترق ما في شيء يسرقوه.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔒 SSL و Ports</div>
+    <div class="convo">
+      <div class="convo-q">ليش الـ ports المشفرة (993, 995) أعلى من غير المشفرة؟</div>
+      <div class="convo-a">IMAP وPOP3 جاءوا أول وأخذوا ports منخفضة (143, 110). لما أضافوا TLS لاحقاً، ما قدروا يغيروا الـ ports القديمة (كل الأجهزة مبرمجة عليها). فأضافوا ports جديدة (993, 995) للنسخة المشفرة — نفس الفكرة مع HTTP(80) وHTTPS(443).</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش يعني -k في curl؟</div>
+      <div class="convo-a">--insecure = تجاهل أخطاء الـ SSL certificate. معظم السيرفرات الداخلية تستخدم self-signed certificates مش موقّعة من CA موثوق. بدون -k = curl يرفض الاتصال. مع -k = يتجاهل الخطأ ويكمل.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ Debug Settings</div>
+    <div class="convo">
+      <div class="convo-q">ليش auth_debug_passwords خطير جداً؟</div>
+      <div class="convo-a">لأنه يسجل كل باسورد كامل في الـ log: "cry0l1t3 tried password: 1234". لو وصلت للجهاز وقرأت الـ log = عندك كل credentials الشركة. هاد الإعداد للمطورين فقط — يجب إغلاقه في Production!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين ncat وopenssl للاتصال؟</div>
+      <div class="convo-a">openssl يعرض تفاصيل TLS كاملة (cipher, certificate, session) — مفيد لجمع معلومات. ncat --ssl اتصال نظيف بدون ضجيج — مفيد للتفاعل السريع مع البروتوكول.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPanel(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showTool(name,btn){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
