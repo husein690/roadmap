@@ -398,6 +398,91 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       </div>
     </div>
 
+    <!-- DNS Zone Transfer -->
+    <div style="background:var(--surface);border:1px solid #fbbf24;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#fbbf24;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">DNS Zone Transfer</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #fbbf24;color:#fbbf24;">HIGH</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#fbbf24;letter-spacing:1px;margin-bottom:8px;">AXFR — allow-transfer = any</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">لو السيرفر مضبوط على allow-transfer = any، أي شخص يطلب نسخة كاملة من كل DNS records. يكشف كل الأجهزة الداخلية: dc1, dc2, vpn, wsus, workstations دفعة وحدة.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">DNS</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">PORT 53</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">INFO DISCLOSURE</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">NETWORK MAP</span>
+      </div>
+    </div>
+
+    <!-- DNS Cache Poisoning -->
+    <div style="background:var(--surface);border:1px solid #FF5757;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#FF5757;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">DNS Cache Poisoning</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #FF5757;color:#FF5757;">CRITICAL</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#FF5757;letter-spacing:1px;margin-bottom:8px;">CVE-2008-1447 — Kaminsky Attack</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">حقن IP مزيف في الـ DNS cache. المستخدمين يُوجَّهون لسيرفر المهاجم بدلاً من الحقيقي. يُستخدم للـ phishing وMITM على نطاق واسع.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">DNS</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">MITM</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">REDIRECT</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">PHISHING</span>
+      </div>
+    </div>
+
+    <!-- NFS no_root_squash -->
+    <div style="background:var(--surface);border:1px solid #FF5757;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#FF5757;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">NFS Privilege Escalation</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #FF5757;color:#FF5757;">CRITICAL</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#FF5757;letter-spacing:1px;margin-bottom:8px;">no_root_squash Misconfiguration</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">لو no_root_squash مفعّل، root على الـ client = root على السيرفر. المهاجم يـ mount الـ share ويقرأ id_rsa لـ root ثم يدخل عبر SSH كـ root مباشرة.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">NFS</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">PORT 2049</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">PRIVESC</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(57,255,20,.3);color:var(--green);">Linux</span>
+      </div>
+    </div>
+
+    <!-- SMTP Open Relay -->
+    <div style="background:var(--surface);border:1px solid #fbbf24;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#fbbf24;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">SMTP Open Relay</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #fbbf24;color:#fbbf24;">HIGH</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#fbbf24;letter-spacing:1px;margin-bottom:8px;">mynetworks = 0.0.0.0/0</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">سيرفر SMTP يقبل إرسال إيميلات لأي شخص بدون authentication. يُستخدم لـ Mail Spoofing وSpear Phishing بانتحال هوية المدير أو IT Department.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">SMTP</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">PORT 25</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">SPOOFING</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">PHISHING</span>
+      </div>
+    </div>
+
+    <!-- IMAP Debug Passwords -->
+    <div style="background:var(--surface);border:1px solid #FF5757;padding:18px;position:relative;">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#FF5757;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">IMAP Debug Leak</div>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid #FF5757;color:#FF5757;">CRITICAL</span>
+      </div>
+      <div style="font-family:var(--tag);font-size:10px;color:#FF5757;letter-spacing:1px;margin-bottom:8px;">auth_debug_passwords = yes</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;">إعداد debug يسجل كل باسورد كامل في /var/log/mail.log. لو وصلت للجهاز وقرأت الـ log = عندك كل credentials الشركة كاملة.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">IMAP</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(0,212,255,.3);color:var(--accent);">POP3</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(255,87,87,.3);color:#FF5757;">CRED LEAK</span>
+        <span style="font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid rgba(57,255,20,.3);color:var(--green);">Dovecot</span>
+      </div>
+    </div>
+
   </div>
 
   <!-- SEVERITY LEGEND -->
