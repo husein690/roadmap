@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSSQL — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e14;--bg2:#0d1117;--bg3:#161b22;--border:#21262d;--border2:#30363d;--cyan:#00d4ff;--green:#00ff88;--red:#ff4444;--yellow:#ffd700;--purple:#9d4edd;--text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.back-bar{padding:12px 20px;border-bottom:1px solid var(--border2);}
+.back-btn{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border2);transition:all .2s;}
+.back-btn:hover{color:var(--cyan);border-color:var(--cyan);}
+.header{background:linear-gradient(180deg,#0a0e14 0%,#0d1117 100%);border-bottom:1px solid var(--cyan);padding:24px 20px 20px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--green),transparent);}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.header-label{font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.header-label::before{content:'► ';}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.badge{padding:3px 10px;border:1px solid;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.badge.cyan{border-color:var(--cyan);color:var(--cyan);}
+.badge.green{border-color:var(--green);color:var(--green);}
+.badge.red{border-color:var(--red);color:var(--red);}
+.badge.yellow{border-color:var(--yellow);color:var(--yellow);}
+.header-title{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:4px;color:#fff;text-transform:uppercase;}
+.header-title span{color:var(--cyan);}
+.header-sub{font-size:11px;color:var(--text2);letter-spacing:2px;margin-top:4px;}
+.facts-bar{display:flex;gap:0;border:1px solid var(--border2);margin:16px 0 0;flex-wrap:wrap;}
+.fact-item{flex:1;min-width:110px;padding:10px 14px;border-left:1px solid var(--border2);display:flex;flex-direction:column;gap:4px;}
+.fact-item:last-child{border-left:none;}
+.fact-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.fact-value{font-size:13px;color:var(--cyan);}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 20px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:14px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:all .2s;}
+.nav-btn:hover{color:var(--cyan);border-bottom-color:var(--cyan);}
+.nav-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,.05);}
+.content{padding:20px;max-width:1100px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border2);}
+.section-header-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.section-title{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.section-title::before{content:'[ ';}
+.section-title::after{content:' ]';}
+.card{background:var(--bg3);border:1px solid var(--border2);padding:16px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--cyan);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card-title{font-size:12px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code-block{background:#010409;border:1px solid var(--border);border-right:3px solid var(--cyan);padding:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.6;margin:8px 0;}
+.code-block .cmd{color:var(--cyan);}
+.code-block .ok{color:var(--green);}
+.code-block .err{color:var(--red);}
+.code-block .cmt{color:var(--text3);}
+.code-block .val{color:var(--yellow);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:#010409;color:var(--cyan);padding:8px 12px;text-align:right;border:1px solid var(--border2);letter-spacing:1px;text-transform:uppercase;font-size:10px;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);vertical-align:top;font-size:11px;}
+tr:nth-child(even) td{background:#0d1117;}
+tr:nth-child(odd) td{background:#010409;}
+td.mono{font-family:'Share Tech Mono',monospace;color:var(--cyan);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;direction:rtl;line-height:1.6;}
+.alert.danger{background:rgba(255,68,68,.08);border-color:var(--red);color:#ff8888;}
+.alert.success{background:rgba(0,255,136,.08);border-color:var(--green);color:#88ffbb;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--cyan);color:#88e4ff;}
+.alert.warning{background:rgba(255,215,0,.08);border-color:var(--yellow);color:#ffe566;}
+.tag{display:inline-block;padding:2px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin:2px;font-family:'Share Tech Mono',monospace;}
+.tag.cyan{background:rgba(0,212,255,.1);border:1px solid var(--cyan);color:var(--cyan);}
+.tag.green{background:rgba(0,255,136,.1);border:1px solid var(--green);color:var(--green);}
+.tag.red{background:rgba(255,68,68,.1);border:1px solid var(--red);color:var(--red);}
+.tag.yellow{background:rgba(255,215,0,.1);border:1px solid var(--yellow);color:var(--yellow);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:#010409;border:1px solid var(--border2);padding:12px;}
+.info-box-title{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:var(--bg3);border:1px solid var(--border2);padding:10px 8px;text-align:center;font-size:10px;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;}
+.chain-step .step-sub{color:var(--text3);font-size:9px;margin-top:2px;}
+.chain-step.highlight{border-color:var(--red);background:rgba(255,68,68,.05);}
+.chain-arrow{color:var(--cyan);font-size:14px;padding:0 4px;}
+.method-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.method-step:last-child{border-bottom:none;}
+.method-num{background:var(--cyan);color:#000;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+.method-content{flex:1;}
+.method-title{color:var(--cyan);font-size:12px;margin-bottom:4px;}
+.method-desc{color:var(--text2);font-size:11px;line-height:1.6;}
+.convo{margin:10px 0;}
+.convo-q{background:rgba(0,212,255,.05);border:1px solid var(--cyan);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--cyan);}
+.convo-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.convo-a{background:rgba(0,255,136,.05);border:1px solid var(--green);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.convo-a::before{content:'✅ الجواب: ';color:var(--green);}
+.label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0;}
+.tool-btn{background:var(--bg3);border:1px solid var(--border2);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);}
+.tool-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.05);}
+.tool-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.05);}
+.tool-btn .tool-icon{font-size:20px;margin-bottom:6px;display:block;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<div class="back-bar"><a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a></div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-label">HTB Academy · Module 112 · Section 14/21</div>
+    <div class="header-badges">
+      <span class="badge cyan">Footprinting</span>
+      <span class="badge green">Port 1433</span>
+      <span class="badge red">Windows Auth</span>
+      <span class="badge yellow">T-SQL</span>
+    </div>
+  </div>
+  <div class="header-title"><span>MSSQL</span> — MICROSOFT SQL SERVER</div>
+  <div class="header-sub">DATABASE ANALYSIS · WINDOWS AUTH · NAMED PIPES · ENUMERATION</div>
+  <div class="facts-bar">
+    <div class="fact-item"><div class="fact-label">Port</div><div class="fact-value">TCP 1433</div></div>
+    <div class="fact-item"><div class="fact-label">OS</div><div class="fact-value">Windows</div></div>
+    <div class="fact-item"><div class="fact-label">Auth</div><div class="fact-value" style="color:var(--yellow);">Windows / SQL</div></div>
+    <div class="fact-item"><div class="fact-label">Admin Account</div><div class="fact-value" style="color:var(--red);">sa ⚠️</div></div>
+    <div class="fact-item"><div class="fact-label">Named Pipe</div><div class="fact-value" style="color:var(--red);">\pipe\sql\query</div></div>
+    <div class="fact-item"><div class="fact-label">Best Tool</div><div class="fact-value">mssqlclient.py</div></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('auth',this)">Authentication</button>
+  <button class="nav-btn" onclick="showPanel('databases',this)">System Databases</button>
+  <button class="nav-btn" onclick="showPanel('danger',this)">Danger Settings</button>
+  <button class="nav-btn" onclick="showPanel('commands',this)">T-SQL Commands</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="tab-panel active">
+  <div class="section-header"><div class="section-title">نظرة عامة</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">MSSQL vs MySQL</div>
+    <table>
+      <tr><th>الخاصية</th><th>MSSQL</th><th>MySQL</th></tr>
+      <tr><td>المطور</td><td style="color:var(--text2);">Microsoft</td><td style="color:var(--text2);">Oracle</td></tr>
+      <tr><td>المصدر</td><td class="danger">Closed Source</td><td class="safe">Open Source</td></tr>
+      <tr><td>نظام التشغيل</td><td style="color:var(--text2);">Windows أساساً</td><td style="color:var(--text2);">Linux + Windows + Mac</td></tr>
+      <tr><td>الـ Stack</td><td style="color:var(--text2);">.NET Framework</td><td style="color:var(--text2);">LAMP / LEMP</td></tr>
+      <tr><td>Port</td><td class="mono">1433</td><td class="mono">3306</td></tr>
+      <tr><td>لغة SQL</td><td style="color:var(--text2);">T-SQL (Transact-SQL)</td><td style="color:var(--text2);">MySQL SQL</td></tr>
+      <tr><td>show databases</td><td class="mono">select name from sys.databases</td><td class="mono">show databases;</td></tr>
+    </table>
+    <div class="alert info">💡 لو شفت Port 1433 مفتوح = غالباً Windows Server = ممكن AD + SMB + RDP على نفس الجهاز 🎯</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔌 MSSQL Clients</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">Client = أي برنامج تستخدمه للتواصل مع MSSQL Server:</p>
+    <table>
+      <tr><th>الـ Client</th><th>الاستخدام</th><th>أهمية Pentest</th></tr>
+      <tr><td class="mono">SSMS</td><td>GUI كامل للـ admins</td><td class="danger">ممكن يحتوي saved credentials! 🎯</td></tr>
+      <tr><td class="mono">mssqlclient.py</td><td>Impacket — command line</td><td class="safe">الأفضل للـ pentest ✅</td></tr>
+      <tr><td class="mono">mssql-cli</td><td>command line بسيط</td><td style="color:var(--text2);">بديل</td></tr>
+      <tr><td class="mono">HeidiSQL</td><td>GUI خفيف</td><td style="color:var(--text2);">نادر في pentest</td></tr>
+    </table>
+    <div class="alert danger">⚠️ SSMS مثبت على أجهزة المطورين والـ admins — مش بس السيرفر! لو اخترقت جهاز موظف وفيه SSMS بـ saved credentials = دخول مباشر للـ database!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔧 NT SERVICE\MSSQLSERVER</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">لما تثبت MSSQL، Windows يخلق حساب خاص يشغّل الخدمة في الخلفية:</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">الإعداد الآمن</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">
+          MSSQL يشتغل كـ:<br>
+          <span style="color:var(--cyan);">NT SERVICE\MSSQLSERVER</span><br>
+          صلاحيات محدودة ✅
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">الإعداد الخطير</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">
+          MSSQL يشتغل كـ:<br>
+          <span style="color:var(--red);">Local System / Administrator</span><br>
+          اخترقت MSSQL = اخترقت Windows كامل 💀
+        </div>
+      </div>
+    </div>
+    <div class="alert info">💡 نفس الفكرة في Linux: Apache يشتغل كـ www-data، MySQL يشتغل كـ mysql — لتحديد الضرر لو اتخترقت الخدمة</div>
+  </div>
+</div>
+
+<!-- AUTHENTICATION -->
+<div id="panel-auth" class="tab-panel">
+  <div class="section-header"><div class="section-title">Authentication</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🔑 Windows Auth vs SQL Auth</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--cyan);padding:14px;">
+        <div style="color:var(--cyan);font-size:12px;font-weight:bold;margin-bottom:10px;">Windows Authentication</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8;">
+          يستخدم حسابات Windows مباشرة<br>
+          (SAM database أو Active Directory)<br><br>
+          <span style="color:var(--text3);">مثل: Administrator, Domain\User</span><br><br>
+          <span style="color:var(--green);">مناسب للشبكات الكبيرة ✅</span><br>
+          <span style="color:var(--red);">لو Windows account اتخترق = MSSQL اتخترق! 💀</span>
+        </div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--yellow);padding:14px;">
+        <div style="color:var(--yellow);font-size:12px;font-weight:bold;margin-bottom:10px;">SQL Authentication</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8;">
+          حسابات خاصة بـ MSSQL فقط<br>
+          Windows ما يعرف عنها<br><br>
+          <span style="color:var(--text3);">مثل: sa, db_user</span><br><br>
+          <span style="color:var(--yellow);">sa = System Admin الافتراضي ⚠️</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert info">
+      💡 تشبيه:<br>
+      Windows Auth = بطاقة الموظف العامة (تفتح كل شيء)<br>
+      SQL Auth = بطاقة خاصة بالـ database فقط
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔌 Named Pipes — الباب الخلفي</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">طريقة اتصال ثانية بـ MSSQL غير TCP/IP:</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">TCP/IP (الباب الأمامي)</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">
+          Port 1433<br>
+          يشتغل عبر الشبكة<br>
+          Firewall يقدر يحجبه
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Named Pipe (الباب الخلفي)</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">
+          <span style="color:var(--cyan);">\\TARGET\pipe\sql\query</span><br>
+          لو Port 1433 محجوب → جرب Named Pipe<br>
+          <span style="color:var(--red);">ممكن يتجاوز الـ Firewall! 🎯</span>
+        </div>
+      </div>
+    </div>
+    <div class="code-block"><span class="cmt"># في نتيجة Nmap:</span>
+Named pipe: <span class="val">\\10.129.201.248\pipe\sql\query</span>
+<span class="cmt">← Named Pipes مفعّل على هاد السيرفر!</span></div>
+  </div>
+</div>
+
+<!-- SYSTEM DATABASES -->
+<div id="panel-databases" class="tab-panel">
+  <div class="section-header"><div class="section-title">System Databases</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🗄️ الـ 5 Databases الافتراضية</div>
+    <table>
+      <tr><th>Database</th><th>الوظيفة</th><th>أهمية Pentest</th></tr>
+      <tr>
+        <td><span class="tag red">master</span></td>
+        <td>معلومات النظام كاملة — كل الـ logins وpasswords والـ databases</td>
+        <td class="danger">أول database تفتحها! 🎯</td>
+      </tr>
+      <tr>
+        <td><span class="tag yellow">msdb</span></td>
+        <td>SQL Server Agent — scheduled jobs وalerts</td>
+        <td class="danger">ممكن credentials في الـ jobs! 🎯</td>
+      </tr>
+      <tr>
+        <td><span class="tag cyan">model</span></td>
+        <td>Template لكل database جديدة</td>
+        <td style="color:var(--text2);">محدود</td>
+      </tr>
+      <tr>
+        <td><span class="tag cyan">tempdb</span></td>
+        <td>بيانات مؤقتة — تُحذف عند إعادة التشغيل</td>
+        <td style="color:var(--text2);">محدود</td>
+      </tr>
+      <tr>
+        <td><span class="tag cyan">resource</span></td>
+        <td>Read-only — system objects</td>
+        <td style="color:var(--text2);">محدود</td>
+      </tr>
+    </table>
+    <div class="alert danger">🎯 master + msdb = أهم databases في الـ pentest. master لـ credentials، msdb لـ scheduled jobs.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 sys views — بديل information_schema</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">MySQL</div>
+        <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">SELECT * FROM information_schema.tables;
+show databases;
+show tables;</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">MSSQL (T-SQL)</div>
+        <div class="code-block" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;">SELECT * FROM sys.tables;
+SELECT name FROM sys.databases;
+SELECT name FROM sys.tables;</div>
+      </div>
+    </div>
+    <div class="alert info">💡 sys في MSSQL = نفس information_schema في MySQL. كلاهما جداول نظام تحتوي metadata.</div>
+  </div>
+</div>
+
+<!-- DANGER -->
+<div id="panel-danger" class="tab-panel">
+  <div class="section-header"><div class="section-title">Dangerous Settings</div><div class="section-header-line"></div></div>
+
+  <div class="card danger">
+    <div class="card-title">⚠️ الإعدادات الخطيرة</div>
+    <table>
+      <tr><th>الإعداد</th><th>الخطر</th></tr>
+      <tr><td>No Encryption</td><td class="danger">بيانات clear-text على الشبكة — sniffing يكشف كل شيء</td></tr>
+      <tr><td>Self-Signed Certificate</td><td class="danger">MITM ممكن — شهادة مزيفة تخدع الـ client</td></tr>
+      <tr><td>Named Pipes Enabled</td><td class="warn">باب خلفي — يتجاوز الـ Firewall</td></tr>
+      <tr><td>Weak sa credentials</td><td class="danger">sa:sa أو sa:(empty) = admin access كامل! 💀</td></tr>
+    </table>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 No Encryption vs Self-Signed Certificate</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--red);padding:12px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:8px;">No Encryption</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">
+          بيانات مكشوفة مباشرة<br>
+          أي sniffing = كل شيء<br>
+          <span style="color:var(--red);">مثل التكلم بصوت عالي في الشارع</span>
+        </div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--yellow);padding:12px;">
+        <div style="color:var(--yellow);font-size:11px;margin-bottom:8px;">Self-Signed Certificate</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">
+          "مشفر" بس شهادة غير موثوقة<br>
+          المهاجم ينشئ شهادة مزيفة<br>
+          الـ client يقبلها = MITM 🎯<br>
+          <span style="color:var(--yellow);">مثل قفل ممكن تفتحه بدبوس</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 sa Account — أخطر حساب</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;margin-bottom:10px;">sa = System Administrator — الحساب الافتراضي بكامل الصلاحيات:</p>
+    <div class="code-block"><span class="cmt"># جرب هاي الـ credentials أول دايماً:</span>
+sa:(empty password)
+sa:sa
+sa:password
+sa:Password1
+sa:P@ssw0rd
+        ↓
+<span class="cmt"># لو نجح:</span>
+<span class="ok">Connected to MSSQL as sa</span>
+<span class="cmt"># عندك تحكم كامل بكل databases! 💀</span></div>
+    <div class="alert danger">⚠️ كثير admins ينسون يغيروا باسورد sa أو يتركونه فارغاً بعد التثبيت!</div>
+  </div>
+</div>
+
+<!-- T-SQL COMMANDS -->
+<div id="panel-commands" class="tab-panel">
+  <div class="section-header"><div class="section-title">T-SQL Commands</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">📋 الأوامر الأساسية</div>
+    <table>
+      <tr><th>الأمر (T-SQL)</th><th>المعادل في MySQL</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">SELECT name FROM sys.databases</td><td class="mono">show databases;</td><td>كل الـ databases</td></tr>
+      <tr><td class="mono">SELECT name FROM sys.tables</td><td class="mono">show tables;</td><td>كل الجداول</td></tr>
+      <tr><td class="mono">SELECT name FROM sys.columns WHERE object_id = OBJECT_ID('users')</td><td class="mono">show columns from users;</td><td>أعمدة جدول</td></tr>
+      <tr><td class="mono">SELECT * FROM users</td><td class="mono">select * from users;</td><td>كل البيانات</td></tr>
+      <tr><td class="mono">SELECT @@version</td><td class="mono">select version();</td><td>إصدار SQL Server</td></tr>
+      <tr><td class="mono">SELECT name FROM sys.logins</td><td class="mono">select user from mysql.user;</td><td>كل الـ logins 🎯</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💥 مثال كامل — Enumerate بعد الاتصال</div>
+    <div class="code-block"><span class="cmd">python3 mssqlclient.py Administrator@10.129.201.248 -windows-auth</span>
+Password: P@ssw0rd
+<span class="ok">[*] Encryption required, switching to TLS</span>
+<span class="ok">[*] INFO(SQL-01): Changed database context to 'master'</span>
+
+SQL> <span class="cmd">SELECT name FROM sys.databases</span>
+master
+tempdb
+model
+msdb
+<span class="val">Transactions</span>  <span class="cmt">← قاعدة بيانات الشركة!</span>
+
+SQL> <span class="cmd">use Transactions</span>
+SQL> <span class="cmd">SELECT name FROM sys.tables</span>
+<span class="val">users</span>
+payments
+logs
+
+SQL> <span class="cmd">SELECT * FROM users</span>
+admin | <span class="val">P@ssw0rd123</span>  <span class="cmt">← plain text! 💀</span>
+john  | <span class="val">Summer2021</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 Logins وCredentials من master</div>
+    <div class="code-block"><span class="cmt"># كل الـ SQL logins:</span>
+SQL> <span class="cmd">SELECT name, password_hash FROM sys.sql_logins</span>
+sa      | <span class="val">0x0200...</span>  <span class="cmt">← hash للـ sa!</span>
+db_user | <span class="val">0x0200...</span>
+
+<span class="cmt"># كل الـ Windows logins:</span>
+SQL> <span class="cmd">SELECT name FROM sys.server_principals WHERE type = 'U'</span>
+SQL-01\Administrator
+DOMAIN\john</div>
+    <div class="alert danger">🎯 sys.sql_logins = أسماء + hashes = hashcat! sys.server_principals = Windows accounts لها access</div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="tab-panel">
+  <div class="section-header"><div class="section-title">الأدوات</div><div class="section-header-line"></div></div>
+
+  <div class="label">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('nmap',this)"><span class="tool-icon">🔍</span>Nmap</div>
+    <div class="tool-btn" onclick="showTool('mssqlclient',this)"><span class="tool-icon">🗄️</span>mssqlclient.py</div>
+    <div class="tool-btn" onclick="showTool('metasploit',this)"><span class="tool-icon">⚡</span>Metasploit</div>
+  </div>
+
+  <!-- NMAP -->
+  <div id="tool-nmap" class="tool-panel active">
+    <div class="card"><div class="card-title">🔍 Nmap على MSSQL</div>
+    <div class="code-block"><span class="cmd">sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,\
+ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,\
+ms-sql-dac,ms-sql-dump-hashes \
+--script-args mssql.instance-port=1433,mssql.username=sa,\
+mssql.password=,mssql.instance-name=MSSQLSERVER \
+-sV -p 1433 10.129.201.248</span>
+
+PORT     STATE SERVICE VERSION
+<span class="ok">1433/tcp open  ms-sql-s Microsoft SQL Server 2019</span>
+| ms-sql-ntlm-info:
+|   Target_Name: <span class="val">SQL-01</span>
+|   DNS_Computer_Name: <span class="val">SQL-01</span>
+|   Product_Version: <span class="val">10.0.17763</span>  <span class="cmt">← Windows version!</span>
+|
+| ms-sql-info:
+|   Instance name: MSSQLSERVER
+|   Version: <span class="val">Microsoft SQL Server 2019</span>
+|   TCP port: 1433
+|   Named pipe: <span class="err">\\10.129.201.248\pipe\sql\query</span>  <span class="cmt">← مفعّل!</span></div>
+    <div class="alert info">
+      💡 من الـ scan تعرف:<br>
+      • اسم الجهاز = SQL-01<br>
+      • إصدار Windows = 10.0.17763 (Server 2019) → ابحث عن CVEs<br>
+      • Named Pipes مفعّل → باب خلفي<br>
+      • إصدار SQL Server 2019 → ابحث عن CVEs
+    </div>
+    </div>
+  </div>
+
+  <!-- MSSQLCLIENT -->
+  <div id="tool-mssqlclient" class="tool-panel">
+    <div class="card"><div class="card-title">🗄️ mssqlclient.py — الاتصال المباشر</div>
+    <div class="label">Windows Authentication:</div>
+    <div class="code-block"><span class="cmd">python3 mssqlclient.py Administrator@10.129.201.248 -windows-auth</span>
+<span class="cmt"># أو:</span>
+<span class="cmd">impacket-mssqlclient Administrator@10.129.201.248 -windows-auth</span></div>
+    <div class="label">SQL Authentication:</div>
+    <div class="code-block"><span class="cmd">python3 mssqlclient.py sa@10.129.201.248</span>
+<span class="cmt"># جرب: sa بدون باسورد أول!</span></div>
+    <div class="label">بعد الاتصال:</div>
+    <div class="code-block"><span class="ok">[!] Press help for extra shell commands</span>
+SQL> <span class="cmd">help</span>
+<span class="val">lcd, exit, enable_xp_cmdshell, disable_xp_cmdshell, xp_cmdshell, sp_start_job</span>
+
+SQL> <span class="cmd">enable_xp_cmdshell</span>  <span class="cmt">← تشغيل OS commands من MSSQL!</span>
+SQL> <span class="cmd">xp_cmdshell whoami</span>
+<span class="ok">nt service\mssqlserver</span></div>
+    <div class="alert danger">💀 xp_cmdshell = تشغيل أوامر Windows من داخل MSSQL = RCE مباشر!</div>
+    </div>
+  </div>
+
+  <!-- METASPLOIT -->
+  <div id="tool-metasploit" class="tool-panel">
+    <div class="card"><div class="card-title">⚡ Metasploit — mssql_ping</div>
+    <div class="code-block"><span class="cmd">msf6 > use auxiliary/scanner/mssql/mssql_ping</span>
+<span class="cmd">msf6 > set rhosts 10.129.201.248</span>
+<span class="cmd">msf6 > run</span>
+
+<span class="ok">[+] ServerName    = SQL-01</span>
+<span class="ok">[+] InstanceName  = MSSQLSERVER</span>
+<span class="ok">[+] IsClustered   = No</span>
+<span class="ok">[+] Version       = 15.0.2000.5</span>
+<span class="ok">[+] tcp           = 1433</span>
+<span class="val">[+] np            = \\SQL-01\pipe\sql\query</span></div>
+    <div class="alert info">💡 mssql_ping = معلومات سريعة عن الـ MSSQL instance بدون credentials</div>
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="tab-panel">
+  <div class="section-header"><div class="section-title">Methodology</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الـ MSSQL Footprinting</div>
+    <div class="method-step">
+      <div class="method-num">1</div>
+      <div class="method-content">
+        <div class="method-title">Nmap Scan</div>
+        <div class="method-desc">اكتشاف MSSQL + إصدار + Named Pipes + Windows version</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">sudo nmap --script ms-sql-* -p1433 TARGET</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">2</div>
+      <div class="method-content">
+        <div class="method-title">جرب sa بدون باسورد</div>
+        <div class="method-desc">أكثر misconfiguration شائعة</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">python3 mssqlclient.py sa@TARGET
+python3 mssqlclient.py sa:sa@TARGET</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">3</div>
+      <div class="method-content">
+        <div class="method-title">لو عندك Windows credentials</div>
+        <div class="method-desc">استخدم Windows Authentication</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">python3 mssqlclient.py Administrator@TARGET -windows-auth</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">4</div>
+      <div class="method-content">
+        <div class="method-title">Enumerate Databases</div>
+        <div class="method-desc">شوف كل الـ databases وحدد الهدف</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">SELECT name FROM sys.databases;
+use Transactions;
+SELECT name FROM sys.tables;
+SELECT * FROM users;</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">5</div>
+      <div class="method-content">
+        <div class="method-title">xp_cmdshell → RCE</div>
+        <div class="method-desc">لو عندك sa أو admin access</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">enable_xp_cmdshell
+xp_cmdshell whoami
+xp_cmdshell "powershell -c ..."</span></div>
+        <div class="alert danger" style="margin-top:6px;">💀 xp_cmdshell = RCE مباشر على Windows!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="tab-panel">
+  <div class="section-header"><div class="section-title">Explained — Q&A</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🔑 Authentication</div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين Windows Auth وSQL Auth؟</div>
+      <div class="convo-a">Windows Auth يستخدم حسابات Windows (Administrator, Domain\User) — لو Windows account اتخترق = MSSQL اتخترق تلقائياً. SQL Auth يستخدم حسابات خاصة بـ MSSQL فقط (sa, db_user) — Windows ما يعرف عنها. تشبيه: Windows Auth = بطاقة موظف عامة، SQL Auth = بطاقة خاصة بالـ database.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ليش Named Pipes مهم في الـ pentest؟</div>
+      <div class="convo-a">لأنه طريقة اتصال بديلة بـ MSSQL غير TCP Port 1433. لو Firewall يحجب Port 1433، تقدر تتصل عبر Named Pipe: \\TARGET\pipe\sql\query. يشتغل على الشبكة المحلية — وأنت على VPN مع HTB = أنت على الشبكة الداخلية.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗄️ T-SQL</div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين sys.databases وshow databases؟</div>
+      <div class="convo-a">نفس النتيجة — syntax مختلف. MySQL عنده shortcut "show databases". MSSQL يستخدم T-SQL وكل شيء عبر SELECT من جداول النظام (sys.*). sys في MSSQL = نفس information_schema في MySQL.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ليش master أهم database في الـ pentest؟</div>
+      <div class="convo-a">لأنها تحتوي معلومات النظام كاملة: كل الـ logins وpasswords الـ hashed، كل الـ databases الموجودة، إعدادات السيرفر. sys.sql_logins تعطيك أسماء + hashes = hashcat مباشرة!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">إيش xp_cmdshell وليش خطير؟</div>
+      <div class="convo-a">xp_cmdshell = stored procedure في MSSQL تسمح بتشغيل أوامر Windows مباشرة من داخل SQL. لو عندك sa access وفعّلته = RCE كامل على Windows. مغلق افتراضياً بس كثير admins يفعّلونه "للراحة".</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPanel(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showTool(name,btn){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
