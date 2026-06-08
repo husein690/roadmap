@@ -125,271 +125,150 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
   <div class="sec-label">► PENTEST MINDMAP</div>
 
-  <!-- INTERACTIVE MINDMAP -->
-  <div style="background:var(--surface);border:1px solid var(--border);margin-bottom:30px;overflow:hidden;position:relative;">
-    <canvas id="mindmap" width="920" height="420" style="width:100%;display:block;cursor:pointer;"></canvas>
+  <div style="background:var(--surface);border:1px solid var(--border);margin-bottom:30px;padding:24px;overflow-x:auto;">
+    <svg viewBox="0 0 900 480" width="100%" style="min-width:600px;display:block;">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 2L8 5L2 8" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round"/>
+        </marker>
+      </defs>
+
+      <!-- CENTER: ENUMERATION -->
+      <rect x="370" y="20" width="160" height="40" rx="4" fill="rgba(0,212,255,0.08)" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="450" y="44" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="12" fill="#e8f4ff" font-weight="bold">ENUMERATION</text>
+
+      <!-- NMAP -->
+      <line x1="450" y1="60" x2="450" y2="110" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="380" y="110" width="140" height="36" rx="4" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="450" y="131" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#00d4ff" font-weight="bold">NMAP SCAN</text>
+      <text x="450" y="144" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">-sV -sC -p &lt;port&gt;</text>
+
+      <!-- Lines from NMAP to protocols -->
+      <!-- Left side -->
+      <path d="M 390 128 C 320 128 220 200 160 220" fill="none" stroke="rgba(57,255,20,0.4)" stroke-width="1"/>
+      <path d="M 400 140 C 330 150 240 220 190 250" fill="none" stroke="rgba(57,255,20,0.4)" stroke-width="1"/>
+      <path d="M 415 145 C 360 175 300 240 280 270" fill="none" stroke="rgba(57,255,20,0.4)" stroke-width="1"/>
+      <path d="M 435 146 C 410 190 380 250 370 280" fill="none" stroke="rgba(57,255,20,0.4)" stroke-width="1"/>
+      <!-- Right side -->
+      <path d="M 465 146 C 490 190 520 250 530 280" fill="none" stroke="rgba(57,255,20,0.4)" stroke-width="1"/>
+      <path d="M 485 145 C 540 175 600 240 620 270" fill="none" stroke="rgba(57,255,20,0.4)" stroke-width="1"/>
+      <path d="M 500 140 C 560 150 660 220 710 250" fill="none" stroke="rgba(57,255,20,0.4)" stroke-width="1"/>
+      <path d="M 510 128 C 580 128 680 200 740 220" fill="none" stroke="rgba(57,255,20,0.4)" stroke-width="1"/>
+      <!-- Coming soon lines -->
+      <path d="M 380 128 C 300 100 200 140 140 160" fill="none" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,4"/>
+      <path d="M 520 128 C 600 100 700 140 760 160" fill="none" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,4"/>
+
+      <!-- PROTOCOL NODES — DONE (green) -->
+      <!-- FTP -->
+      <a href="ftp_resources.html">
+        <rect x="90" y="205" width="80" height="50" rx="4" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="130" y="226" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">FTP</text>
+        <text x="130" y="240" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 21</text>
+        <text x="130" y="252" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.6)">✓ DONE</text>
+      </a>
+
+      <!-- SMB -->
+      <a href="smb_resources.html">
+        <rect x="145" y="235" width="80" height="50" rx="4" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="185" y="256" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">SMB</text>
+        <text x="185" y="270" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 445</text>
+        <text x="185" y="282" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.6)">✓ DONE</text>
+      </a>
+
+      <!-- NFS -->
+      <a href="nfs_resources.html">
+        <rect x="228" y="255" width="80" height="50" rx="4" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="268" y="276" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">NFS</text>
+        <text x="268" y="290" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 2049</text>
+        <text x="268" y="302" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.6)">✓ DONE</text>
+      </a>
+
+      <!-- DNS -->
+      <a href="dns_resources.html">
+        <rect x="323" y="265" width="80" height="50" rx="4" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="363" y="286" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">DNS</text>
+        <text x="363" y="300" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 53</text>
+        <text x="363" y="312" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.6)">✓ DONE</text>
+      </a>
+
+      <!-- SMTP -->
+      <a href="smtp_resources.html">
+        <rect x="408" y="265" width="80" height="50" rx="4" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="448" y="286" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">SMTP</text>
+        <text x="448" y="300" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 25</text>
+        <text x="448" y="312" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.6)">✓ DONE</text>
+      </a>
+
+      <!-- IMAP -->
+      <a href="imap_pop3_resources.html">
+        <rect x="493" y="255" width="86" height="50" rx="4" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="536" y="276" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">IMAP</text>
+        <text x="536" y="290" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 143</text>
+        <text x="536" y="302" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.6)">✓ DONE</text>
+      </a>
+
+      <!-- SNMP -->
+      <a href="snmp_resources.html">
+        <rect x="578" y="235" width="80" height="50" rx="4" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="618" y="256" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">SNMP</text>
+        <text x="618" y="270" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">UDP 161</text>
+        <text x="618" y="282" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.6)">✓ DONE</text>
+      </a>
+
+      <!-- MySQL -->
+      <a href="mysql_resources.html">
+        <rect x="633" y="205" width="80" height="50" rx="4" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="673" y="226" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">MySQL</text>
+        <text x="673" y="240" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 3306</text>
+        <text x="673" y="252" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.6)">✓ DONE</text>
+      </a>
+
+      <!-- MSSQL -->
+      <a href="mssql_resources.html">
+        <rect x="695" y="165" width="80" height="50" rx="4" fill="rgba(57,255,20,0.06)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="735" y="186" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">MSSQL</text>
+        <text x="735" y="200" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 1433</text>
+        <text x="735" y="212" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.6)">✓ DONE</text>
+      </a>
+
+      <!-- COMING SOON nodes (dashed, gray) -->
+      <!-- Oracle -->
+      <rect x="60" y="145" width="80" height="44" rx="4" fill="rgba(251,191,36,0.04)" stroke="rgba(251,191,36,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="100" y="164" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="rgba(251,191,36,0.7)">Oracle</text>
+      <text x="100" y="178" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 1521</text>
+
+      <!-- WinRM -->
+      <rect x="760" y="145" width="80" height="44" rx="4" fill="rgba(58,80,96,0.15)" stroke="rgba(58,80,96,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="800" y="164" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#3a5060">WinRM</text>
+      <text x="800" y="178" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 5985</text>
+
+      <!-- Second row protocols (below first row) -->
+      <!-- RDP -->
+      <rect x="190" y="340" width="80" height="44" rx="4" fill="rgba(58,80,96,0.15)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="230" y="359" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#3a5060">RDP</text>
+      <text x="230" y="373" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 3389</text>
+
+      <!-- IPMI -->
+      <rect x="413" y="370" width="80" height="44" rx="4" fill="rgba(58,80,96,0.15)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="453" y="389" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#3a5060">IPMI</text>
+      <text x="453" y="403" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">UDP 623</text>
+
+      <!-- SSH -->
+      <rect x="630" y="340" width="80" height="44" rx="4" fill="rgba(58,80,96,0.15)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="670" y="359" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#3a5060">SSH</text>
+      <text x="670" y="373" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="#3a5060">PORT 22</text>
+
+      <!-- LEGEND -->
+      <rect x="20" y="430" width="10" height="10" fill="rgba(57,255,20,0.2)" stroke="rgba(57,255,20,0.8)" stroke-width="1"/>
+      <text x="36" y="440" font-family="Share Tech Mono,monospace" font-size="9" fill="#b8ccd8">COMPLETE — اضغط للدراسة</text>
+
+      <rect x="200" y="430" width="10" height="10" fill="rgba(251,191,36,0.1)" stroke="rgba(251,191,36,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="216" y="440" font-family="Share Tech Mono,monospace" font-size="9" fill="#b8ccd8">IN PROGRESS</text>
+
+      <rect x="340" y="430" width="10" height="10" fill="rgba(58,80,96,0.2)" stroke="rgba(58,80,96,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="356" y="440" font-family="Share Tech Mono,monospace" font-size="9" fill="#b8ccd8">COMING SOON</text>
+    </svg>
   </div>
-
-  <script>
-  (function(){
-    const canvas = document.getElementById('mindmap');
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-
-    const ACCENT = '#00d4ff';
-    const GREEN  = '#39ff14';
-    const RED    = '#FF5757';
-    const YELLOW = '#fbbf24';
-    const MUTED  = '#3a5060';
-    const BG     = '#080f1c';
-    const TEXT   = '#b8ccd8';
-    const WHITE  = '#e8f4ff';
-
-    const protocols = [
-      { name:'FTP',       port:'21',   color:GREEN,  done:true,  url:'ftp_resources.html',       angle:-100 },
-      { name:'SMB',       port:'445',  color:GREEN,  done:true,  url:'smb_resources.html',       angle:-70  },
-      { name:'NFS',       port:'2049', color:GREEN,  done:true,  url:'nfs_resources.html',       angle:-40  },
-      { name:'DNS',       port:'53',   color:GREEN,  done:true,  url:'dns_resources.html',       angle:-15  },
-      { name:'SMTP',      port:'25',   color:GREEN,  done:true,  url:'smtp_resources.html',      angle:15   },
-      { name:'IMAP',      port:'143',  color:GREEN,  done:true,  url:'imap_pop3_resources.html', angle:40   },
-      { name:'SNMP',      port:'161',  color:GREEN,  done:true,  url:'snmp_resources.html',      angle:65   },
-      { name:'MySQL',     port:'3306', color:GREEN,  done:true,  url:'mysql_resources.html',     angle:90   },
-      { name:'MSSQL',     port:'1433', color:GREEN,  done:true,  url:'mssql_resources.html',     angle:115  },
-      { name:'Oracle',    port:'1521', color:YELLOW, done:false, url:null,                       angle:-130 },
-      { name:'IPMI',      port:'623',  color:MUTED,  done:false, url:null,                       angle:140  },
-      { name:'RDP',       port:'3389', color:MUTED,  done:false, url:null,                       angle:155  },
-      { name:'WinRM',     port:'5985', color:MUTED,  done:false, url:null,                       angle:-155 },
-    ];
-
-    const steps = [
-      { id:'enum',  label:'ENUMERATION', x:460, y:60,  color:ACCENT, w:180, h:40 },
-      { id:'nmap',  label:'NMAP SCAN',   x:460, y:150, color:ACCENT, w:140, h:36 },
-    ];
-
-    const PROTO_R = 170;
-    const CX = 460, CY = 270;
-
-    // Calculate protocol positions
-    protocols.forEach(p => {
-      const rad = (p.angle * Math.PI) / 180;
-      p.x = CX + PROTO_R * Math.cos(rad);
-      p.y = CY + PROTO_R * Math.sin(rad);
-    });
-
-    let hovered = null;
-    let animFrame = 0;
-    let lineProgress = 0;
-
-    function drawRoundRect(x, y, w, h, r, fill, stroke, lw=1) {
-      ctx.beginPath();
-      ctx.moveTo(x+r, y);
-      ctx.lineTo(x+w-r, y);
-      ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-      ctx.lineTo(x+w, y+h-r);
-      ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-      ctx.lineTo(x+r, y+h);
-      ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-      ctx.lineTo(x, y+r);
-      ctx.quadraticCurveTo(x, y, x+r, y);
-      ctx.closePath();
-      if(fill){ ctx.fillStyle=fill; ctx.fill(); }
-      if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=lw; ctx.stroke(); }
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-
-      // Grid lines
-      ctx.strokeStyle = 'rgba(0,212,255,0.04)';
-      ctx.lineWidth = 1;
-      for(let x=0; x<W; x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-      for(let y=0; y<H; y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
-
-      // Draw lines from Nmap to protocols (animated)
-      protocols.forEach((p, i) => {
-        const prog = Math.min(1, (lineProgress - i*0.06));
-        if(prog <= 0) return;
-
-        const nx = 460, ny = 168;
-        const ex = p.x, ey = p.y;
-        const midX = (nx + ex) / 2;
-        const midY = (ny + ey) / 2;
-
-        const lx = nx + (ex - nx) * prog;
-        const ly = ny + (ey - ny) * prog;
-
-        ctx.beginPath();
-        ctx.moveTo(nx, ny);
-        ctx.lineTo(lx, ly);
-        ctx.strokeStyle = p.done
-          ? (hovered === i ? GREEN : 'rgba(57,255,20,0.35)')
-          : (hovered === i ? YELLOW : 'rgba(58,80,96,0.5)');
-        ctx.lineWidth = hovered === i ? 2 : 1;
-        ctx.setLineDash(p.done ? [] : [4,4]);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      });
-
-      // Line from Enum to Nmap
-      ctx.beginPath();
-      ctx.moveTo(460, 80);
-      ctx.lineTo(460, 150);
-      ctx.strokeStyle = ACCENT;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Arrow head
-      ctx.beginPath();
-      ctx.moveTo(454, 144); ctx.lineTo(460, 154); ctx.lineTo(466, 144);
-      ctx.strokeStyle = ACCENT; ctx.lineWidth = 1.5; ctx.stroke();
-
-      // ENUMERATION box
-      const es = steps[0];
-      const eHov = false;
-      drawRoundRect(es.x - es.w/2, es.y - es.h/2, es.w, es.h, 6,
-        'rgba(0,212,255,0.08)', ACCENT, 1);
-      ctx.fillStyle = WHITE;
-      ctx.font = 'bold 13px "Share Tech Mono", monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(es.label, es.x, es.y);
-
-      // NMAP box
-      const ns = steps[1];
-      drawRoundRect(ns.x - ns.w/2, ns.y - ns.h/2, ns.w, ns.h, 6,
-        'rgba(0,212,255,0.1)', ACCENT, 1.5);
-      ctx.fillStyle = ACCENT;
-      ctx.font = 'bold 12px "Share Tech Mono", monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(ns.label, ns.x, ns.y);
-
-      // Protocol nodes
-      protocols.forEach((p, i) => {
-        const prog = Math.min(1, (lineProgress - i*0.06));
-        if(prog <= 0.3) return;
-
-        const nodeAlpha = Math.min(1, (prog - 0.3) / 0.7);
-        const isHov = hovered === i;
-        const r = isHov ? 38 : 34;
-
-        ctx.save();
-        ctx.globalAlpha = nodeAlpha;
-
-        // Circle
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, r, 0, Math.PI*2);
-        if(p.done){
-          ctx.fillStyle = isHov ? 'rgba(57,255,20,0.2)' : 'rgba(57,255,20,0.08)';
-        } else if(p.color === YELLOW){
-          ctx.fillStyle = 'rgba(251,191,36,0.08)';
-        } else {
-          ctx.fillStyle = 'rgba(58,80,96,0.3)';
-        }
-        ctx.fill();
-
-        ctx.strokeStyle = p.done ? (isHov ? GREEN : 'rgba(57,255,20,0.6)') :
-                          p.color === YELLOW ? 'rgba(251,191,36,0.5)' :
-                          'rgba(58,80,96,0.5)';
-        ctx.lineWidth = isHov ? 2 : 1;
-        ctx.stroke();
-
-        // Name
-        ctx.fillStyle = p.done ? (isHov ? WHITE : GREEN) :
-                        p.color === YELLOW ? YELLOW : MUTED;
-        ctx.font = `${isHov ? 'bold ' : ''}11px "Share Tech Mono", monospace`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(p.name, p.x, p.y - 6);
-
-        // Port
-        ctx.fillStyle = 'rgba(184,204,216,0.5)';
-        ctx.font = '9px "Share Tech Mono", monospace';
-        ctx.fillText(p.port, p.x, p.y + 8);
-
-        // Done checkmark
-        if(p.done && !isHov){
-          ctx.fillStyle = GREEN;
-          ctx.font = '9px monospace';
-          ctx.fillText('✓', p.x, p.y + 20);
-        }
-
-        ctx.restore();
-      });
-
-      // Legend
-      ctx.font = '9px "Share Tech Mono", monospace';
-      ctx.textAlign = 'left';
-
-      ctx.fillStyle = GREEN;
-      ctx.fillRect(20, H-40, 10, 10);
-      ctx.fillStyle = TEXT;
-      ctx.fillText('COMPLETE', 36, H-31);
-
-      ctx.fillStyle = YELLOW;
-      ctx.fillRect(120, H-40, 10, 10);
-      ctx.fillStyle = TEXT;
-      ctx.fillText('IN PROGRESS', 136, H-31);
-
-      ctx.fillStyle = MUTED;
-      ctx.fillRect(240, H-40, 10, 10);
-      ctx.fillStyle = TEXT;
-      ctx.fillText('COMING SOON', 256, H-31);
-
-      ctx.fillStyle = 'rgba(0,212,255,0.4)';
-      ctx.textAlign = 'right';
-      ctx.fillText('اضغط على أي بروتوكول للدراسة', W-20, H-31);
-    }
-
-    // Animation
-    function animate() {
-      lineProgress += 0.035;
-      if(lineProgress > 2.5) lineProgress = 2.5;
-      draw();
-      if(lineProgress < 2.5) requestAnimationFrame(animate);
-    }
-    animate();
-
-    // Hit test
-    canvas.addEventListener('mousemove', e => {
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = W / rect.width;
-      const mx = (e.clientX - rect.left) * scaleX;
-      const my = (e.clientY - rect.top) * (H / rect.height);
-
-      let found = -1;
-      protocols.forEach((p, i) => {
-        const d = Math.sqrt((mx-p.x)**2 + (my-p.y)**2);
-        if(d < 38) found = i;
-      });
-
-      if(found !== hovered){
-        hovered = found;
-        canvas.style.cursor = (found >= 0 && protocols[found].done) ? 'pointer' : 'default';
-        draw();
-      }
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-      hovered = null;
-      canvas.style.cursor = 'default';
-      draw();
-    });
-
-    canvas.addEventListener('click', e => {
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = W / rect.width;
-      const mx = (e.clientX - rect.left) * scaleX;
-      const my = (e.clientY - rect.top) * (H / rect.height);
-
-      protocols.forEach(p => {
-        if(!p.done || !p.url) return;
-        const d = Math.sqrt((mx-p.x)**2 + (my-p.y)**2);
-        if(d < 38) window.location.href = p.url;
-      });
-    });
-  })();
-  </script>
 
   <div class="sec-label">► AVAILABLE PROTOCOLS</div>
 
