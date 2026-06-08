@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#030810;--surface:#080f1c;--border:#0e2035;
+  --bg:#030810;--surface:rgba(8,15,28,0.75);--border:#0e2035;
   --accent:#00d4ff;--orange:#FF6b35;--green:#39ff14;
   --purple:#a855f7;--pink:#ec4899;--yellow:#fbbf24;
   --red:#FF5757;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;
@@ -18,6 +18,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);
   background-size:40px 40px;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
 .wrap{max-width:960px;margin:0 auto;padding:44px 18px 90px;position:relative;z-index:1;}
 
 /* BACK BUTTON */
@@ -125,15 +126,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
   <div class="sec-label">► PENTEST MINDMAP</div>
 
-  <div style="position:relative;margin-bottom:30px;overflow:hidden;border-radius:0;">
-    <!-- Background image -->
-    <div style="position:absolute;inset:0;background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') center center/cover no-repeat;filter:brightness(0.25) saturate(0.8);z-index:0;"></div>
-    <!-- Cyan grid overlay -->
-    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:40px 40px;z-index:1;"></div>
-    <!-- Dark gradient top/bottom fade -->
-    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(3,8,16,0.6) 0%,transparent 20%,transparent 80%,rgba(3,8,16,0.6) 100%);z-index:2;"></div>
-
-    <svg viewBox="0 0 900 480" width="100%" style="min-width:600px;display:block;position:relative;z-index:3;">
+  <div style="margin-bottom:30px;overflow-x:auto;">
+    <svg viewBox="0 0 900 480" width="100%" style="min-width:600px;display:block;">
       <defs>
         <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
           <path d="M2 2L8 5L2 8" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round"/>
