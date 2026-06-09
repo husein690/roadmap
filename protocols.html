@@ -124,7 +124,7 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
 
   <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat"><div class="stat-val">11</div><div class="stat-lbl">Completed</div></div>
+    <div class="stat"><div class="stat-val">14</div><div class="stat-lbl">Completed</div></div>
     <div class="stat"><div class="stat-val">10+</div><div class="stat-lbl">Coming Soon</div></div>
     <div class="stat"><div class="stat-val">112</div><div class="stat-lbl">HTB Module</div></div>
     <div class="stat"><div class="stat-val">21</div><div class="stat-lbl">Total Sections</div></div>
@@ -166,11 +166,15 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
 
       <!-- Lines from NMAP to ROW 2 protocols -->
       <!-- RDP bottom-left -->
-      <path d="M 415 145 C 380 200 290 330 250 378" fill="none" stroke="rgba(58,80,96,0.5)" stroke-width="1.5" stroke-dasharray="4,4"/>
-      <!-- SSH bottom-right -->
-      <path d="M 485 145 C 520 200 610 330 650 378" fill="none" stroke="rgba(58,80,96,0.5)" stroke-width="1.5" stroke-dasharray="4,4"/>
-      <!-- WinRM right -->
-      <path d="M 520 128 C 600 100 700 140 760 160" fill="none" stroke="rgba(58,80,96,0.5)" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <path d="M 415 145 C 370 200 250 330 180 378" fill="none" stroke="rgba(58,80,96,0.5)" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <!-- SSH -->
+      <path d="M 425 146 C 390 210 320 330 280 378" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <!-- Rsync -->
+      <path d="M 450 146 C 450 220 450 310 450 378" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <!-- R-Services -->
+      <path d="M 475 146 C 510 210 570 330 580 378" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <!-- WinRM bottom-right -->
+      <path d="M 490 145 C 540 200 680 330 720 378" fill="none" stroke="rgba(58,80,96,0.5)" stroke-width="1.5" stroke-dasharray="4,4"/>
 
       <!-- ROW 1 — DONE protocols -->
       <a href="ftp_resources.html">
@@ -258,18 +262,42 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
       <text x="800" y="179" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(58,80,96,0.7)">PORT 5985</text>
       <text x="800" y="191" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(58,80,96,0.5)">COMING</text>
 
-      <!-- ROW 2 — RDP + SSH (coming soon) -->
+      <!-- ROW 2 — RDP (coming) + SSH (done) + Rsync (done) + R-Services (done) -->
       <!-- RDP -->
-      <rect x="170" y="378" width="80" height="50" rx="4" fill="rgba(58,80,96,0.2)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
-      <text x="210" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="rgba(58,80,96,0.9)">RDP</text>
-      <text x="210" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(58,80,96,0.7)">PORT 3389</text>
-      <text x="210" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(58,80,96,0.5)">COMING</text>
+      <rect x="100" y="378" width="80" height="50" rx="4" fill="rgba(58,80,96,0.2)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="140" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="rgba(58,80,96,0.9)">RDP</text>
+      <text x="140" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(58,80,96,0.7)">PORT 3389</text>
+      <text x="140" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(58,80,96,0.5)">COMING</text>
 
-      <!-- SSH -->
-      <rect x="650" y="378" width="80" height="50" rx="4" fill="rgba(58,80,96,0.2)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
-      <text x="690" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="rgba(58,80,96,0.9)">SSH</text>
-      <text x="690" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(58,80,96,0.7)">PORT 22</text>
-      <text x="690" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(58,80,96,0.5)">COMING</text>
+      <!-- SSH — done -->
+      <a href="ssh_resources.html">
+        <rect x="240" y="378" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="280" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">SSH</text>
+        <text x="280" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 22</text>
+        <text x="280" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+
+      <!-- Rsync — done -->
+      <a href="rsync_resources.html">
+        <rect x="410" y="378" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="450" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">Rsync</text>
+        <text x="450" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 873</text>
+        <text x="450" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+
+      <!-- R-Services — done -->
+      <a href="rservices_resources.html">
+        <rect x="580" y="378" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="620" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">R-Services</text>
+        <text x="620" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">512/513/514</text>
+        <text x="620" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+
+      <!-- WinRM coming soon bottom -->
+      <rect x="720" y="378" width="80" height="50" rx="4" fill="rgba(58,80,96,0.2)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="760" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="rgba(58,80,96,0.9)">WinRM</text>
+      <text x="760" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(58,80,96,0.7)">PORT 5985</text>
+      <text x="760" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(58,80,96,0.5)">COMING</text>
 
       <!-- LEGEND -->
       <rect x="20" y="545" width="10" height="10" fill="rgba(57,255,20,0.15)" stroke="rgba(57,255,20,0.7)" stroke-width="1"/>
@@ -467,6 +495,57 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
         <span class="ptag red">RAKP VULN</span>
         <span class="ptag red">ADMIN:ADMIN</span>
         <span class="ptag green">ipmi_dumphashes</span>
+      </div>
+    </a>
+
+    <!-- SSH -->
+    <a href="ssh_resources.html" class="proto-card done">
+      <div class="proto-header">
+        <div class="proto-icon">🔒</div>
+        <div class="proto-status done">COMPLETE</div>
+      </div>
+      <div class="proto-name">SSH</div>
+      <div class="proto-full">SECURE SHELL</div>
+      <div class="proto-desc">اتصال مشفر عن بعد. SSH-1 ثغرة MITM، SSH-2 آمن. Public-key auth أأمن من Password. PermitRootLogin + PermitEmptyPasswords = كارثة. id_rsa = دخول مباشر بدون باسورد.</div>
+      <div class="proto-tags">
+        <span class="ptag cyan">PORT 22</span>
+        <span class="ptag red">SSH-1 MITM</span>
+        <span class="ptag red">id_rsa</span>
+        <span class="ptag green">ssh-audit</span>
+      </div>
+    </a>
+
+    <!-- Rsync -->
+    <a href="rsync_resources.html" class="proto-card done">
+      <div class="proto-header">
+        <div class="proto-icon">🔄</div>
+        <div class="proto-status done">COMPLETE</div>
+      </div>
+      <div class="proto-name">Rsync</div>
+      <div class="proto-full">REMOTE SYNC</div>
+      <div class="proto-desc">أداة نسخ ملفات سريعة تستخدم Delta Transfer. تستخدم للـ backups = تحتوي SSH keys وكلمات سر. بدون authentication = تحمّل id_rsa وتدخل على SSH مباشرة.</div>
+      <div class="proto-tags">
+        <span class="ptag cyan">PORT 873</span>
+        <span class="ptag red">NO AUTH</span>
+        <span class="ptag red">id_rsa LEAK</span>
+        <span class="ptag green">rsync</span>
+      </div>
+    </a>
+
+    <!-- R-Services -->
+    <a href="rservices_resources.html" class="proto-card done">
+      <div class="proto-header">
+        <div class="proto-icon">📟</div>
+        <div class="proto-status done">COMPLETE</div>
+      </div>
+      <div class="proto-name">R-Services</div>
+      <div class="proto-full">LEGACY UNIX REMOTE ACCESS</div>
+      <div class="proto-desc">خدمات Unix قديمة — clear-text مثل Telnet. .rhosts "+ +" = أي شخص يدخل بدون باسورد. rwho يكشف usernames. rlogin للدخول المباشر.</div>
+      <div class="proto-tags">
+        <span class="ptag cyan">512/513/514</span>
+        <span class="ptag red">.rhosts</span>
+        <span class="ptag red">NO ENCRYPTION</span>
+        <span class="ptag green">rlogin/rwho</span>
       </div>
     </a>
 
