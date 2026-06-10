@@ -133,7 +133,7 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
   <div class="sec-label">► PENTEST MINDMAP</div>
 
   <div style="margin-bottom:30px;overflow-x:auto;">
-    <svg viewBox="0 0 900 580" width="100%" style="min-width:600px;display:block;">
+    <svg viewBox="0 0 900 580" width="100%" style="min-width:700px;display:block;">
       <defs>
         <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
           <path d="M2 2L8 5L2 8" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round"/>
@@ -163,6 +163,12 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
       <path d="M 380 130 C 300 100 180 130 110 170" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
       <!-- IPMI line -->
       <path d="M 383 133 C 310 110 240 130 200 170" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <!-- RDP line -->
+      <path d="M 515 128 C 590 110 660 110 690 120" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <!-- WinRM line -->
+      <path d="M 518 130 C 600 105 700 108 770 120" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <!-- WMI line -->
+      <path d="M 510 133 C 590 120 700 145 770 170" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
 
       <!-- Lines from NMAP to ROW 2 protocols -->
       <!-- RDP bottom-left -->
@@ -256,19 +262,31 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
         <text x="160" y="191" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
 
-      <!-- WinRM — top right coming soon -->
-      <rect x="760" y="145" width="80" height="50" rx="4" fill="rgba(58,80,96,0.2)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
-      <text x="800" y="165" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="rgba(58,80,96,0.9)">WinRM</text>
-      <text x="800" y="179" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(58,80,96,0.7)">PORT 5985</text>
-      <text x="800" y="191" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(58,80,96,0.5)">COMING</text>
+      <!-- RDP — top right done (جنب MSSQL) -->
+      <a href="rdp_resources.html">
+        <rect x="690" y="105" width="70" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="725" y="124" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">RDP</text>
+        <text x="725" y="138" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 3389</text>
+        <text x="725" y="151" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
 
-      <!-- ROW 2 — RDP (coming) + SSH (done) + Rsync (done) + R-Services (done) -->
-      <!-- RDP -->
-      <rect x="100" y="378" width="80" height="50" rx="4" fill="rgba(58,80,96,0.2)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
-      <text x="140" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="rgba(58,80,96,0.9)">RDP</text>
-      <text x="140" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(58,80,96,0.7)">PORT 3389</text>
-      <text x="140" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(58,80,96,0.5)">COMING</text>
+      <!-- WinRM — top right done -->
+      <a href="winrm_resources.html">
+        <rect x="770" y="105" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="810" y="124" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">WinRM</text>
+        <text x="810" y="138" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 5985</text>
+        <text x="810" y="151" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
 
+      <!-- WMI — top right done -->
+      <a href="wmi_resources.html">
+        <rect x="770" y="165" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="810" y="184" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">WMI</text>
+        <text x="810" y="198" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 135</text>
+        <text x="810" y="211" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+
+      <!-- ROW 2 — SSH + Rsync + R-Services done -->
       <!-- SSH — done -->
       <a href="ssh_resources.html">
         <rect x="240" y="378" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
@@ -292,12 +310,6 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
         <text x="620" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">512/513/514</text>
         <text x="620" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
-
-      <!-- WinRM coming soon bottom -->
-      <rect x="720" y="378" width="80" height="50" rx="4" fill="rgba(58,80,96,0.2)" stroke="rgba(58,80,96,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
-      <text x="760" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="rgba(58,80,96,0.9)">WinRM</text>
-      <text x="760" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(58,80,96,0.7)">PORT 5985</text>
-      <text x="760" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(58,80,96,0.5)">COMING</text>
 
       <!-- LEGEND -->
       <rect x="20" y="545" width="10" height="10" fill="rgba(57,255,20,0.15)" stroke="rgba(57,255,20,0.7)" stroke-width="1"/>
