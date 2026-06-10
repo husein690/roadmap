@@ -133,189 +133,149 @@ body::before{content:''!important;position:fixed!important;inset:0!important;bac
   <div class="sec-label">► PENTEST MINDMAP</div>
 
   <div style="margin-bottom:30px;overflow-x:auto;">
-    <svg viewBox="0 0 900 580" width="100%" style="min-width:700px;display:block;">
+    <svg viewBox="0 0 1060 480" width="100%" style="min-width:800px;display:block;">
       <defs>
-        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-          <path d="M2 2L8 5L2 8" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round"/>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 2L8 5L2 8" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
         </marker>
       </defs>
 
-      <!-- CENTER: ENUMERATION -->
-      <rect x="370" y="20" width="160" height="40" rx="4" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="1.5"/>
-      <text x="450" y="44" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="12" fill="#e8f4ff" font-weight="bold">ENUMERATION</text>
+      <!-- ENUMERATION -->
+      <rect x="475" y="18" width="150" height="36" rx="4" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="550" y="39" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="12" fill="#e8f4ff" font-weight="bold">ENUMERATION</text>
 
       <!-- NMAP -->
-      <line x1="450" y1="60" x2="450" y2="110" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr)"/>
-      <rect x="380" y="110" width="140" height="36" rx="4" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="1.5"/>
-      <text x="450" y="129" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#00d4ff" font-weight="bold">NMAP SCAN</text>
-      <text x="450" y="142" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(0,212,255,0.5)">-sV -sC -p &lt;port&gt;</text>
+      <line x1="550" y1="54" x2="550" y2="100" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arr)"/>
+      <rect x="472" y="100" width="156" height="40" rx="4" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="2"/>
+      <text x="550" y="118" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="12" fill="#00d4ff" font-weight="bold">NMAP SCAN</text>
+      <text x="550" y="133" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(0,212,255,0.5)">-sV -sC -p &lt;port&gt;</text>
 
-      <!-- Lines from NMAP to ROW 1 protocols (green) -->
-      <path d="M 390 128 C 320 128 220 200 160 220" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <path d="M 400 140 C 330 150 240 220 190 250" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <path d="M 415 145 C 360 175 300 240 280 270" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <path d="M 435 146 C 410 190 380 250 370 280" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <path d="M 465 146 C 490 190 520 250 530 280" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <path d="M 485 145 C 540 175 600 240 620 270" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <path d="M 500 140 C 560 150 660 220 710 250" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <path d="M 510 128 C 580 128 680 200 740 220" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <!-- Oracle line -->
-      <path d="M 380 130 C 300 100 180 130 110 170" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <!-- IPMI line -->
-      <path d="M 383 133 C 310 110 240 130 200 170" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <!-- RDP line -->
-      <path d="M 515 128 C 590 110 660 110 690 120" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <!-- WinRM line -->
-      <path d="M 518 130 C 600 105 700 108 770 120" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <!-- WMI line -->
-      <path d="M 510 133 C 590 120 700 145 770 170" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <!-- LINES -->
+      <path d="M 472 112 C 412 90 130 195 110 195" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 472 120 C 432 110 220 195 200 195" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 404 170 258 240" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 447 182 344 265" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 490 187 430 275" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 533 190 516 280" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 576 187 602 275" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 620 182 690 265" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 662 170 774 240" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 705 152 860 205" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 724 130 898 160" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 628 110 C 688 90 930 125 950 125" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 628 120 C 688 110 930 185 950 185" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 628 130 C 688 130 930 245 950 245" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 409 285 268 390" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 539 290 528 400" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
+      <path d="M 550 140 Q 671 285 793 390" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
 
-      <!-- Lines from NMAP to ROW 2 protocols -->
-      <!-- RDP bottom-left -->
-      <path d="M 415 145 C 370 200 250 330 180 378" fill="none" stroke="rgba(58,80,96,0.5)" stroke-width="1.5" stroke-dasharray="4,4"/>
-      <!-- SSH -->
-      <path d="M 425 146 C 390 210 320 330 280 378" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <!-- Rsync -->
-      <path d="M 450 146 C 450 220 450 310 450 378" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <!-- R-Services -->
-      <path d="M 475 146 C 510 210 570 330 580 378" fill="none" stroke="rgba(57,255,20,0.6)" stroke-width="1.5"/>
-      <!-- WinRM bottom-right -->
-      <path d="M 490 145 C 540 200 680 330 720 378" fill="none" stroke="rgba(58,80,96,0.5)" stroke-width="1.5" stroke-dasharray="4,4"/>
-
-      <!-- ROW 1 — DONE protocols -->
-      <a href="ftp_resources.html">
-        <rect x="90" y="205" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="130" y="226" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">FTP</text>
-        <text x="130" y="240" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 21</text>
-        <text x="130" y="252" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
-      </a>
-
-      <a href="smb_resources.html">
-        <rect x="145" y="235" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="185" y="256" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">SMB</text>
-        <text x="185" y="270" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 445</text>
-        <text x="185" y="282" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
-      </a>
-
-      <a href="nfs_resources.html">
-        <rect x="228" y="255" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="268" y="276" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">NFS</text>
-        <text x="268" y="290" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 2049</text>
-        <text x="268" y="302" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
-      </a>
-
-      <a href="dns_resources.html">
-        <rect x="323" y="265" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="363" y="286" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">DNS</text>
-        <text x="363" y="300" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 53</text>
-        <text x="363" y="312" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
-      </a>
-
-      <a href="smtp_resources.html">
-        <rect x="408" y="265" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="448" y="286" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">SMTP</text>
-        <text x="448" y="300" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 25</text>
-        <text x="448" y="312" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
-      </a>
-
-      <a href="imap_pop3_resources.html">
-        <rect x="493" y="255" width="86" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="536" y="276" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">IMAP</text>
-        <text x="536" y="290" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 143</text>
-        <text x="536" y="302" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
-      </a>
-
-      <a href="snmp_resources.html">
-        <rect x="578" y="235" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="618" y="256" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">SNMP</text>
-        <text x="618" y="270" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">UDP 161</text>
-        <text x="618" y="282" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
-      </a>
-
-      <a href="mysql_resources.html">
-        <rect x="633" y="205" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="673" y="226" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">MySQL</text>
-        <text x="673" y="240" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 3306</text>
-        <text x="673" y="252" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
-      </a>
-
-      <a href="mssql_resources.html">
-        <rect x="695" y="165" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="735" y="186" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">MSSQL</text>
-        <text x="735" y="200" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 1433</text>
-        <text x="735" y="212" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
-      </a>
-
-      <!-- Oracle — top left done -->
+      <!-- NODES -->
       <a href="oracle_tns_resources.html">
-        <rect x="30" y="145" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="70" y="165" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">Oracle</text>
-        <text x="70" y="179" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 1521</text>
-        <text x="70" y="191" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+        <rect x="30" y="170" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="70" y="187" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">Oracle</text>
+        <text x="70" y="201" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 1521</text>
+        <text x="70" y="214" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
-
-      <!-- IPMI — next to Oracle -->
       <a href="ipmi_resources.html">
-        <rect x="120" y="145" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="160" y="165" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">IPMI</text>
-        <text x="160" y="179" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">UDP 623</text>
-        <text x="160" y="191" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+        <rect x="120" y="170" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="160" y="187" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">IPMI</text>
+        <text x="160" y="201" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">UDP 623</text>
+        <text x="160" y="214" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
-
-      <!-- RDP — top right done (جنب MSSQL) -->
+      <a href="ftp_resources.html">
+        <rect x="220" y="240" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="258" y="257" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">FTP</text>
+        <text x="258" y="271" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 21</text>
+        <text x="258" y="284" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+      <a href="smb_resources.html">
+        <rect x="306" y="265" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="344" y="282" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">SMB</text>
+        <text x="344" y="296" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 445</text>
+        <text x="344" y="309" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+      <a href="nfs_resources.html">
+        <rect x="392" y="275" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="430" y="292" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">NFS</text>
+        <text x="430" y="306" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 2049</text>
+        <text x="430" y="319" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+      <a href="dns_resources.html">
+        <rect x="478" y="280" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="516" y="297" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">DNS</text>
+        <text x="516" y="311" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 53</text>
+        <text x="516" y="324" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+      <a href="smtp_resources.html">
+        <rect x="564" y="275" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="602" y="292" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">SMTP</text>
+        <text x="602" y="306" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 25</text>
+        <text x="602" y="319" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+      <a href="imap_pop3_resources.html">
+        <rect x="650" y="265" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="690" y="282" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">IMAP</text>
+        <text x="690" y="296" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 143</text>
+        <text x="690" y="309" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+      <a href="snmp_resources.html">
+        <rect x="736" y="240" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="774" y="257" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">SNMP</text>
+        <text x="774" y="271" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">UDP 161</text>
+        <text x="774" y="284" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+      <a href="mysql_resources.html">
+        <rect x="822" y="205" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="860" y="222" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">MySQL</text>
+        <text x="860" y="236" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 3306</text>
+        <text x="860" y="249" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
+      <a href="mssql_resources.html">
+        <rect x="860" y="158" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="898" y="175" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">MSSQL</text>
+        <text x="898" y="189" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 1433</text>
+        <text x="898" y="202" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+      </a>
       <a href="rdp_resources.html">
-        <rect x="690" y="105" width="70" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="725" y="124" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">RDP</text>
-        <text x="725" y="138" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 3389</text>
-        <text x="725" y="151" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+        <rect x="952" y="100" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="990" y="117" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">RDP</text>
+        <text x="990" y="131" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 3389</text>
+        <text x="990" y="144" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
-
-      <!-- WinRM — top right done -->
       <a href="winrm_resources.html">
-        <rect x="770" y="105" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="810" y="124" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">WinRM</text>
-        <text x="810" y="138" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 5985</text>
-        <text x="810" y="151" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+        <rect x="952" y="160" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="990" y="177" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">WinRM</text>
+        <text x="990" y="191" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 5985</text>
+        <text x="990" y="204" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
-
-      <!-- WMI — top right done -->
       <a href="wmi_resources.html">
-        <rect x="770" y="165" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="810" y="184" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">WMI</text>
-        <text x="810" y="198" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 135</text>
-        <text x="810" y="211" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+        <rect x="952" y="220" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="990" y="237" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">WMI</text>
+        <text x="990" y="251" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 135</text>
+        <text x="990" y="264" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
-
-      <!-- ROW 2 — SSH + Rsync + R-Services done -->
-      <!-- SSH — done -->
       <a href="ssh_resources.html">
-        <rect x="240" y="378" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="280" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">SSH</text>
-        <text x="280" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 22</text>
-        <text x="280" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+        <rect x="230" y="390" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="268" y="407" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">SSH</text>
+        <text x="268" y="421" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 22</text>
+        <text x="268" y="434" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
-
-      <!-- Rsync — done -->
       <a href="rsync_resources.html">
-        <rect x="410" y="378" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="450" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#39ff14" font-weight="bold">Rsync</text>
-        <text x="450" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 873</text>
-        <text x="450" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+        <rect x="490" y="400" width="76" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="528" y="417" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">Rsync</text>
+        <text x="528" y="431" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">PORT 873</text>
+        <text x="528" y="444" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
-
-      <!-- R-Services — done -->
       <a href="rservices_resources.html">
-        <rect x="580" y="378" width="80" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
-        <text x="620" y="398" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">R-Services</text>
-        <text x="620" y="412" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">512/513/514</text>
-        <text x="620" y="424" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
+        <rect x="750" y="390" width="86" height="50" rx="4" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.6)" stroke-width="1"/>
+        <text x="793" y="407" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#39ff14" font-weight="bold">R-Services</text>
+        <text x="793" y="421" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(57,255,20,0.45)">512/513/514</text>
+        <text x="793" y="434" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="8" fill="rgba(57,255,20,0.5)">✓ DONE</text>
       </a>
 
       <!-- LEGEND -->
-      <rect x="20" y="545" width="10" height="10" fill="rgba(57,255,20,0.15)" stroke="rgba(57,255,20,0.7)" stroke-width="1"/>
-      <text x="36" y="554" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(184,204,216,0.7)">COMPLETE — اضغط للدراسة</text>
-      <rect x="260" y="545" width="10" height="10" fill="rgba(58,80,96,0.2)" stroke="rgba(58,80,96,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
-      <text x="276" y="554" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(184,204,216,0.7)">COMING SOON</text>
+      <rect x="20" y="455" width="10" height="10" fill="rgba(57,255,20,0.15)" stroke="rgba(57,255,20,0.7)" stroke-width="1"/>
+      <text x="36" y="464" font-family="Share Tech Mono,monospace" font-size="9" fill="rgba(184,204,216,0.7)">COMPLETE — اضغط للدراسة</text>
     </svg>
   </div>
 
