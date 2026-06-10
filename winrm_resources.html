@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WinRM — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--surface:rgba(8,15,28,0.75);--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+.hdr{margin-bottom:32px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-name{font-family:var(--mono);font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
+.hdr-name span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0;opacity:.3;}
+.facts-bar{display:flex;flex-wrap:wrap;margin-bottom:28px;background:rgba(8,18,36,0.52);backdrop-filter:blur(18px);border:1px solid rgba(0,212,255,0.18);}
+.fact{flex:1;min-width:110px;padding:12px 16px;border-left:1px solid var(--border);}
+.fact:last-child{border-left:none;}
+.fact-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--accent);}
+.fact-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;}
+.nav{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.nav-btn{font-family:var(--tag);font-size:10px;letter-spacing:1px;padding:12px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.05);}
+.panel{display:none;}
+.panel.active{display:block;}
+.card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.4;}
+.card-title{font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code{background:rgba(1,4,9,0.8);border:1px solid var(--border);border-right:3px solid var(--accent);padding:14px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.7;margin:8px 0;}
+.code .cmd{color:var(--accent);}
+.code .ok{color:var(--green);}
+.code .cmt{color:var(--muted);}
+.code .val{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.6;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#99e8ff;}
+.alert.warning{background:rgba(251,191,36,.08);border-color:var(--yellow);color:#ffe599;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
+.info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:rgba(8,18,36,0.5);border:1px solid var(--border);padding:10px 8px;text-align:center;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;font-family:var(--tag);}
+.chain-step .step-sub{color:var(--muted);font-size:9px;margin-top:2px;}
+.chain-step.hl{border-color:var(--red);background:rgba(255,87,87,.05);}
+.chain-arrow{color:var(--accent);font-size:14px;padding:0 4px;}
+.qa{margin:10px 0;}
+.qa-q{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--accent);}
+.qa-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.qa-a{background:rgba(57,255,20,.05);border:1px solid rgba(57,255,20,.2);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.qa-a::before{content:'✅ الجواب: ';color:var(--green);}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+<canvas id="glass-particles"></canvas>
+<div class="wrap">
+
+<a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a>
+
+<div class="hdr">
+  <div class="hdr-tag">► HTB ACADEMY · MODULE 112 · SECTION 18/21</div>
+  <div class="hdr-name">WinRM — <span>WINDOWS REMOTE MANAGEMENT</span></div>
+  <div class="hdr-sub">POWERSHELL REMOTE · PORTS 5985/5986 · EVIL-WINRM</div>
+  <div class="divider"></div>
+</div>
+
+<div class="facts-bar">
+  <div class="fact"><div class="fact-val">5985</div><div class="fact-lbl">HTTP Port</div></div>
+  <div class="fact"><div class="fact-val">5986</div><div class="fact-lbl">HTTPS Port</div></div>
+  <div class="fact"><div class="fact-val">PowerShell</div><div class="fact-lbl">Shell Type</div></div>
+  <div class="fact"><div class="fact-val">SOAP</div><div class="fact-lbl">Protocol</div></div>
+  <div class="fact"><div class="fact-val">evil-winrm</div><div class="fact-lbl">Pentest Tool</div></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="panel active">
+  <div class="card">
+    <div class="card-title">ما هو WinRM؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      Windows Remote Management — إدارة Windows عن بعد عبر command line. يستخدم SOAP protocol. مثبّت ومفعّل افتراضياً من Windows Server 2012. يعطيك PowerShell shell على الجهاز البعيد.
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">WinRM vs RDP</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          <span style="color:var(--muted);">RDP:</span> Desktop كامل + GUI<br>
+          مثل تدخل البيت وتشوف كل شيء<br><br>
+          <span style="color:var(--green);">WinRM:</span> PowerShell فقط<br>
+          مثل تكلم شخص بالهاتف وتعطيه أوامر<br>
+          <span style="color:var(--green);">أسرع + أصعب للكشف 🎯</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Ports</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;direction:ltr;margin-top:6px;">
+          <span style="color:var(--accent);">5985 HTTP</span> ← الأكثر شيوعاً<br>
+          <span style="color:var(--green);">5986 HTTPS</span> ← مشفر<br><br>
+          كانوا يستخدمون 80/443 قبلاً<br>
+          تغيّروا لأن 80 محجوب غالباً
+        </div>
+      </div>
+    </div>
+    <div class="alert info">💡 WinRM يُستخدم كمان لـ: remote PowerShell sessions + event log merging + administration scripts</div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="panel">
+  <div class="card">
+    <div class="card-title">🔍 Nmap — Footprinting</div>
+    <div class="code"><span class="cmd">nmap -sV -sC 10.129.201.248 -p5985,5986 --disable-arp-ping -n</span>
+
+PORT     STATE SERVICE VERSION
+<span class="ok">5985/tcp open  http    Microsoft HTTPAPI httpd 2.0</span>
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+Service Info: OS: <span class="val">Windows</span>
+
+<span class="cmt"># 5985 مفتوح = WinRM شغّال على HTTP ✅</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ evil-winrm — الاتصال والـ Shell</div>
+    <div class="code"><span class="cmd">evil-winrm -i 10.129.201.248 -u Cry0l1t3 -p P455w0rD!</span>
+
+Evil-WinRM shell v3.3
+Info: Establishing connection to remote endpoint
+
+<span class="ok">*Evil-WinRM* PS C:\Users\Cry0l1t3\Documents></span>  <span class="cmt">← PS = PowerShell!</span>
+
+<span class="cmt"># أوامر بعد الدخول:</span>
+*Evil-WinRM* PS> <span class="cmd">whoami</span>
+<span class="val">ilf-sql-01\cry0l1t3</span>
+
+*Evil-WinRM* PS> <span class="cmd">hostname</span>
+<span class="val">ILF-SQL-01</span>
+
+*Evil-WinRM* PS> <span class="cmd">dir C:\Users\Administrator\Desktop</span>
+<span class="val">flag.txt</span>  <span class="cmt">← 🎯</span></div>
+    <div class="alert info">💡 PS = PowerShell — WinRM يعطيك PowerShell shell كامل على الجهاز البعيد</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 Test-WsMan — من PowerShell (Windows)</div>
+    <div class="code"><span class="cmt"># من Windows — تحقق إذا WinRM مفعّل:</span>
+<span class="cmd">Test-WsMan -ComputerName TARGET</span>
+        ↓
+<span class="ok">wsmid           : http://schemas.dmtf.org/wbem/wsman/1</span>
+<span class="ok">ProtocolVersion : http://schemas.dmtf.org/wbem/wsman/1</span>
+<span class="cmt"># نتيجة = WinRM مفعّل ✅</span></div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="panel">
+  <div class="card">
+    <div class="card-title">⛓️ Attack Chain</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Nmap</div><div class="step-sub">5985/5986</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔑</div><div class="step-name">Credentials</div><div class="step-sub">من مكان ثاني</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step hl"><div class="step-icon">⚡</div><div class="step-name">evil-winrm</div><div class="step-sub">PS Shell!</div></div>
+    </div>
+    <div class="code"><span class="cmt"># 1. اكتشاف WinRM:</span>
+<span class="cmd">nmap -sV TARGET -p5985,5986</span>
+
+<span class="cmt"># 2. اتصال بعد credentials:</span>
+<span class="cmd">evil-winrm -i TARGET -u Administrator -p "Password123"</span>
+<span class="ok">*Evil-WinRM* PS C:\Users\Administrator\Documents></span>
+
+<span class="cmt"># 3. استكشاف:</span>
+<span class="cmd">*Evil-WinRM* PS> whoami /priv</span>    <span class="cmt"># شوف صلاحياتك</span>
+<span class="cmd">*Evil-WinRM* PS> net user</span>        <span class="cmt"># كل users</span>
+<span class="cmd">*Evil-WinRM* PS> net localgroup administrators</span>  <span class="cmt"># الـ admins</span></div>
+    <div class="alert warning">⚠️ WinRM أفضل من RDP للـ pentest — أخف وأصعب للكشف لأنه command line فقط</div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="panel">
+  <div class="card">
+    <div class="card-title">🌐 Q&A</div>
+    <div class="qa">
+      <div class="qa-q">إيش PS في نتيجة evil-winrm؟</div>
+      <div class="qa-a">PS = PowerShell. WinRM يعطيك PowerShell shell على الجهاز البعيد. تقدر تكتب أي أمر PowerShell: whoami, ipconfig, dir, type (لقراءة ملفات), net user... إلخ.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">ليش WinRM أفضل من RDP في الـ pentest؟</div>
+      <div class="qa-a">WinRM = command line فقط = أسرع وأخف وأصعب للكشف. RDP = GUI كامل = أبطأ وأكثر ضجيجاً وأسهل للكشف في الـ logs. في الـ pentest تريد أقل أثر ممكن.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش SOAP وليش WinRM يستخدمه؟</div>
+      <div class="qa-a">SOAP = Simple Object Access Protocol = طريقة لتبادل البيانات عبر HTTP/HTTPS. WinRM يستخدمه عشان يرسل الأوامر ويستقبل النتائج بطريقة منظمة. لهيك Port 5985 يظهر كـ HTTP في الـ scan.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+<script>
+function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>

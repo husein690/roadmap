@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDP — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--surface:rgba(8,15,28,0.75);--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--purple:#a855f7;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+.hdr{margin-bottom:32px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-name{font-family:var(--mono);font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
+.hdr-name span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0;opacity:.3;}
+.facts-bar{display:flex;flex-wrap:wrap;margin-bottom:28px;background:rgba(8,18,36,0.52);backdrop-filter:blur(18px);border:1px solid rgba(0,212,255,0.18);box-shadow:0 4px 30px rgba(0,0,0,.35);}
+.fact{flex:1;min-width:110px;padding:12px 16px;border-left:1px solid var(--border);}
+.fact:last-child{border-left:none;}
+.fact-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--accent);}
+.fact-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;}
+.nav{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.nav-btn{font-family:var(--tag);font-size:10px;letter-spacing:1px;padding:12px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.05);}
+.panel{display:none;}
+.panel.active{display:block;}
+.card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.warn::before{background:var(--yellow);opacity:.6;}
+.card-title{font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code{background:rgba(1,4,9,0.8);border:1px solid var(--border);border-right:3px solid var(--accent);padding:14px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.7;margin:8px 0;}
+.code .cmd{color:var(--accent);}
+.code .ok{color:var(--green);}
+.code .err{color:var(--red);}
+.code .cmt{color:var(--muted);}
+.code .val{color:var(--yellow);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:rgba(1,4,9,0.8);color:var(--accent);padding:8px 12px;text-align:right;border:1px solid var(--border);font-family:var(--tag);font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);font-size:11px;vertical-align:top;}
+tr:nth-child(even) td{background:rgba(8,15,28,0.5);}
+tr:nth-child(odd) td{background:rgba(1,4,9,0.4);}
+td.mono{font-family:var(--mono);color:var(--accent);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.6;}
+.alert.danger{background:rgba(255,87,87,.08);border-color:var(--red);color:#ff9999;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#99e8ff;}
+.alert.warning{background:rgba(251,191,36,.08);border-color:var(--yellow);color:#ffe599;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
+.info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.chain-step{flex:1;min-width:80px;background:rgba(8,18,36,0.5);border:1px solid var(--border);padding:10px 8px;text-align:center;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;font-family:var(--tag);}
+.chain-step .step-sub{color:var(--muted);font-size:9px;margin-top:2px;}
+.chain-step.hl{border-color:var(--red);background:rgba(255,87,87,.05);}
+.chain-arrow{color:var(--accent);font-size:14px;padding:0 4px;}
+.qa{margin:10px 0;}
+.qa-q{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--accent);}
+.qa-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.qa-a{background:rgba(57,255,20,.05);border:1px solid rgba(57,255,20,.2);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.qa-a::before{content:'✅ الجواب: ';color:var(--green);}
+.lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+<canvas id="glass-particles"></canvas>
+<div class="wrap">
+
+<a href="protocols.html" class="back-btn">◄ BACK TO PROTOCOLS</a>
+
+<div class="hdr">
+  <div class="hdr-tag">► HTB ACADEMY · MODULE 112 · SECTION 18/21</div>
+  <div class="hdr-name">RDP — <span>REMOTE DESKTOP PROTOCOL</span></div>
+  <div class="hdr-sub">GUI REMOTE ACCESS · NLA · TLS · XFREERDP</div>
+  <div class="divider"></div>
+</div>
+
+<div class="facts-bar">
+  <div class="fact"><div class="fact-val">3389</div><div class="fact-lbl">TCP/UDP Port</div></div>
+  <div class="fact"><div class="fact-val">GUI</div><div class="fact-lbl">واجهة رسومية</div></div>
+  <div class="fact"><div class="fact-val">NLA</div><div class="fact-lbl">Network Level Auth</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--red)">Self-Signed</div><div class="fact-lbl">MITM Risk</div></div>
+  <div class="fact"><div class="fact-val">xfreerdp</div><div class="fact-lbl">Linux Client</div></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('security',this)">Security</button>
+  <button class="nav-btn" onclick="showPanel('tools',this)">Tools</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Explained Q&A</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="panel active">
+  <div class="card">
+    <div class="card-title">ما هو RDP؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      Remote Desktop Protocol — بروتوكول Microsoft للوصول الرسومي عن بعد لأجهزة Windows. يرسل الـ Display وأوامر التحكم عبر شبكة مشفرة. يشتغل على Port 3389 TCP (وأحياناً UDP).
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">RDP vs SSH</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          <span style="color:var(--muted);">SSH:</span> Command line فقط — نصي<br>
+          مثل تكلم شخص بالهاتف (صوت فقط)<br><br>
+          <span style="color:var(--green);">RDP:</span> Desktop كامل — GUI<br>
+          مثل تشوف شاشته وتتحكم فيها
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">متى يستخدم RDP؟</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          Windows Workstations<br>
+          لو تبي تشوف ملفات أو تشغّل برامج<br>
+          بواجهة رسومية عن بعد<br>
+          <span style="color:var(--red);">مثبّت افتراضياً على Windows Server!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECURITY -->
+<div id="panel-security" class="panel">
+  <div class="card">
+    <div class="card-title">🔐 TLS وNLA</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">TLS في RDP</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          مثل HTTPS للـ RDP<br>
+          منذ Windows Vista ✅<br>
+          بس بعض الأنظمة تقبل<br>
+          <span style="color:var(--red);">RDP Security (تشفير ضعيف) ⚠️</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">NLA — Network Level Auth</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          بدون NLA: تتصل ثم تسجّل دخول<br>
+          <span style="color:var(--red);">مع NLA: تثبت هويتك أول ✅</span><br>
+          أأمن لأن Session ما يتكوّن<br>
+          قبل المصادقة
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">⚠️ Self-Signed Certificate — خطر MITM</div>
+    <div class="code"><span class="cmt"># لما تتصل بـ RDP:</span>
+WARN: Certificate verification failure 'self signed certificate'
+CN = ILF-SQL-01
+        ↓
+Do you trust the above certificate? (Y/T/N)
+
+<span class="cmt"># المشكلة:</span>
+السيرفر وقّع على شهادته بنفسه
+ما في CA موثوق يؤكد هويته
+        ↓
+<span class="err">المهاجم ينشئ شهادة مزيفة = MITM! 💀</span></div>
+    <div class="alert warning">⚠️ في الـ pentest اكتب Y للمتابعة. في الواقع = علامة تحذير خطيرة!</div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panel-tools" class="panel">
+
+  <div class="lbl">الأدوات:</div>
+
+  <div class="card">
+    <div class="card-title">🔍 Nmap — Footprinting</div>
+    <div class="code"><span class="cmd">nmap -sV -sC 10.129.201.248 -p3389 --script rdp*</span>
+
+PORT     STATE SERVICE VERSION
+<span class="ok">3389/tcp open  ms-wbt-server Microsoft Terminal Services</span>
+| rdp-enum-encryption:
+|   <span class="val">CredSSP (NLA): SUCCESS</span>   <span class="cmt">← NLA مفعّل</span>
+|
+| rdp-ntlm-info:
+|   Target_Name: <span class="val">ILF-SQL-01</span>         <span class="cmt">← اسم الجهاز</span>
+|   Product_Version: <span class="val">10.0.17763</span>    <span class="cmt">← Windows Server 2019</span>
+|   System_Time: 2021-11-06T13:46:00+00:00</div>
+    <div class="alert warning">⚠️ Nmap يستخدم Cookie: mstshash=nmap — EDR وIDS يكتشفونه! ممكن يحجبوك في الشبكات المحمية.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔒 rdp-sec-check.pl — فحص أمان RDP</div>
+    <div class="code"><span class="cmd">git clone https://github.com/CiscoCXSecurity/rdp-sec-check.git && cd rdp-sec-check</span>
+<span class="cmd">./rdp-sec-check.pl 10.129.201.248</span>
+
+[+] Checking supported protocols
+[-] PROTOCOL_RDP    : <span class="ok">FALSE</span>   <span class="cmt">← التشفير الضعيف مرفوض ✅</span>
+[-] PROTOCOL_SSL    : <span class="ok">FALSE</span>
+[-] PROTOCOL_HYBRID : <span class="ok">TRUE</span>    <span class="cmt">← NLA فقط مدعوم ✅</span>
+
+[+] Checking RDP encryption
+ENCRYPTION_METHOD_NONE   : <span class="ok">FALSE</span>   <span class="cmt">← لا تشفير مرفوض ✅</span>
+ENCRYPTION_METHOD_40BIT  : <span class="ok">FALSE</span>
+ENCRYPTION_METHOD_128BIT : <span class="ok">FALSE</span></div>
+    <div class="alert info">💡 يكشف أي بروتوكولات وتشفير مدعوم — بدون credentials!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🖥️ xfreerdp — الاتصال من Linux</div>
+    <div class="code"><span class="cmd">xfreerdp /u:cry0l1t3 /p:"P455w0rd!" /v:10.129.201.248</span>
+
+<span class="cmt"># مع تجاوز تحذير الشهادة:</span>
+<span class="cmd">xfreerdp /u:cry0l1t3 /p:"P455w0rd!" /v:10.129.201.248 /cert-ignore</span>
+
+<span class="cmt"># بعد الاتصال:</span>
+<span class="ok">← يفتح Windows Desktop كامل على شاشتك!</span></div>
+    <div class="alert info">💡 بدائل على Linux: rdesktop, Remmina (GUI)</div>
+  </div>
+
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="panel">
+  <div class="card">
+    <div class="card-title">⛓️ Attack Chain</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Nmap</div><div class="step-sub">rdp* scripts</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔒</div><div class="step-name">rdp-sec-check</div><div class="step-sub">فحص الأمان</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔑</div><div class="step-name">Credentials</div><div class="step-sub">brute force</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step hl"><div class="step-icon">🖥️</div><div class="step-name">xfreerdp</div><div class="step-sub">GUI access!</div></div>
+    </div>
+
+    <div class="code"><span class="cmt"># 1. اكتشاف:</span>
+<span class="cmd">nmap -sV -sC TARGET -p3389 --script rdp*</span>
+<span class="cmt"># ← اسم الجهاز + Windows version + NLA status</span>
+
+<span class="cmt"># 2. فحص الأمان:</span>
+<span class="cmd">./rdp-sec-check.pl TARGET</span>
+<span class="cmt"># ← أي بروتوكولات مدعومة</span>
+
+<span class="cmt"># 3. الاتصال بعد credentials:</span>
+<span class="cmd">xfreerdp /u:Administrator /p:"Password123" /v:TARGET</span>
+<span class="ok">← Windows Desktop كامل! 🎯</span></div>
+  </div>
+</div>
+
+<!-- EXPLAINED Q&A -->
+<div id="panel-explained" class="panel">
+  <div class="card">
+    <div class="card-title">🌐 Q&A</div>
+    <div class="qa">
+      <div class="qa-q">إيش الفرق بين RDP وSSH؟</div>
+      <div class="qa-a">SSH = command line فقط، نصي، للـ Linux غالباً. مثل تكلم شخص بالهاتف (صوت فقط). RDP = Desktop كامل بالماوس، GUI، للـ Windows. مثل تشوف شاشته وتتحكم فيها. RDP أبطأ وأكثر ضجيجاً لكن أقوى للواجهة الرسومية.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">إيش NLA وليش مهم؟</div>
+      <div class="qa-a">Network Level Authentication. بدون NLA: تتصل بالسيرفر أول ثم تسجّل دخول = المهاجم يقدر يستغل الاتصال قبل المصادقة. مع NLA: لازم تثبت هويتك أول قبل ما يتكوّن أي session = أأمن بكثير.</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">ليش Self-Signed Certificate خطير في RDP؟</div>
+      <div class="qa-a">لأن ما في CA موثوق يؤكد هوية السيرفر. المهاجم ينشئ شهادة self-signed مزيفة ويتظاهر إنه السيرفر. xfreerdp يحذرك "certificate not trusted" بس لو كتبت Y = قبلت الشهادة المزيفة = MITM!</div>
+    </div>
+    <div class="qa">
+      <div class="qa-q">ليش Nmap مع --script rdp* ممكن يحجبوك؟</div>
+      <div class="qa-a">لأن Nmap يرسل Cookie: mstshash=nmap مع كل طلب RDP. الـ EDR وIDS والـ threat hunters يعرفون هاد الـ cookie ويكتشفون إنك تستخدم Nmap. في الشبكات المحمية ممكن يحجبوا عنوانك فوراً.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+<script>
+function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>
