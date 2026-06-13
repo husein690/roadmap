@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Assessment — HTB Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--purple:#a855f7;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+.hdr{margin-bottom:32px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-name{font-family:var(--mono);font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
+.hdr-name span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0;opacity:.3;}
+.facts-bar{display:flex;flex-wrap:wrap;margin-bottom:28px;background:rgba(8,18,36,0.52);backdrop-filter:blur(18px);border:1px solid rgba(0,212,255,0.18);box-shadow:0 4px 30px rgba(0,0,0,.35);}
+.fact{flex:1;min-width:100px;padding:12px 16px;border-left:1px solid var(--border);}
+.fact:last-child{border-left:none;}
+.fact-val{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);}
+.fact-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;}
+.nav{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.nav-btn{font-family:var(--tag);font-size:10px;letter-spacing:1px;padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.05);}
+.panel{display:none;}
+.panel.active{display:block;}
+.sec-label{font-family:var(--tag);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.4;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card.warn::before{background:var(--yellow);opacity:.6;}
+.card.purple::before{background:var(--purple);opacity:.6;}
+.card-title{font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
+.card-title::before{content:'▸ ';color:var(--green);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:rgba(1,4,9,0.8);color:var(--accent);padding:8px 12px;text-align:right;border:1px solid var(--border);font-family:var(--tag);font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);font-size:11px;vertical-align:top;}
+tr:nth-child(even) td{background:rgba(8,15,28,0.5);}
+tr:nth-child(odd) td{background:rgba(1,4,9,0.4);}
+td.mono{font-family:var(--mono);color:var(--accent);}
+td.danger{color:var(--red);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+td.purple{color:var(--purple);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.6;}
+.alert.danger{background:rgba(255,87,87,.08);border-color:var(--red);color:#ff9999;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#99e8ff;}
+.alert.warning{background:rgba(251,191,36,.08);border-color:var(--yellow);color:#ffe599;}
+.alert.success{background:rgba(57,255,20,.08);border-color:var(--green);color:#99ff99;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
+.info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.qa{margin:10px 0;}
+.qa-q{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--accent);}
+.qa-q::before{content:'❓ ';color:var(--yellow);}
+.qa-a{background:rgba(57,255,20,.05);border:1px solid rgba(57,255,20,.2);padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text);line-height:1.6;}
+.qa-a::before{content:'✅ ';color:var(--green);}
+.risk-matrix{display:grid;grid-template-columns:auto repeat(5,1fr);gap:3px;margin:12px 0;font-family:var(--tag);font-size:10px;}
+.rm-cell{padding:8px 4px;text-align:center;border-radius:2px;}
+.rm-header{color:var(--muted);font-size:9px;display:flex;align-items:center;justify-content:center;}
+.rm-1{background:rgba(57,255,20,.15);color:var(--green);}
+.rm-2{background:rgba(57,255,20,.25);color:var(--green);}
+.rm-3{background:rgba(251,191,36,.25);color:var(--yellow);}
+.rm-4{background:rgba(255,87,87,.25);color:var(--red);}
+.rm-5{background:rgba(255,87,87,.45);color:var(--red);}
+.lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<canvas id="glass-particles"></canvas>
+<div class="wrap">
+
+<a href="pentesting_tools.html" class="back-btn">◄ BACK TO TOOLS</a>
+
+<div class="hdr">
+  <div class="hdr-tag">► HTB ACADEMY · VULNERABILITY ASSESSMENT METHODOLOGY</div>
+  <div class="hdr-name">SECURITY <span>ASSESSMENT</span></div>
+  <div class="hdr-sub">VULNERABILITY ASSESSMENT · RISK MATRIX · STANDARDS · PENTEST FRAMEWORKS</div>
+  <div class="divider"></div>
+</div>
+
+<div class="facts-bar">
+  <div class="fact"><div class="fact-val">CVSS</div><div class="fact-lbl">Scoring System</div></div>
+  <div class="fact"><div class="fact-val">0-10</div><div class="fact-lbl">Risk Score</div></div>
+  <div class="fact"><div class="fact-val">CVE</div><div class="fact-lbl">Vuln Database</div></div>
+  <div class="fact"><div class="fact-val">PTES</div><div class="fact-lbl">Pentest Standard</div></div>
+  <div class="fact"><div class="fact-val">OWASP</div><div class="fact-lbl">Web Security</div></div>
+  <div class="fact"><div class="fact-val">PCI DSS</div><div class="fact-lbl">Compliance</div></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPanel('keyterms',this)">Key Terms</button>
+  <button class="nav-btn" onclick="showPanel('methodology',this)">Methodology</button>
+  <button class="nav-btn" onclick="showPanel('riskmatrix',this)">Risk Matrix</button>
+  <button class="nav-btn" onclick="showPanel('assets',this)">Asset Management</button>
+  <button class="nav-btn" onclick="showPanel('standards',this)">Standards</button>
+  <button class="nav-btn" onclick="showPanel('frameworks',this)">Pentest Frameworks</button>
+  <button class="nav-btn" onclick="showPanel('report',this)">Pentest Report</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="panel active">
+  <div class="card">
+    <div class="card-title">ما هو Vulnerability Assessment؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      تحديد وتصنيف المخاطر ونقاط الضعف في أصول الشركة — بدون استغلال يدوي للثغرات. الهدف معرفة المشاكل وليس اختراقها.
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">الهدف</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          ✅ تحديد الثغرات<br>
+          ✅ تصنيف المخاطر<br>
+          ✅ تقديم خطوات الإصلاح<br>
+          ❌ ليس اختراقاً فعلياً
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">أنواع الفحص</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          🌐 Network Scan<br>
+          💻 Host-based Scan<br>
+          📡 Wireless Scan<br>
+          🌍 Application Scan
+        </div>
+      </div>
+    </div>
+    <div class="alert warning">⚠️ الفحص الأوتوماتيكي يولد ضغط عالي على الشبكة — لو السيرفرات ضعيفة ممكن تقع!</div>
+  </div>
+</div>
+
+<!-- KEY TERMS -->
+<div id="panel-keyterms" class="panel">
+
+  <div class="card">
+    <div class="card-title">📖 المصطلحات الأربعة الأساسية</div>
+    <table>
+      <tr><th>المصطلح</th><th>التعريف</th><th>مثال</th></tr>
+      <tr>
+        <td class="mono safe">Vulnerability</td>
+        <td>نقطة ضعف أو Bug في برنامج أو شبكة تفتح الباب للهجوم</td>
+        <td>SQL Injection في موقع ويب</td>
+      </tr>
+      <tr>
+        <td class="mono danger">Threat</td>
+        <td>عامل خارجي بيزود احتمالية الضرر — هكر، فيروس، كارثة</td>
+        <td>مجموعة هكرز تبحث عن ثغرات</td>
+      </tr>
+      <tr>
+        <td class="mono" style="color:var(--red)">Exploit</td>
+        <td>الكود البرمجي الذي يستغل الثغرة للاختراق</td>
+        <td>CVE-2017-7269 على Exploit-db</td>
+      </tr>
+      <tr>
+        <td class="mono warn">Risk</td>
+        <td>احتمالية وحجم الضرر لو التهديد نجح في استغلال الثغرة</td>
+        <td>تسريب بيانات كروت العملاء</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 الفرق بين Threat وRisk</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">🔴 Threat — التهديد</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          الشيء الشرير الموجود بره<br>
+          مستقل عن شركتك<br>
+          موجود سواء كنت محمي أو لا<br><br>
+          <span style="color:var(--red);">مثال: الحرامي اللي بيلف في الشارع</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">🟡 Risk — الخطر</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          احتمالية + حجم الخسارة<br>
+          يخصك أنت بالذات<br>
+          <span style="color:var(--yellow);">Risk = Likelihood × Impact</span><br><br>
+          <span style="color:var(--yellow);">مثال: احتمال إن الحرامي يدخل من الشباك المفتوح ويسرق لابتوبك</span>
+        </div>
+      </div>
+    </div>
+    <div class="alert info">💡 قاعدة ذهبية: <strong>No Objectives, No Risk!</strong> — لو ما عندك أهداف أو داتا حساسة، الـ Risk = صفر حتى لو التهديد موجود.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 CVSS — نظام تقييم الثغرات</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      الثغرات تُسجّل في قاعدة بيانات <strong style="color:var(--accent);">MITRE CVE</strong> وتأخذ تقييم CVSS من 0 إلى 10.
+    </p>
+    <table>
+      <tr><th>الدرجة</th><th>التصنيف</th><th>مثال</th></tr>
+      <tr><td class="mono" style="color:#888">0.0</td><td>None</td><td>لا خطر</td></tr>
+      <tr><td class="mono safe">0.1 – 3.9</td><td>Low</td><td>ثغرة تحتاج وصول فيزيائي</td></tr>
+      <tr><td class="mono warn">4.0 – 6.9</td><td>Medium</td><td>ثغرة محلية مع credentials</td></tr>
+      <tr><td class="mono danger">7.0 – 8.9</td><td>High</td><td>RCE مع تعقيد عالي</td></tr>
+      <tr><td class="mono" style="color:var(--red);font-weight:bold;">9.0 – 10.0</td><td>Critical</td><td>EternalBlue — RCE بدون credentials!</td></tr>
+    </table>
+    <div class="alert danger">🎯 الأولوية القصوى: الثغرات اللي عندها Public Exploit على الإنترنت — أي هكر مبتدئ يقدر يضربها!</div>
+  </div>
+
+</div>
+
+<!-- METHODOLOGY -->
+<div id="panel-methodology" class="panel">
+
+  <div class="card">
+    <div class="card-title">⛓️ الـ 8 خطوات لفحص الثغرات</div>
+    <table>
+      <tr><th>#</th><th>الخطوة</th><th>التفاصيل</th></tr>
+      <tr><td class="mono warn">1</td><td>تحديد وتحليل المخاطر</td><td>حصر كل جهاز وسيرفر وأداة في الشركة</td></tr>
+      <tr><td class="mono warn">2</td><td>بناء سياسات الفحص</td><td>إجراءات موثقة وموافق عليها من الإدارة</td></tr>
+      <tr><td class="mono warn">3</td><td>تحديد نوع الفحص</td><td>Network, Host, Wireless, Application</td></tr>
+      <tr><td class="mono warn">4</td><td>إعداد السكنر</td><td>Target IPs, Ports, Aggressiveness, Timing</td></tr>
+      <tr><td class="mono warn">5</td><td>تشغيل الفحص</td><td>Fingerprinting ثم Enumeration أعمق</td></tr>
+      <tr><td class="mono warn">6</td><td>تقييم مخاطر الفحص</td><td>الفحص الثقيل ممكن يوقع السيرفرات!</td></tr>
+      <tr><td class="mono warn">7</td><td>تفسير النتائج</td><td>أولوية للثغرات اللي عندها Public Exploit</td></tr>
+      <tr><td class="mono warn">8</td><td>خطة الإصلاح</td><td>IT + Security يشتغلون مع بعض حسب الأولوية</td></tr>
+    </table>
+    <div class="alert warning">⚠️ الشركات الكبيرة تجرّب الـ Patches في بيئة تجريبية معزولة قبل ما ترفعها على السيرفرات الحية!</div>
+  </div>
+
+</div>
+
+<!-- RISK MATRIX -->
+<div id="panel-riskmatrix" class="panel">
+
+  <div class="card">
+    <div class="card-title">📊 Risk Matrix — Likelihood × Impact</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      الشركات تحدد أولوية الإصلاح بناءً على احتمالية الاستغلال وحجم التأثير:
+    </p>
+
+    <div style="overflow-x:auto;">
+      <table style="text-align:center;min-width:400px;">
+        <tr>
+          <th style="text-align:right;">Impact ↓ / Likelihood →</th>
+          <th>Low (1)</th>
+          <th>Medium (2)</th>
+          <th>High (3)</th>
+          <th>Very High (4)</th>
+          <th>Critical (5)</th>
+        </tr>
+        <tr>
+          <td class="mono warn" style="text-align:right;">Critical (5)</td>
+          <td style="background:rgba(251,191,36,.2);color:var(--yellow);">Medium</td>
+          <td style="background:rgba(255,87,87,.2);color:var(--red);">High</td>
+          <td style="background:rgba(255,87,87,.35);color:var(--red);">High</td>
+          <td style="background:rgba(255,87,87,.5);color:var(--red);font-weight:bold;">Critical</td>
+          <td style="background:rgba(255,87,87,.65);color:var(--red);font-weight:bold;">Critical ⚠️</td>
+        </tr>
+        <tr>
+          <td class="mono danger" style="text-align:right;">High (4)</td>
+          <td style="background:rgba(57,255,20,.15);color:var(--green);">Low</td>
+          <td style="background:rgba(251,191,36,.2);color:var(--yellow);">Medium</td>
+          <td style="background:rgba(255,87,87,.2);color:var(--red);">High</td>
+          <td style="background:rgba(255,87,87,.35);color:var(--red);">High</td>
+          <td style="background:rgba(255,87,87,.5);color:var(--red);font-weight:bold;">Critical</td>
+        </tr>
+        <tr>
+          <td class="mono warn" style="text-align:right;">Medium (3)</td>
+          <td style="background:rgba(57,255,20,.15);color:var(--green);">Low</td>
+          <td style="background:rgba(57,255,20,.25);color:var(--green);">Low</td>
+          <td style="background:rgba(251,191,36,.2);color:var(--yellow);">Medium</td>
+          <td style="background:rgba(255,87,87,.2);color:var(--red);">High</td>
+          <td style="background:rgba(255,87,87,.35);color:var(--red);">High</td>
+        </tr>
+        <tr>
+          <td class="mono safe" style="text-align:right;">Low (2)</td>
+          <td style="background:rgba(57,255,20,.1);color:var(--green);">Lowest</td>
+          <td style="background:rgba(57,255,20,.15);color:var(--green);">Low</td>
+          <td style="background:rgba(57,255,20,.25);color:var(--green);">Low</td>
+          <td style="background:rgba(251,191,36,.2);color:var(--yellow);">Medium</td>
+          <td style="background:rgba(255,87,87,.2);color:var(--red);">High</td>
+        </tr>
+        <tr>
+          <td style="text-align:right;color:var(--muted);">Negligible (1)</td>
+          <td style="background:rgba(57,255,20,.05);color:var(--muted);">Lowest</td>
+          <td style="background:rgba(57,255,20,.1);color:var(--green);">Lowest</td>
+          <td style="background:rgba(57,255,20,.15);color:var(--green);">Low</td>
+          <td style="background:rgba(57,255,20,.2);color:var(--green);">Low</td>
+          <td style="background:rgba(251,191,36,.2);color:var(--yellow);">Medium</td>
+        </tr>
+      </table>
+    </div>
+    <div class="alert danger">🎯 Critical Impact + Critical Likelihood = أعلى أولوية — جرّب الثغرة دي قبل أي شيء!</div>
+    <div class="alert info">💡 مثال: EternalBlue = Likelihood عالية (exploit جاهز) + Impact كارثي = Critical Risk → رقعها فوراً!</div>
+  </div>
+
+</div>
+
+<!-- ASSET MANAGEMENT -->
+<div id="panel-assets" class="panel">
+
+  <div class="card">
+    <div class="card-title">🗃️ Asset Management — جرد الأصول</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      <strong style="color:var(--yellow);">"عشان تحمي حاجة، لازم تعرف هي إيه أصلاً!"</strong><br>
+      أول خطوة في الحماية هي جرد كامل لكل أصول الشركة.
+    </p>
+
+    <div class="sec-label">► 6 فئات الأصول</div>
+    <table>
+      <tr><th>الفئة</th><th>الأمثلة</th></tr>
+      <tr><td class="mono safe">Information Technology (IT)</td><td>أجهزة، سيرفرات، شبكات</td></tr>
+      <tr><td class="mono warn">Operational Technology (OT)</td><td>أنظمة تشغيل صناعية، مصانع</td></tr>
+      <tr><td class="mono">Physical Assets</td><td>الأجهزة المادية داخل المبنى</td></tr>
+      <tr><td class="mono">Software</td><td>البرامج والأنظمة الشغالة</td></tr>
+      <tr><td class="mono" style="color:var(--purple);">Mobile Assets</td><td>تليفونات وأجهزة لوحية للموظفين</td></tr>
+      <tr><td class="mono" style="color:var(--red);">Development Assets</td><td>بيئات التطوير والاختبار للمبرمجين</td></tr>
+    </table>
+
+    <div class="sec-label">► أماكن تخزين البيانات</div>
+    <table>
+      <tr><th>المكان</th><th>الأمثلة</th></tr>
+      <tr><td class="mono safe">On-Premises</td><td>HDDs, SSDs, USB, Tape drives, Floppy disks (legacy!)</td></tr>
+      <tr><td class="mono warn">Cloud Providers</td><td>AWS, GCP, Microsoft Azure (Multi-cloud)</td></tr>
+      <tr><td class="mono" style="color:var(--purple);">SaaS Applications</td><td>Google Drive, Dropbox, Teams, Office 365, iCloud</td></tr>
+      <tr><td class="mono">Network Devices</td><td>Routers, Switches, Firewalls, IDS/IPS, DLP</td></tr>
+    </table>
+    <div class="alert danger">⚠️ أي جهاز أو سيرفر جديد يدخل أو يخرج من الشركة لازم يُسجّل فوراً في الـ Asset Inventory!</div>
+  </div>
+
+</div>
+
+<!-- STANDARDS -->
+<div id="panel-standards" class="panel">
+
+  <div class="card">
+    <div class="card-title">📜 معايير الامتثال (Compliance Standards)</div>
+    <table>
+      <tr><th>المعيار</th><th>المجال</th><th>المتطلب الرئيسي</th></tr>
+      <tr>
+        <td class="mono danger">PCI DSS</td>
+        <td>كروت الائتمان والدفع</td>
+        <td>فحص داخلي وخارجي مستمر + عزل بيئة CDE</td>
+      </tr>
+      <tr>
+        <td class="mono safe">HIPAA</td>
+        <td>بيانات المرضى والقطاع الصحي</td>
+        <td>Risk Assessment + تحديد نقاط الضعف</td>
+      </tr>
+      <tr>
+        <td class="mono warn">FISMA</td>
+        <td>أنظمة الحكومة الأمريكية</td>
+        <td>برنامج فعال لإدارة الثغرات + توثيق رسمي</td>
+      </tr>
+      <tr>
+        <td class="mono purple">ISO 27001</td>
+        <td>إدارة أمن المعلومات (عالمي)</td>
+        <td>فحوصات ربع سنوية + نظام ISMS</td>
+      </tr>
+    </table>
+
+    <div class="sec-label">► PCI DSS — 6 أهداف رئيسية</div>
+    <table>
+      <tr><th>#</th><th>الهدف</th></tr>
+      <tr><td class="mono warn">1</td><td>بناء وتأمين شبكة محمية</td></tr>
+      <tr><td class="mono warn">2</td><td>حماية بيانات أصحاب الكروت</td></tr>
+      <tr><td class="mono warn">3</td><td>برنامج مستمر لإدارة الثغرات</td></tr>
+      <tr><td class="mono warn">4</td><td>تطبيق إجراءات صارمة للتحكم في الوصول</td></tr>
+      <tr><td class="mono warn">5</td><td>مراقبة واختبار الشبكات دورياً</td></tr>
+      <tr><td class="mono warn">6</td><td>الحفاظ على سياسة أمن معلومات موثقة</td></tr>
+    </table>
+    <div class="alert info">💡 CDE = Cardholder Data Environment — بيئة معزولة تماماً لمعالجة بيانات الكروت</div>
+    <div class="alert warning">⚠️ الامتثال للمعايير مهم — لكنه مش المحرك الأساسي لبرنامج إدارة الثغرات! الأساس = طبيعة بيئتك + Risk Appetite شركتك.</div>
+  </div>
+
+</div>
+
+<!-- PENTEST FRAMEWORKS -->
+<div id="panel-frameworks" class="panel">
+
+  <div class="card">
+    <div class="card-title">🛠️ أطر عمل اختبار الاختراق</div>
+    <div class="alert info">💡 الـ Pentest لازم يكون فيه Scope محدد + عقد قانوني موقع قبل البدء. التغييرات في السيستم لازم تكون minimal!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">1️⃣ PTES — Penetration Testing Execution Standard</div>
+    <p style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">الأكثر استخداماً — مرن ويتكيف مع كل أنواع الـ Pentests:</p>
+    <table>
+      <tr><th>#</th><th>المرحلة</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">1</td><td class="mono safe">Pre-engagement</td><td>الاتفاق مع العميل + تحديد النطاق والقوانين</td></tr>
+      <tr><td class="mono">2</td><td class="mono">Intelligence Gathering</td><td>تجميع المعلومات عن الهدف</td></tr>
+      <tr><td class="mono">3</td><td class="mono">Threat Modeling</td><td>بناء نموذج التهديدات وسيناريوهات الهجوم</td></tr>
+      <tr><td class="mono">4</td><td class="mono warn">Vulnerability Analysis</td><td>تحليل وتقييم نقاط الضعف</td></tr>
+      <tr><td class="mono">5</td><td class="mono danger">Exploitation</td><td>الضرب واستغلال الثغرات للدخول</td></tr>
+      <tr><td class="mono">6</td><td class="mono purple">Post Exploitation</td><td>PrivEsc، سحب بيانات، Lateral Movement</td></tr>
+      <tr><td class="mono">7</td><td class="mono safe">Reporting</td><td>التقرير النهائي للعميل</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">2️⃣ OSSTMM — Open Source Security Testing Methodology Manual</div>
+    <p style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">5 قنوات فحص رئيسية:</p>
+    <table>
+      <tr><th>القناة</th><th>المجال</th></tr>
+      <tr><td class="mono">Human Security</td><td>Social Engineering على البشر</td></tr>
+      <tr><td class="mono">Physical Security</td><td>الأمن الفيزيائي للمباني</td></tr>
+      <tr><td class="mono warn">Wireless</td><td>WiFi, Bluetooth, شبكات لاسلكية</td></tr>
+      <tr><td class="mono">Telecommunications</td><td>شبكات الاتصالات</td></tr>
+      <tr><td class="mono safe">Data Networks</td><td>شبكات البيانات والسيرفرات</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">3️⃣ NIST — 4 مراحل</div>
+    <table>
+      <tr><th>المرحلة</th><th>الوظيفة</th></tr>
+      <tr><td class="mono safe">Planning</td><td>النطاق والأهداف والقواعد</td></tr>
+      <tr><td class="mono">Discovery</td><td>فحص الأنظمة وتحديد الثغرات</td></tr>
+      <tr><td class="mono danger">Attack</td><td>تجربة اختراق الثغرات وإثباتها</td></tr>
+      <tr><td class="mono warn">Reporting</td><td>توثيق النتائج وطرق الحل</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">4️⃣ OWASP — المرجع الأول لأمن الويب</div>
+    <table>
+      <tr><th>الدليل</th><th>المجال</th></tr>
+      <tr><td class="mono safe">WSTG</td><td>Web Security Testing Guide — تطبيقات الويب</td></tr>
+      <tr><td class="mono warn">MSTG</td><td>Mobile Security Testing Guide — Android & iOS</td></tr>
+      <tr><td class="mono purple">Firmware STM</td><td>Firmware & IoT Security Testing</td></tr>
+    </table>
+    <div class="alert success">🎯 OWASP Top 10 = أشهر قائمة لأخطر 10 ثغرات في تطبيقات الويب — لازم تعرفها عن ظهر قلب!</div>
+  </div>
+
+</div>
+
+<!-- PENTEST REPORT -->
+<div id="panel-report" class="panel">
+
+  <div class="card">
+    <div class="card-title">📄 كيف تستخدم هالمعلومات في تقرير الاختراق؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      التقرير المحترف يربط الجانب الفني بالجانب الإداري — مش بس "دخلت وبس"!
+    </p>
+
+    <div class="sec-label">► 1. Executive Summary — للمسؤولين الكبار</div>
+    <div class="alert info">💡 CISO وCTO ما عندهم وقت يقرؤوا أوامر Meterpreter. استخدم Risk Matrix:<br>
+    "ثغرة Highest Risk (Critical) — احتمالية عالية + تأثير: مسح داتا السيرفر كامل"</div>
+
+    <div class="sec-label">► 2. تصنيف الثغرات بـ CVSS</div>
+    <div class="alert warning">⚠️ لكل ثغرة في التقرير حط:
+    CVE-2017-7269 | CVSS Score: 9.8 Critical | عندها Public Exploit → أولوية إصلاح قصوى!</div>
+
+    <div class="sec-label">► 3. Attack Chain — سلسلة الهجوم</div>
+    <table>
+      <tr><th>المرحلة</th><th>المحتوى في التقرير</th></tr>
+      <tr><td class="mono safe">Recon/Scan</td><td>الأدوات المستخدمة + الخدمات والبورتات المكتشفة</td></tr>
+      <tr><td class="mono danger">Exploitation</td><td>الثغرة المستخدمة + الـ Payload + الـ CVE</td></tr>
+      <tr><td class="mono purple">PrivEsc</td><td>steal_token / local_exploit_suggester → SYSTEM</td></tr>
+      <tr><td class="mono warn">Post-Exploit</td><td>hashdump + الوصول للأصول الحساسة</td></tr>
+    </table>
+
+    <div class="sec-label">► 4. Remediation Plan — خطة الإصلاح</div>
+    <div class="alert success">✅ لكل ثغرة: "الحل = تحميل Patch MS17-010 من Microsoft + تعطيل SMBv1 بالأمر التالي..."<br>
+    ما تقولش "عندكم ثغرة وبس" — قدّم الحل الواضح!</div>
+
+    <div class="alert info">💡 ابدأ من هلأ: لما تحل labs على HTB ربط كل ثغرة بـ Likelihood + Impact + CVE — هذا ما تكتبه في التقارير الحقيقية!</div>
+  </div>
+
+</div>
+
+</div>
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+<script>
+function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>
