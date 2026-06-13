@@ -324,16 +324,30 @@ body::after{display:none!important}
 <div class="pyr-wrap">
   <!-- SVG PYRAMID BACKGROUND -->
   <svg viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;">
-    <!-- BEGINNER - widest base -->
-    <polygon points="60,330 580,330 520,220 120,220" fill="rgba(57,255,20,0.05)" stroke="rgba(57,255,20,0.2)" stroke-width="1"/>
+    <defs>
+      <filter id="glow-green" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-blue" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-red" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- BEGINNER - widest base — dark purple-tinted -->
+    <polygon points="60,330 580,330 520,220 120,220" fill="rgba(80,40,120,0.18)" stroke="rgba(160,100,220,0.35)" stroke-width="1.2"/>
     <!-- INTERMEDIATE - middle -->
-    <polygon points="120,220 520,220 440,120 200,120" fill="rgba(251,191,36,0.06)" stroke="rgba(251,191,36,0.2)" stroke-width="1"/>
+    <polygon points="120,220 520,220 440,120 200,120" fill="rgba(60,30,100,0.22)" stroke="rgba(140,80,200,0.4)" stroke-width="1.2"/>
     <!-- EXPERT - apex -->
-    <polygon points="200,120 440,120 320,20 320,20" fill="rgba(255,87,87,0.07)" stroke="rgba(255,87,87,0.2)" stroke-width="1"/>
-    <!-- Level labels on the side -->
-    <text x="32" y="285" font-family="Share Tech Mono" font-size="9" fill="rgba(57,255,20,0.6)" letter-spacing="1">BEGINNER</text>
-    <text x="32" y="180" font-family="Share Tech Mono" font-size="9" fill="rgba(251,191,36,0.6)" letter-spacing="1">INTERMEDIATE</text>
-    <text x="32" y="80" font-family="Share Tech Mono" font-size="9" fill="rgba(255,87,87,0.6)" letter-spacing="1">EXPERT</text>
+    <polygon points="200,120 440,120 320,20 320,20" fill="rgba(50,20,90,0.28)" stroke="rgba(120,60,180,0.5)" stroke-width="1.2"/>
+    <!-- Level labels on the side — bigger + glowing -->
+    <text x="26" y="288" font-family="Share Tech Mono" font-size="13" font-weight="bold" fill="#39ff14" filter="url(#glow-green)" letter-spacing="2">BEGINNER</text>
+    <text x="26" y="183" font-family="Share Tech Mono" font-size="13" font-weight="bold" fill="#00d4ff" filter="url(#glow-blue)" letter-spacing="2">INTERMEDIATE</text>
+    <text x="26" y="78" font-family="Share Tech Mono" font-size="13" font-weight="bold" fill="#FF5757" filter="url(#glow-red)" letter-spacing="2">EXPERT</text>
   </svg>
 
   <!-- BADGES CONTENT OVER SVG -->
