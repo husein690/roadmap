@@ -72,12 +72,15 @@ td.danger{color:var(--red);}
 .info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
 .info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
 /* EXERCISES */
-.ex-box{background:rgba(57,255,20,.04);border:1px solid rgba(57,255,20,.2);padding:16px;margin-bottom:12px;}
-.ex-num{font-family:var(--tag);font-size:9px;color:var(--green);letter-spacing:2px;margin-bottom:8px;}
-.ex-title{font-family:var(--mono);font-size:13px;color:var(--white);margin-bottom:8px;}
-.ex-desc{font-size:12px;color:var(--text);line-height:1.7;margin-bottom:10px;}
-.ex-hint{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:1px;}
-.ex-hint::before{content:'💡 تلميح: ';}
+.ex-window{background:rgba(4,10,22,0.95);border:1px solid rgba(57,255,20,.35);padding:24px 28px;margin-top:8px;}
+.ex-window-title{font-family:var(--tag);font-size:11px;color:var(--green);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(57,255,20,.2);}
+.ex-item{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.ex-item:last-child{border-bottom:none;padding-bottom:0;}
+.ex-num{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:2px;margin-bottom:8px;}
+.ex-title{font-family:var(--mono);font-size:16px;font-weight:700;color:#ffffff;margin-bottom:10px;}
+.ex-desc{font-size:14px;color:#ffffff;line-height:1.8;margin-bottom:8px;}
+.ex-hint{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:6px;}
+.ex-hint::before{content:'💡 تلميح: ';color:var(--yellow);}
 /* COMING SOON */
 .coming-soon{text-align:center;padding:80px 20px;color:var(--muted);}
 .coming-soon .big{font-family:var(--mono);font-size:48px;margin-bottom:16px;opacity:.3;}
@@ -415,86 +418,85 @@ td.danger{color:var(--red);}
   </div>
 
   <!-- EXERCISES -->
+  <!-- EXERCISES -->
   <div class="sec-label">► تمارين المحاضرة 2 (10 تمارين)</div>
   <div class="alert info">🌐 استخدم المحاكي: <a href="https://venus.kvakil.me" target="_blank" style="color:var(--accent);">venus.kvakil.me</a></div>
 
-  <div class="ex-box">
-    <div class="ex-num">تمرين 01 — سهل</div>
-    <div class="ex-title">مجموع من 1 إلى 5</div>
-    <div class="ex-desc">اكتب برنامج يحسب 1+2+3+4+5 ويخزن النتيجة في t0. النتيجة المتوقعة = 15.</div>
-    <div class="ex-hint">استخدم: li, add, addi, blt, label</div>
+  <div class="ex-window">
+    <div class="ex-window-title">◈ تمارين المحاضرة 2 — RISC-V Assembly</div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 01 — سهل</div>
+      <div class="ex-title">مجموع من 1 إلى 5</div>
+      <div class="ex-desc">اكتب برنامج يحسب 1+2+3+4+5 ويخزن النتيجة في t0. النتيجة المتوقعة = 15.</div>
+      <div class="ex-hint">استخدم: li, add, addi, blt, label</div>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 02 — سهل</div>
+      <div class="ex-title">الضرب بدون mul</div>
+      <div class="ex-desc">احسب 7 × 3 = 21 بدون استخدام أمر mul. استخدم loop + add فقط. تلميح: 7×3 = 7+7+7</div>
+      <div class="ex-hint">counter يبدأ من 0، result يبدأ من 0، كرر إضافة var_a لـ var_b مرات</div>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 03 — سهل</div>
+      <div class="ex-title">Variables في الذاكرة</div>
+      <div class="ex-desc">عرّف متغيرين var_a=15 و var_b=8 في الـ .data section. احملهم واحسب الفرق (var_a - var_b) واخزن النتيجة في s0. النتيجة = 7.</div>
+      <div class="ex-hint">استخدم: .data, .word, la, lw, sub</div>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 04 — متوسط</div>
+      <div class="ex-title">Sign Extension — lb vs lbu</div>
+      <div class="ex-desc">عرّف byte يساوي 0xFF في الذاكرة. احمله مرتين: مرة بـ lb في t0 ومرة بـ lbu في t1. قارن النتيجتين. ما الفرق ولماذا؟</div>
+      <div class="ex-hint">0xFF = 255 unsigned = -1 signed. lb → 0xFFFFFFFF, lbu → 0x000000FF</div>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 05 — متوسط</div>
+      <div class="ex-title">Array في الذاكرة</div>
+      <div class="ex-desc">احفظ الأرقام 10, 20, 30, 40, 50 في الذاكرة باستخدام .word. ثم اقرأهم كلهم باستخدام loop وoffset متزايد، وأضفهم معاً. النتيجة = 150.</div>
+      <div class="ex-hint">استخدم base address + offset (0, 4, 8, 12, 16) — كل word = 4 bytes</div>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 06 — متوسط</div>
+      <div class="ex-title">Memory Alignment</div>
+      <div class="ex-desc">اكتب: var_a: .byte 5 ثم var_b: .word 10 مباشرة بعده وشوف إذا يشتغل. بعدين صلح المشكلة باستخدام .align 2 وأثبت إنه شغّال.</div>
+      <div class="ex-hint">.align 2 يعني العنوان الجاي يقسم على 2^2 = 4</div>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 07 — متوسط</div>
+      <div class="ex-title">العد التنازلي + حفظ في الذاكرة</div>
+      <div class="ex-desc">اكتب loop يبدأ من 10 وينقص 1 كل مرة حتى يصل للصفر. في كل iteration خزّن القيمة الحالية في array. النتيجة: array تحتوي [10, 9, 8, ..., 1].</div>
+      <div class="ex-hint">احتاج base address + counter يزيد بـ 4 كل iteration</div>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 08 — صعب</div>
+      <div class="ex-title">إيجاد الـ Maximum</div>
+      <div class="ex-desc">عندك array من 5 أرقام: [3, 7, 2, 9, 1]. اكتب loop يجد أكبر رقم ويخزنه في s0. النتيجة = 9.</div>
+      <div class="ex-hint">استخدم blt للمقارنة — لو العنصر الحالي أكبر من الـ max الحالي، حدّث الـ max</div>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 09 — صعب</div>
+      <div class="ex-title">Byte vs Halfword vs Word — Little Endian</div>
+      <div class="ex-desc">احفظ القيمة 0x12345678 كـ word في الذاكرة. ثم اقرأ: (1) البايت الأول بـ lb، (2) الـ halfword الأول بـ lh، (3) الـ word كاملة بـ lw. ما هي النتائج؟ تذكر Little Endian!</div>
+      <div class="ex-hint">Little Endian: البايت الأصغر في العنوان الأصغر → lb: 0x78, lh: 0x5678, lw: 0x12345678</div>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-num">تمرين 10 — تحدي 🏆</div>
+      <div class="ex-title">Bubble Sort</div>
+      <div class="ex-desc">اكتب Bubble Sort يرتب array من 5 أرقام تصاعدياً: [5, 3, 8, 1, 4] → [1, 3, 4, 5, 8]. تحتاج nested loops: outer loop + inner loop + swap بين عنصرين.</div>
+      <div class="ex-hint">للـ swap: استخدم register مؤقت. lw عنصرين → sw معكوسين</div>
+    </div>
+
   </div>
 
-  <div class="ex-box">
-    <div class="ex-num">تمرين 02 — سهل</div>
-    <div class="ex-title">الضرب بدون mul</div>
-    <div class="ex-desc">احسب 7 × 3 = 21 بدون استخدام أمر mul. استخدم loop + add فقط.<br>تلميح: 7×3 = 7+7+7</div>
-    <div class="ex-hint">counter يبدأ من 0، result يبدأ من 0، كرر إضافة var_a لـ var_b مرات</div>
-  </div>
-
-  <div class="ex-box">
-    <div class="ex-num">تمرين 03 — سهل</div>
-    <div class="ex-title">Variables في الذاكرة</div>
-    <div class="ex-desc">عرّف متغيرين var_a=15 و var_b=8 في الـ .data section. احملهم واحسب الفرق (var_a - var_b) واخزن النتيجة في s0.</div>
-    <div class="ex-hint">استخدم: .data, .word, la, lw, sub</div>
-  </div>
-
-  <div class="ex-box">
-    <div class="ex-num">تمرين 04 — متوسط</div>
-    <div class="ex-title">Sign Extension</div>
-    <div class="ex-desc">عرّف byte يساوي 0xFF في الذاكرة. احمله مرتين: مرة بـ lb ومرة بـ lbu. قارن النتيجتين في الـ registers. ما الفرق؟</div>
-    <div class="ex-hint">0xFF = 255 unsigned = -1 signed. lb → 0xFFFFFFFF, lbu → 0x000000FF</div>
-  </div>
-
-  <div class="ex-box">
-    <div class="ex-num">تمرين 05 — متوسط</div>
-    <div class="ex-title">Array في الذاكرة</div>
-    <div class="ex-desc">احفظ الأرقام 10, 20, 30, 40, 50 في الذاكرة باستخدام .word. ثم اقرأهم كلهم باستخدام loop وoffset متزايد، وأضفهم. النتيجة = 150.</div>
-    <div class="ex-hint">استخدم base address + offset (0, 4, 8, 12, 16) لأن كل word = 4 bytes</div>
-  </div>
-
-  <div class="ex-box">
-    <div class="ex-num">تمرين 06 — متوسط</div>
-    <div class="ex-title">Memory Alignment</div>
-    <div class="ex-desc">اكتب هاد الكود وشوف إذا يشتغل:<br>
-    <code style="color:var(--yellow);font-family:var(--mono);">var_a: .byte 5 | var_b: .word 10</code><br>
-    بعدين صلح المشكلة باستخدام .align 2 وأثبت إنه شغّال.</div>
-    <div class="ex-hint">.align 2 يعني العنوان الجاي يقسم على 2^2 = 4</div>
-  </div>
-
-  <div class="ex-box">
-    <div class="ex-num">تمرين 07 — متوسط</div>
-    <div class="ex-title">العد التنازلي</div>
-    <div class="ex-desc">اكتب loop يبدأ من 10 وينقص 1 كل مرة حتى يصل للصفر. في كل iteration خزّن القيمة الحالية في الذاكرة (array من 10 عناصر). النتيجة: array تحتوي [10,9,8,...,1].</div>
-    <div class="ex-hint">احتاج base address + counter يزيد بـ 4 كل iteration</div>
-  </div>
-
-  <div class="ex-box">
-    <div class="ex-num">تمرين 08 — صعب</div>
-    <div class="ex-title">إيجاد الـ Maximum</div>
-    <div class="ex-desc">عندك array من 5 أرقام: [3, 7, 2, 9, 1]. اكتب loop يجد أكبر رقم ويخزنه في s0. النتيجة = 9.</div>
-    <div class="ex-hint">استخدم blt للمقارنة — لو العنصر الحالي > الـ max الحالي، حدّث الـ max</div>
-  </div>
-
-  <div class="ex-box">
-    <div class="ex-num">تمرين 09 — صعب</div>
-    <div class="ex-title">Byte vs Halfword vs Word</div>
-    <div class="ex-desc">احفظ القيمة 0x12345678 كـ word في الذاكرة. ثم اقرأ:<br>
-    1. البايت الأول (lb)<br>
-    2. الـ halfword الأول (lh)<br>
-    3. الـ word كاملة (lw)<br>
-    ما هي النتائج؟ ليش؟ (تذكر Little Endian!)</div>
-    <div class="ex-hint">Little Endian: البايت الأصغر في العنوان الأصغر. lb → 0x78, lh → 0x5678, lw → 0x12345678</div>
-  </div>
-
-  <div class="ex-box">
-    <div class="ex-num">تمرين 10 — تحدي</div>
-    <div class="ex-title">Bubble Sort</div>
-    <div class="ex-desc">اكتب Bubble Sort يرتب array من 5 أرقام تصاعدياً: [5, 3, 8, 1, 4] → [1, 3, 4, 5, 8].<br>تحتاج nested loops: outer loop + inner loop + swap.</div>
-    <div class="ex-hint">للـ swap: استخدم register مؤقت. للـ swap في الذاكرة: lw, sw للعنصرين ثم اكتبهم معكوسين.</div>
-  </div>
-
-</div>
 
 <!-- LECTURES 3-12: Coming Soon -->
 <div id="lec-3" class="content-area"><div class="coming-soon"><div class="big">03</div><p>محاضرة 3 — قريباً</p></div></div>
