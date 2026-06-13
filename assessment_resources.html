@@ -214,6 +214,54 @@ td.purple{color:var(--purple);}
     <div class="alert danger">🎯 الأولوية القصوى: الثغرات اللي عندها Public Exploit على الإنترنت — أي هكر مبتدئ يقدر يضربها!</div>
   </div>
 
+  <div class="card">
+    <div class="card-title">🔴 أمثلة CVEs حقيقية — طبّق بنفسك</div>
+    <table>
+      <tr><th>CVE</th><th>الاسم</th><th>CVSS</th><th>التصنيف</th><th>الخدمة</th><th>Public Exploit؟</th></tr>
+      <tr>
+        <td class="mono danger">CVE-2017-0144</td>
+        <td>EternalBlue</td>
+        <td class="mono" style="color:var(--red);font-weight:bold;">9.8</td>
+        <td style="color:var(--red);font-weight:bold;">Critical</td>
+        <td class="mono">SMBv1 Port 445</td>
+        <td class="safe">✅ نعم — Metasploit</td>
+      </tr>
+      <tr>
+        <td class="mono danger">CVE-2017-7269</td>
+        <td>WebDAV IIS 6.0</td>
+        <td class="mono" style="color:var(--red);">9.8</td>
+        <td style="color:var(--red);">Critical</td>
+        <td class="mono">IIS 6.0 Port 80</td>
+        <td class="safe">✅ نعم — Metasploit</td>
+      </tr>
+      <tr>
+        <td class="mono warn">CVE-2021-44228</td>
+        <td>Log4Shell</td>
+        <td class="mono" style="color:var(--red);font-weight:bold;">10.0</td>
+        <td style="color:var(--red);font-weight:bold;">Critical</td>
+        <td class="mono">Log4j Java</td>
+        <td class="safe">✅ نعم — منتشر جداً</td>
+      </tr>
+      <tr>
+        <td class="mono">CVE-2019-0708</td>
+        <td>BlueKeep</td>
+        <td class="mono" style="color:var(--red);">9.8</td>
+        <td style="color:var(--red);">Critical</td>
+        <td class="mono">RDP Port 3389</td>
+        <td class="safe">✅ نعم — Metasploit</td>
+      </tr>
+      <tr>
+        <td class="mono" style="color:var(--yellow);">CVE-2016-3115</td>
+        <td>OpenSSH X11 Injection</td>
+        <td class="mono" style="color:var(--yellow);">6.4</td>
+        <td style="color:var(--yellow);">Medium</td>
+        <td class="mono">SSH 7.2p1</td>
+        <td class="warn">⚠️ محدود</td>
+      </tr>
+    </table>
+    <div class="alert info">💡 ابحث عن أي CVE هنا: <a href="https://nvd.nist.gov/vuln/search" target="_blank" style="color:var(--accent);">nvd.nist.gov</a> أو <a href="https://www.exploit-db.com" target="_blank" style="color:var(--accent);">exploit-db.com</a></div>
+  </div>
+
 </div>
 
 <!-- METHODOLOGY -->
@@ -300,6 +348,45 @@ td.purple{color:var(--purple);}
     </div>
     <div class="alert danger">🎯 Critical Impact + Critical Likelihood = أعلى أولوية — جرّب الثغرة دي قبل أي شيء!</div>
     <div class="alert info">💡 مثال: EternalBlue = Likelihood عالية (exploit جاهز) + Impact كارثي = Critical Risk → رقعها فوراً!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 سيناريو تطبيقي — قيّم المخاطر بنفسك</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      بعد ما تعمل Nmap scan طلعت النتائج التالية. حدد أولوية الإصلاح:
+    </p>
+    <table>
+      <tr><th>الثغرة</th><th>Likelihood</th><th>Impact</th><th>Risk Level</th><th>الأولوية</th></tr>
+      <tr>
+        <td class="mono danger">EternalBlue (MS17-010)<br><span style="font-size:9px;color:var(--muted);">CVE-2017-0144 | CVSS 9.8</span></td>
+        <td style="color:var(--red);">Critical (5)<br><span style="font-size:9px;color:var(--muted);">exploit جاهز في Metasploit</span></td>
+        <td style="color:var(--red);">Critical (5)<br><span style="font-size:9px;color:var(--muted);">RCE = تحكم كامل</span></td>
+        <td style="color:var(--red);font-weight:bold;">🔴 Critical</td>
+        <td style="color:var(--red);font-weight:bold;">1️⃣ فوراً</td>
+      </tr>
+      <tr>
+        <td class="mono warn">SQL Injection في Login<br><span style="font-size:9px;color:var(--muted);">بدون CVE — ثغرة يدوية</span></td>
+        <td style="color:var(--yellow);">High (3)<br><span style="font-size:9px;color:var(--muted);">يحتاج تفاعل مع الموقع</span></td>
+        <td style="color:var(--red);">Critical (5)<br><span style="font-size:9px;color:var(--muted);">وصول لقاعدة البيانات</span></td>
+        <td style="color:var(--red);">🔴 High</td>
+        <td style="color:var(--red);">2️⃣ هذا الأسبوع</td>
+      </tr>
+      <tr>
+        <td class="mono safe">Apache version مكشوف<br><span style="font-size:9px;color:var(--muted);">Information Disclosure</span></td>
+        <td style="color:var(--yellow);">Medium (2)<br><span style="font-size:9px;color:var(--muted);">يساعد في Recon بس</span></td>
+        <td style="color:var(--green);">Low (2)<br><span style="font-size:9px;color:var(--muted);">معلومة فقط، ما تضر مباشرة</span></td>
+        <td style="color:var(--green);">🟢 Low</td>
+        <td style="color:var(--green);">4️⃣ الشهر القادم</td>
+      </tr>
+      <tr>
+        <td class="mono" style="color:var(--muted);">Default Credentials (admin/admin)<br><span style="font-size:9px;color:var(--muted);">Weak Authentication</span></td>
+        <td style="color:var(--red);">Very High (4)<br><span style="font-size:9px;color:var(--muted);">أي شخص يحاول يدخل</span></td>
+        <td style="color:var(--red);">High (4)<br><span style="font-size:9px;color:var(--muted);">وصول للنظام</span></td>
+        <td style="color:var(--red);">🔴 Critical</td>
+        <td style="color:var(--red);">1️⃣ فوراً</td>
+      </tr>
+    </table>
+    <div class="alert success">✅ الدرس: EternalBlue وDefault Credentials = أعلى أولوية رغم اختلاف طبيعتهم — كلاهما Critical Risk!</div>
   </div>
 
 </div>
@@ -474,6 +561,74 @@ td.purple{color:var(--purple);}
     ما تقولش "عندكم ثغرة وبس" — قدّم الحل الواضح!</div>
 
     <div class="alert info">💡 ابدأ من هلأ: لما تحل labs على HTB ربط كل ثغرة بـ Likelihood + Impact + CVE — هذا ما تكتبه في التقارير الحقيقية!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📝 Template — تقرير اختراق احترافي</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">انسخ هاد الـ Template واملأه بعد كل HTB lab:</p>
+
+    <div style="background:rgba(1,4,9,0.8);border:1px solid var(--border);border-right:3px solid var(--green);padding:18px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;line-height:1.9;">
+<span style="color:var(--accent);">═══════════════════════════════════════════
+PENETRATION TEST REPORT
+═══════════════════════════════════════════</span>
+
+<span style="color:var(--yellow);">TARGET:</span>        10.10.10.X (HTB Machine Name)
+<span style="color:var(--yellow);">DATE:</span>          YYYY-MM-DD
+<span style="color:var(--yellow);">TESTER:</span>        Husein Sulaiman
+<span style="color:var(--yellow);">SCOPE:</span>         Single host — no restrictions
+
+<span style="color:var(--accent);">───────────────────────────────────────────
+1. EXECUTIVE SUMMARY
+───────────────────────────────────────────</span>
+<span style="color:var(--muted);">[ملخص قصير للمسؤولين — 3-4 جمل]</span>
+Found [X] vulnerabilities: [X] Critical, [X] High, [X] Medium.
+The most severe finding (CVE-XXXX-XXXX, CVSS 9.8) allows
+Remote Code Execution without authentication.
+Immediate patching is strongly recommended.
+
+<span style="color:var(--accent);">───────────────────────────────────────────
+2. FINDINGS
+───────────────────────────────────────────</span>
+<span style="color:var(--red);">Finding #1: [اسم الثغرة]</span>
+CVE:          CVE-XXXX-XXXX
+CVSS Score:   9.8 (Critical)
+Service:      SMB Port 445
+Likelihood:   Critical (5) — Public exploit available
+Impact:       Critical (5) — Full system compromise
+Risk Level:   🔴 CRITICAL
+
+Description:
+[وصف الثغرة بالعربي — ليش موجودة وكيف تشتغل]
+
+Proof of Concept:
+msf6 > use exploit/windows/smb/ms17_010_eternalblue
+msf6 > set RHOSTS 10.10.10.X
+msf6 > run
+meterpreter > getuid → NT AUTHORITY\SYSTEM ✅
+
+Remediation:
+- Apply Microsoft patch MS17-010 immediately
+- Disable SMBv1: Set-SmbServerConfiguration -EnableSMB1Protocol $false
+- Block port 445 on external firewall
+
+<span style="color:var(--accent);">───────────────────────────────────────────
+3. ATTACK CHAIN
+───────────────────────────────────────────</span>
+[Recon] → Nmap discovered SMB port 445, Windows 7
+[Scan]  → auxiliary/scanner/smb/smb_ms17_010 → VULNERABLE
+[Exploit] → ms17_010_eternalblue → Meterpreter session
+[PrivEsc] → Already SYSTEM level
+[Post]  → hashdump → extracted 3 password hashes
+
+<span style="color:var(--accent);">───────────────────────────────────────────
+4. REMEDIATION PLAN (Priority Order)
+───────────────────────────────────────────</span>
+[1] IMMEDIATE  — Patch CVE-XXXX-XXXX (Critical)
+[2] THIS WEEK  — Change default credentials
+[3] THIS MONTH — Update all services to latest version
+[4] QUARTERLY  — Implement network segmentation</div>
+
+    <div class="alert success">🎯 ملأت هاد الـ Template بعد كل HTB lab = بعد 10 labs عندك portfolio كامل من التقارير!</div>
   </div>
 
 </div>
