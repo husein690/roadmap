@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Courses — Husein Sulaiman</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--purple:#a855f7;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-title{font-family:var(--mono);font-size:clamp(24px,4vw,44px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
+.hdr-title span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0 32px;opacity:.3;}
+.sec-label{font-family:var(--tag);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:0 0 14px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:40px;}
+.course-card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:20px;text-decoration:none;display:block;position:relative;transition:all .25s;}
+.course-card:hover{border-color:rgba(0,212,255,.4);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.course-card.done{border-color:rgba(57,255,20,.2);}
+.course-card.done:hover{border-color:rgba(57,255,20,.6);}
+.course-card.progress{border-color:rgba(251,191,36,.2);}
+.course-card.progress:hover{border-color:rgba(251,191,36,.6);}
+.course-card.coming{opacity:.6;cursor:default;}
+.course-card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.3;}
+.course-card.done::before{background:var(--green);opacity:.5;}
+.course-card.progress::before{background:var(--yellow);opacity:.5;}
+.course-card.coming::before{background:var(--muted);opacity:.3;}
+.course-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.course-icon{font-size:28px;}
+.course-status{font-family:var(--tag);font-size:9px;letter-spacing:2px;padding:3px 8px;border:1px solid;}
+.course-status.done{color:var(--green);border-color:rgba(57,255,20,.4);}
+.course-status.progress{color:var(--yellow);border-color:rgba(251,191,36,.4);}
+.course-status.coming{color:var(--muted);border-color:rgba(58,80,96,.4);}
+.course-code{font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:4px;letter-spacing:1px;}
+.course-name{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.course-uni{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.course-desc{font-size:11px;color:var(--text);line-height:1.7;margin-bottom:12px;}
+.course-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.ctag{font-family:var(--tag);font-size:9px;padding:2px 8px;border:1px solid;letter-spacing:1px;}
+.ctag.cyan{border-color:rgba(0,212,255,.3);color:var(--accent);}
+.ctag.green{border-color:rgba(57,255,20,.3);color:var(--green);}
+.ctag.yellow{border-color:rgba(251,191,36,.3);color:var(--yellow);}
+.ctag.purple{border-color:rgba(168,85,247,.3);color:var(--purple);}
+.progress-bar{height:3px;background:rgba(255,255,255,.08);margin-top:12px;position:relative;}
+.progress-fill{height:100%;background:var(--yellow);transition:width .3s;}
+.progress-text{font-family:var(--tag);font-size:9px;color:var(--muted);margin-top:4px;}
+</style>
+</head>
+<body>
+<canvas id="glass-particles"></canvas>
+<div class="wrap">
+
+<a href="index.html" class="back-btn">◄ BACK TO ROADMAP</a>
+
+<div class="hdr-tag">► ACADEMIC LEARNING RESOURCES</div>
+<div class="hdr-title">MY <span>COURSES</span></div>
+<div class="hdr-sub">CHALMERS · HÖGSKOLAN VÄST · SELF-STUDY</div>
+<div class="divider"></div>
+
+<!-- CHALMERS -->
+<div class="sec-label">► CHALMERS — TKDAT CIVILINGENJÖR</div>
+<div class="courses-grid">
+
+  <!-- EDA482 -->
+  <a href="maskin_resources.html" class="course-card progress">
+    <div class="course-header">
+      <div class="course-icon">⚙️</div>
+      <div class="course-status progress">IN PROGRESS</div>
+    </div>
+    <div class="course-code">EDA482</div>
+    <div class="course-name">Maskinorienterad Programmering</div>
+    <div class="course-uni">Chalmers · 7.5 hp</div>
+    <div class="course-desc">Assembly x86, C, minneshantering, register, stack, heap. Tentamen August 2026.</div>
+    <div class="course-tags">
+      <span class="ctag cyan">Assembly x86</span>
+      <span class="ctag yellow">C Language</span>
+      <span class="ctag purple">Memory</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:40%;background:var(--yellow);"></div></div>
+    <div class="progress-text">Lab ✅ — Tentamen ⬜</div>
+  </a>
+
+  <!-- DAT038 -->
+  <div class="course-card coming">
+    <div class="course-header">
+      <div class="course-icon">🌲</div>
+      <div class="course-status coming">COMING SOON</div>
+    </div>
+    <div class="course-code">DAT038</div>
+    <div class="course-name">Datastrukturer och Algoritmer</div>
+    <div class="course-uni">Chalmers · 7.5 hp</div>
+    <div class="course-desc">BST, Hash tables, Graphs, Sorting algorithms, Complexity analysis.</div>
+    <div class="course-tags">
+      <span class="ctag cyan">BST</span>
+      <span class="ctag yellow">Graphs</span>
+      <span class="ctag purple">Complexity</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:50%;background:var(--muted);"></div></div>
+    <div class="progress-text">Lab ✅ — Tentamen ⬜</div>
+  </div>
+
+  <!-- TMV170 -->
+  <div class="course-card coming">
+    <div class="course-header">
+      <div class="course-icon">📐</div>
+      <div class="course-status coming">COMING SOON</div>
+    </div>
+    <div class="course-code">TMV170</div>
+    <div class="course-name">Matematisk Analys</div>
+    <div class="course-uni">Chalmers · 7.5 hp</div>
+    <div class="course-desc">Calculus, derivator, integraler, differentialekvationer.</div>
+    <div class="course-tags">
+      <span class="ctag cyan">Calculus</span>
+      <span class="ctag yellow">Integrals</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- HÖGSKOLAN VÄST -->
+<div class="sec-label">► HÖGSKOLAN VÄST — TGDTA HÖGSKOLEINGENJÖR</div>
+<div class="courses-grid">
+
+  <!-- DAL201 -->
+  <div class="course-card progress">
+    <div class="course-header">
+      <div class="course-icon">🔗</div>
+      <div class="course-status progress">IN PROGRESS</div>
+    </div>
+    <div class="course-code">DAL201</div>
+    <div class="course-name">Datastrukturer och Algoritmer</div>
+    <div class="course-uni">Högskolan Väst · 7.5 hp</div>
+    <div class="course-desc">Länkade listor, träd, grafer, sorterings- och sökalgoritmer.</div>
+    <div class="course-tags">
+      <span class="ctag cyan">Linked Lists</span>
+      <span class="ctag yellow">Trees</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--yellow);"></div></div>
+    <div class="progress-text">Muntlig examination ⬜ (nästan klar!)</div>
+  </div>
+
+  <!-- SEP400 -->
+  <div class="course-card progress">
+    <div class="course-header">
+      <div class="course-icon">💻</div>
+      <div class="course-status progress">IN PROGRESS</div>
+    </div>
+    <div class="course-code">SEP400</div>
+    <div class="course-name">Programvaruteknik</div>
+    <div class="course-uni">Högskolan Väst · 15 hp</div>
+    <div class="course-desc">Software Engineering, agila metoder, testning, design patterns.</div>
+    <div class="course-tags">
+      <span class="ctag cyan">Agile</span>
+      <span class="ctag yellow">Testing</span>
+      <span class="ctag purple">Design Patterns</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:70%;background:var(--yellow);"></div></div>
+    <div class="progress-text">Projekt ✅ (10hp) — Tentamen ⬜</div>
+  </div>
+
+  <!-- MSA170 -->
+  <div class="course-card coming">
+    <div class="course-header">
+      <div class="course-icon">📊</div>
+      <div class="course-status coming">COMING SOON</div>
+    </div>
+    <div class="course-code">MSA170</div>
+    <div class="course-name">Matematisk Statistik</div>
+    <div class="course-uni">Högskolan Väst · 7.5 hp</div>
+    <div class="course-desc">Sannolikhetslära, statistiska fördelningar, hypotesprövning.</div>
+    <div class="course-tags">
+      <span class="ctag cyan">Probability</span>
+      <span class="ctag yellow">Statistics</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:10%;background:var(--muted);"></div></div>
+    <div class="progress-text">Datorlab ✅ — Tentamen ⬜</div>
+  </div>
+
+  <!-- ELK202 -->
+  <div class="course-card coming">
+    <div class="course-header">
+      <div class="course-icon">⚡</div>
+      <div class="course-status coming">COMING SOON</div>
+    </div>
+    <div class="course-code">ELK202</div>
+    <div class="course-name">Elektronik, Grundläggande</div>
+    <div class="course-uni">Högskolan Väst · 5 hp</div>
+    <div class="course-desc">Kretsar, Ohms lag, kondensatorer, transistorer.</div>
+    <div class="course-tags">
+      <span class="ctag cyan">Circuits</span>
+      <span class="ctag yellow">Electronics</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:10%;background:var(--muted);"></div></div>
+    <div class="progress-text">Lab ✅ — Tentamen ⬜</div>
+  </div>
+
+</div>
+
+</div>
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+</body>
+</html>

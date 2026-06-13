@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDA482 — Maskinorienterad Programmering</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030810;--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--purple:#a855f7;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+#glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+.hdr{margin-bottom:32px;}
+.hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
+.hdr-name{font-family:var(--mono);font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
+.hdr-name span{color:var(--accent);}
+.hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0;opacity:.3;}
+.facts-bar{display:flex;flex-wrap:wrap;margin-bottom:28px;background:rgba(8,18,36,0.52);backdrop-filter:blur(18px);border:1px solid rgba(0,212,255,0.18);box-shadow:0 4px 30px rgba(0,0,0,.35);}
+.fact{flex:1;min-width:100px;padding:12px 16px;border-left:1px solid var(--border);}
+.fact:last-child{border-left:none;}
+.fact-val{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--accent);}
+.fact-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;}
+.nav{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.nav-btn{font-family:var(--tag);font-size:10px;letter-spacing:1px;padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.05);}
+.panel{display:none;}
+.panel.active{display:block;}
+.sec-label{font-family:var(--tag);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.4;}
+.card.warn::before{background:var(--yellow);opacity:.6;}
+.card.success::before{background:var(--green);opacity:.6;}
+.card-title{font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
+.card-title::before{content:'▸ ';color:var(--green);}
+.code{background:rgba(1,4,9,0.8);border:1px solid var(--border);border-right:3px solid var(--accent);padding:14px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.7;margin:8px 0;}
+.code .cmd{color:var(--accent);}
+.code .ok{color:var(--green);}
+.code .err{color:var(--red);}
+.code .cmt{color:var(--muted);}
+.code .val{color:var(--yellow);}
+.code .purple{color:var(--purple);}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
+th{background:rgba(1,4,9,0.8);color:var(--accent);padding:8px 12px;text-align:right;border:1px solid var(--border);font-family:var(--tag);font-size:9px;letter-spacing:1px;}
+td{padding:7px 12px;border:1px solid var(--border);color:var(--text);font-size:11px;vertical-align:top;}
+tr:nth-child(even) td{background:rgba(8,15,28,0.5);}
+tr:nth-child(odd) td{background:rgba(1,4,9,0.4);}
+td.mono{font-family:var(--mono);color:var(--accent);}
+td.safe{color:var(--green);}
+td.warn{color:var(--yellow);}
+td.danger{color:var(--red);}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.6;}
+.alert.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#99e8ff;}
+.alert.warning{background:rgba(251,191,36,.08);border-color:var(--yellow);color:#ffe599;}
+.alert.success{background:rgba(57,255,20,.08);border-color:var(--green);color:#99ff99;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
+.info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
+.info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<canvas id="glass-particles"></canvas>
+<div class="wrap">
+
+<a href="courses.html" class="back-btn">◄ BACK TO COURSES</a>
+
+<div class="hdr">
+  <div class="hdr-tag">► CHALMERS · EDA482 · 7.5 HP · TENTAMEN AUGUSTI 2026</div>
+  <div class="hdr-name">MASKINORIENTERAD <span>PROGRAMMERING</span></div>
+  <div class="hdr-sub">ASSEMBLY x86 · C LANGUAGE · MEMORY · REGISTERS · STACK</div>
+  <div class="divider"></div>
+</div>
+
+<div class="facts-bar">
+  <div class="fact"><div class="fact-val">x86</div><div class="fact-lbl">Architecture</div></div>
+  <div class="fact"><div class="fact-val">C + ASM</div><div class="fact-lbl">Languages</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--green)">Lab ✅</div><div class="fact-lbl">Status</div></div>
+  <div class="fact"><div class="fact-val" style="color:var(--yellow)">Aug 2026</div><div class="fact-lbl">Tentamen</div></div>
+  <div class="fact"><div class="fact-val">7.5 hp</div><div class="fact-lbl">Credits</div></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('registers',this)">Registers</button>
+  <button class="nav-btn" onclick="showPanel('memory',this)">Memory</button>
+  <button class="nav-btn" onclick="showPanel('assembly',this)">Assembly</button>
+  <button class="nav-btn" onclick="showPanel('c_lang',this)">C Language</button>
+  <button class="nav-btn" onclick="showPanel('stack',this)">Stack & Functions</button>
+  <button class="nav-btn" onclick="showPanel('tips',this)">Exam Tips</button>
+</div>
+
+<!-- REGISTERS -->
+<div id="panel-registers" class="panel active">
+
+  <div class="card">
+    <div class="card-title">📦 x86 Registers</div>
+    <table>
+      <tr><th>Register</th><th>الاسم</th><th>الوظيفة</th><th>الحجم</th></tr>
+      <tr><td class="mono">EAX</td><td>Accumulator</td><td>العمليات الحسابية ونتائج الدوال</td><td class="mono">32-bit</td></tr>
+      <tr><td class="mono">EBX</td><td>Base</td><td>عنوان base للبيانات</td><td class="mono">32-bit</td></tr>
+      <tr><td class="mono">ECX</td><td>Counter</td><td>عداد الـ loops</td><td class="mono">32-bit</td></tr>
+      <tr><td class="mono">EDX</td><td>Data</td><td>البيانات وعمليات الضرب/القسمة</td><td class="mono">32-bit</td></tr>
+      <tr><td class="mono warn">ESP</td><td>Stack Pointer</td><td>يشير لرأس الـ stack دايماً</td><td class="mono">32-bit</td></tr>
+      <tr><td class="mono warn">EBP</td><td>Base Pointer</td><td>base الـ stack frame للدالة الحالية</td><td class="mono">32-bit</td></tr>
+      <tr><td class="mono safe">ESI</td><td>Source Index</td><td>عنوان المصدر في عمليات النسخ</td><td class="mono">32-bit</td></tr>
+      <tr><td class="mono safe">EDI</td><td>Destination Index</td><td>عنوان الوجهة في عمليات النسخ</td><td class="mono">32-bit</td></tr>
+      <tr><td class="mono" style="color:var(--red)">EIP</td><td>Instruction Pointer</td><td>عنوان الأمر التالي للتنفيذ</td><td class="mono">32-bit</td></tr>
+      <tr><td class="mono">EFLAGS</td><td>Flags Register</td><td>نتائج المقارنات (ZF, SF, CF, OF)</td><td class="mono">32-bit</td></tr>
+    </table>
+    <div class="alert info">💡 Sub-registers: EAX (32) → AX (16) → AH/AL (8-bit high/low)</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🚩 EFLAGS — Flags المهمة</div>
+    <table>
+      <tr><th>Flag</th><th>الاسم</th><th>متى يصير 1؟</th></tr>
+      <tr><td class="mono safe">ZF</td><td>Zero Flag</td><td>النتيجة = صفر (مفيدة لـ comparisons)</td></tr>
+      <tr><td class="mono warn">SF</td><td>Sign Flag</td><td>النتيجة سالبة (أول bit = 1)</td></tr>
+      <tr><td class="mono" style="color:var(--red)">CF</td><td>Carry Flag</td><td>overflow في unsigned</td></tr>
+      <tr><td class="mono purple">OF</td><td>Overflow Flag</td><td>overflow في signed</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- MEMORY -->
+<div id="panel-memory" class="panel">
+
+  <div class="card">
+    <div class="card-title">🗺️ Memory Layout</div>
+    <div class="code"><span class="cmt">High addresses (0xFFFFFFFF)</span>
+┌─────────────────┐
+│   <span class="err">Stack</span>          │ ← ينمو للأسفل (ESP يقل)
+│   ↓             │
+├─────────────────┤
+│   (free space)  │
+├─────────────────┤
+│   ↑             │
+│   <span class="ok">Heap</span>           │ ← ينمو للأعلى (malloc)
+├─────────────────┤
+│   <span class="val">BSS</span>            │ ← global vars غير مهيأة
+├─────────────────┤
+│   <span class="val">Data</span>           │ ← global vars مهيأة
+├─────────────────┤
+│   <span class="cmd">Text/Code</span>      │ ← الكود التنفيذي (read-only)
+└─────────────────┘
+<span class="cmt">Low addresses (0x00000000)</span></div>
+    <div class="alert warning">⚠️ Stack ينمو للأسفل! PUSH يقلل ESP، POP يزيد ESP</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💾 Data Types في الذاكرة</div>
+    <table>
+      <tr><th>النوع</th><th>الحجم</th><th>ASM</th><th>C</th></tr>
+      <tr><td class="mono">Byte</td><td>1 byte = 8 bits</td><td class="mono">BYTE PTR / db</td><td class="mono">char</td></tr>
+      <tr><td class="mono">Word</td><td>2 bytes = 16 bits</td><td class="mono">WORD PTR / dw</td><td class="mono">short</td></tr>
+      <tr><td class="mono warn">Double Word</td><td>4 bytes = 32 bits</td><td class="mono">DWORD PTR / dd</td><td class="mono">int / long</td></tr>
+      <tr><td class="mono">Quad Word</td><td>8 bytes = 64 bits</td><td class="mono">QWORD PTR / dq</td><td class="mono">long long</td></tr>
+    </table>
+    <div class="alert info">💡 x86 = Little Endian: الـ byte الأصغر يُخزّن أولاً في العنوان الأصغر</div>
+  </div>
+
+</div>
+
+<!-- ASSEMBLY -->
+<div id="panel-assembly" class="panel">
+
+  <div class="card">
+    <div class="card-title">⚙️ أوامر Assembly الأساسية</div>
+
+    <div class="lbl">Data Movement:</div>
+    <div class="code"><span class="cmd">MOV</span> eax, 5          <span class="cmt">; eax = 5</span>
+<span class="cmd">MOV</span> eax, [ebx]      <span class="cmt">; eax = قيمة في العنوان ebx</span>
+<span class="cmd">MOV</span> [ebx], eax      <span class="cmt">; احفظ eax في عنوان ebx</span>
+<span class="cmd">LEA</span> eax, [ebx+4]   <span class="cmt">; eax = العنوان نفسه (مش القيمة!)</span>
+<span class="cmd">XCHG</span> eax, ebx      <span class="cmt">; تبديل قيم الـ registers</span></div>
+
+    <div class="lbl">Arithmetic:</div>
+    <div class="code"><span class="cmd">ADD</span> eax, ebx        <span class="cmt">; eax = eax + ebx</span>
+<span class="cmd">SUB</span> eax, ebx        <span class="cmt">; eax = eax - ebx</span>
+<span class="cmd">MUL</span> ebx             <span class="cmt">; EDX:EAX = EAX * ebx (unsigned)</span>
+<span class="cmd">IMUL</span> ebx            <span class="cmt">; EDX:EAX = EAX * ebx (signed)</span>
+<span class="cmd">DIV</span> ebx             <span class="cmt">; EAX = EDX:EAX / ebx, EDX = remainder</span>
+<span class="cmd">INC</span> eax             <span class="cmt">; eax++</span>
+<span class="cmd">DEC</span> eax             <span class="cmt">; eax--</span>
+<span class="cmd">NEG</span> eax             <span class="cmt">; eax = -eax</span></div>
+
+    <div class="lbl">Logical:</div>
+    <div class="code"><span class="cmd">AND</span> eax, ebx        <span class="cmt">; bitwise AND</span>
+<span class="cmd">OR</span>  eax, ebx        <span class="cmt">; bitwise OR</span>
+<span class="cmd">XOR</span> eax, eax        <span class="cmt">; eax = 0 (أسرع طريقة لـ zero)</span>
+<span class="cmd">NOT</span> eax             <span class="cmt">; bitwise NOT</span>
+<span class="cmd">SHL</span> eax, 2          <span class="cmt">; shift left 2 = × 4</span>
+<span class="cmd">SHR</span> eax, 2          <span class="cmt">; shift right 2 = ÷ 4</span></div>
+
+    <div class="lbl">Control Flow:</div>
+    <div class="code"><span class="cmd">CMP</span> eax, ebx        <span class="cmt">; مقارنة (تعدّل الـ Flags)</span>
+<span class="cmd">JMP</span> label           <span class="cmt">; jump دايماً</span>
+<span class="cmd">JE</span>  label           <span class="cmt">; jump if equal (ZF=1)</span>
+<span class="cmd">JNE</span> label           <span class="cmt">; jump if not equal (ZF=0)</span>
+<span class="cmd">JL</span>  label           <span class="cmt">; jump if less (signed)</span>
+<span class="cmd">JG</span>  label           <span class="cmt">; jump if greater (signed)</span>
+<span class="cmd">JB</span>  label           <span class="cmt">; jump if below (unsigned)</span>
+<span class="cmd">JA</span>  label           <span class="cmt">; jump if above (unsigned)</span></div>
+
+    <div class="lbl">Stack:</div>
+    <div class="code"><span class="cmd">PUSH</span> eax            <span class="cmt">; ESP -= 4, [ESP] = eax</span>
+<span class="cmd">POP</span>  eax            <span class="cmt">; eax = [ESP], ESP += 4</span>
+<span class="cmd">CALL</span> func           <span class="cmt">; PUSH EIP ثم JMP func</span>
+<span class="cmd">RET</span>                 <span class="cmt">; POP EIP (ارجع للمستدعي)</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔄 مثال — Loop في Assembly</div>
+    <div class="code"><span class="cmt">; for (int i = 0; i < 10; i++) sum += i;</span>
+
+    <span class="cmd">MOV</span> ecx, <span class="val">0</span>         <span class="cmt">; i = 0</span>
+    <span class="cmd">MOV</span> eax, <span class="val">0</span>         <span class="cmt">; sum = 0</span>
+
+<span class="ok">loop_start:</span>
+    <span class="cmd">CMP</span> ecx, <span class="val">10</span>        <span class="cmt">; i < 10?</span>
+    <span class="cmd">JGE</span> loop_end       <span class="cmt">; لو i >= 10 اخرج</span>
+    <span class="cmd">ADD</span> eax, ecx       <span class="cmt">; sum += i</span>
+    <span class="cmd">INC</span> ecx            <span class="cmt">; i++</span>
+    <span class="cmd">JMP</span> loop_start     <span class="cmt">; كرر</span>
+<span class="ok">loop_end:</span>
+    <span class="cmt">; eax = 45 (مجموع 0..9)</span></div>
+  </div>
+
+</div>
+
+<!-- C LANGUAGE -->
+<div id="panel-c_lang" class="panel">
+
+  <div class="card">
+    <div class="card-title">🔷 C — أساسيات</div>
+    <div class="code"><span class="cmt">// Pointers</span>
+<span class="cmd">int</span> x = <span class="val">42</span>;
+<span class="cmd">int</span> *p = &x;       <span class="cmt">// p يحمل عنوان x</span>
+*p = <span class="val">100</span>;           <span class="cmt">// تغيير قيمة x عبر الـ pointer</span>
+
+<span class="cmt">// Arrays</span>
+<span class="cmd">int</span> arr[<span class="val">5</span>] = {<span class="val">1,2,3,4,5</span>};
+<span class="cmt">// arr = عنوان أول عنصر (arr == &arr[0])</span>
+
+<span class="cmt">// Pointer Arithmetic</span>
+<span class="cmd">int</span> *ptr = arr;
+ptr++;              <span class="cmt">// ينتقل 4 bytes (حجم int)</span>
+*(ptr + <span class="val">2</span>)         <span class="cmt">// نفس arr[2]</span>
+
+<span class="cmt">// Strings</span>
+<span class="cmd">char</span> str[] = <span class="val">"Hello"</span>;  <span class="cmt">// [H,e,l,l,o,\0]</span>
+<span class="cmd">char</span> *s = str;</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💾 Dynamic Memory</div>
+    <div class="code"><span class="cmt">// Heap allocation:</span>
+<span class="cmd">int</span> *arr = (<span class="cmd">int</span>*) <span class="ok">malloc</span>(<span class="val">5</span> * <span class="cmd">sizeof</span>(<span class="cmd">int</span>));
+<span class="cmt">// احكي دايماً على NULL check!</span>
+<span class="cmd">if</span> (arr == <span class="val">NULL</span>) { <span class="err">/* handle error */</span> }
+
+arr[<span class="val">0</span>] = <span class="val">10</span>;
+arr[<span class="val">1</span>] = <span class="val">20</span>;
+
+<span class="cmt">// Resize:</span>
+arr = (<span class="cmd">int</span>*) <span class="ok">realloc</span>(arr, <span class="val">10</span> * <span class="cmd">sizeof</span>(<span class="cmd">int</span>));
+
+<span class="cmt">// Free — لازم دايماً!</span>
+<span class="ok">free</span>(arr);
+arr = <span class="val">NULL</span>;  <span class="cmt">// تجنب dangling pointer</span></div>
+    <div class="alert warning">⚠️ Memory Leaks: كل malloc يحتاج free. Dangling Pointer: استخدام pointer بعد free!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔗 Structs</div>
+    <div class="code"><span class="cmd">typedef struct</span> {
+    <span class="cmd">int</span>   id;
+    <span class="cmd">char</span>  name[<span class="val">50</span>];
+    <span class="cmd">float</span> grade;
+} Student;
+
+Student s1 = {<span class="val">1</span>, <span class="val">"Husein"</span>, <span class="val">4.5</span>};
+Student *p = &s1;
+
+<span class="cmt">// Access:</span>
+s1.id           <span class="cmt">// بالنقطة</span>
+p->id           <span class="cmt">// بالـ arrow (عبر pointer)</span>
+(*p).id         <span class="cmt">// نفس الشيء</span></div>
+  </div>
+
+</div>
+
+<!-- STACK & FUNCTIONS -->
+<div id="panel-stack" class="panel">
+
+  <div class="card">
+    <div class="card-title">📚 Stack Frame — كيف تشتغل الدوال</div>
+    <div class="code"><span class="cmt">; استدعاء دالة: int add(int a, int b)</span>
+
+<span class="cmt">; 1. المستدعي يدفع الـ arguments (من اليمين للشمال):</span>
+<span class="cmd">PUSH</span> b              <span class="cmt">; argument 2</span>
+<span class="cmd">PUSH</span> a              <span class="cmt">; argument 1</span>
+<span class="cmd">CALL</span> add            <span class="cmt">; PUSH EIP + JMP add</span>
+
+<span class="cmt">; 2. داخل الدالة:</span>
+<span class="cmd">PUSH</span> EBP            <span class="cmt">; احفظ EBP القديم</span>
+<span class="cmd">MOV</span>  EBP, ESP       <span class="cmt">; ابني الـ stack frame</span>
+<span class="cmd">SUB</span>  ESP, 8         <span class="cmt">; مساحة للـ local variables</span>
+
+<span class="cmt">; الوصول للـ arguments:</span>
+<span class="cmd">MOV</span> eax, [EBP+8]   <span class="cmt">; a</span>
+<span class="cmd">MOV</span> ebx, [EBP+12]  <span class="cmt">; b</span>
+
+<span class="cmt">; 3. العودة:</span>
+<span class="cmd">MOV</span> eax, result    <span class="cmt">; النتيجة في EAX</span>
+<span class="cmd">MOV</span> ESP, EBP       <span class="cmt">; أزل الـ locals</span>
+<span class="cmd">POP</span> EBP            <span class="cmt">; استرجع EBP</span>
+<span class="cmd">RET</span>                <span class="cmt">; POP EIP + ارجع</span></div>
+
+    <div class="card-title" style="margin-top:14px;">📊 Stack Frame Layout</div>
+    <div class="code" style="direction:ltr;text-align:left;">
+High addresses
+┌─────────────────┐
+│      arg b      │ EBP+12
+│      arg a      │ EBP+8
+│   return addr   │ EBP+4  ← CALL حفظه
+│   old EBP       │ EBP    ← PUSH EBP حفظه
+│   local var 1   │ EBP-4
+│   local var 2   │ EBP-8  ← ESP
+└─────────────────┘
+Low addresses</div>
+    <div class="alert info">💡 Calling Convention (cdecl): Arguments من اليمين للشمال، المستدعي ينظف الـ Stack، النتيجة في EAX</div>
+  </div>
+
+</div>
+
+<!-- EXAM TIPS -->
+<div id="panel-tips" class="panel">
+
+  <div class="card warn">
+    <div class="card-title">⚠️ نقاط مهمة للامتحان</div>
+    <table>
+      <tr><th>الموضوع</th><th>النقطة المهمة</th></tr>
+      <tr><td class="mono warn">Stack Direction</td><td>ينمو للأسفل — PUSH يقلل ESP، POP يزيد ESP</td></tr>
+      <tr><td class="mono warn">Little Endian</td><td>Byte الأصغر في العنوان الأصغر</td></tr>
+      <tr><td class="mono warn">EBP+8</td><td>أول argument للدالة (بعد return addr وold EBP)</td></tr>
+      <tr><td class="mono warn">EAX</td><td>يحمل دايماً return value الدالة</td></tr>
+      <tr><td class="mono warn">XOR eax,eax</td><td>أسرع طريقة لتصفير register</td></tr>
+      <tr><td class="mono warn">LEA vs MOV</td><td>LEA يجيب العنوان، MOV يجيب القيمة</td></tr>
+      <tr><td class="mono warn">PTR Size</td><td>كل pointer = 4 bytes في x86 (بغض النظر عن النوع)</td></tr>
+      <tr><td class="mono warn">malloc/free</td><td>كل malloc يحتاج free — تجنب memory leaks!</td></tr>
+      <tr><td class="mono warn">NULL check</td><td>دايماً تحقق من malloc قبل الاستخدام</td></tr>
+      <tr><td class="mono warn">Array</td><td>arr[i] == *(arr + i) في C</td></tr>
+    </table>
+  </div>
+
+  <div class="card success">
+    <div class="card-title">✅ Checklist قبل الامتحان</div>
+    <div style="font-size:12px;color:var(--text);line-height:2;">
+      ☐ تعرف كل الـ registers ووظيفتها<br>
+      ☐ تفهم الـ stack frame بالتفصيل<br>
+      ☐ تعرف تقرأ وتكتب Assembly loops<br>
+      ☐ تفهم الـ calling convention (cdecl)<br>
+      ☐ تعرف الفرق بين MOV وLEA<br>
+      ☐ تفهم Pointer Arithmetic في C<br>
+      ☐ تعرف متى تستخدم malloc/realloc/free<br>
+      ☐ تفهم Structs والـ arrow operator<br>
+      ☐ تعرف Little Endian<br>
+      ☐ تعرف EFLAGS وEFLAGS conditions<br>
+    </div>
+  </div>
+
+</div>
+
+</div>
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+<script>
+function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');btn.classList.add('active');}
+</script>
+</body>
+</html>
