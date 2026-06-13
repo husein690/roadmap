@@ -9,40 +9,45 @@
 :root{--bg:#030810;--border:#0e2035;--accent:#00d4ff;--green:#39ff14;--red:#FF5757;--yellow:#fbbf24;--purple:#a855f7;--text:#b8ccd8;--muted:#3a5060;--white:#e8f4ff;--mono:'IBM Plex Mono',monospace;--sans:'Rajdhani',sans-serif;--tag:'Share Tech Mono',monospace;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
-body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.72)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
+body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.75)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
 body{color:var(--text);font-family:var(--sans);min-height:100vh;}
 #glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
-.wrap{max-width:1000px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 18px 80px;position:relative;z-index:2;}
 .back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
 .back-btn:hover{color:var(--accent);border-color:var(--accent);}
-.hdr{margin-bottom:32px;}
 .hdr-tag{font-family:var(--tag);font-size:10px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
 @keyframes blink{0%,100%{opacity:1}55%{opacity:.3}}
 .hdr-name{font-family:var(--mono);font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--white);letter-spacing:-1px;text-shadow:0 0 40px rgba(0,212,255,.3);}
 .hdr-name span{color:var(--accent);}
 .hdr-sub{font-family:var(--tag);font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:8px;}
-.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0;opacity:.3;}
-.facts-bar{display:flex;flex-wrap:wrap;margin-bottom:28px;background:rgba(8,18,36,0.52);backdrop-filter:blur(18px);border:1px solid rgba(0,212,255,0.18);box-shadow:0 4px 30px rgba(0,0,0,.35);}
-.fact{flex:1;min-width:100px;padding:12px 16px;border-left:1px solid var(--border);}
-.fact:last-child{border-left:none;}
-.fact-val{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--accent);}
-.fact-lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px;}
-.nav{display:flex;flex-wrap:wrap;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border);}
-.nav-btn{font-family:var(--tag);font-size:10px;letter-spacing:1px;padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--white);cursor:pointer;transition:all .2s;white-space:nowrap;}
-.nav-btn:hover{color:var(--accent);border-bottom-color:var(--accent);}
-.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,.05);}
-.panel{display:none;}
-.panel.active{display:block;}
-.sec-label{font-family:var(--tag);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:10px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:16px 0 32px;opacity:.3;}
+
+/* LECTURE GRID */
+.lec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:40px;}
+.lec-btn{background:rgba(8,18,36,0.52);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px 10px;text-align:center;cursor:pointer;transition:all .25s;position:relative;font-family:var(--mono);}
+.lec-btn:hover{border-color:rgba(0,212,255,.4);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.lec-btn.active{border-color:var(--accent);background:rgba(0,212,255,.08);}
+.lec-btn.done{border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.04);}
+.lec-btn.done::after{content:'✓';position:absolute;top:6px;left:8px;font-size:9px;color:var(--green);}
+.lec-num{font-size:22px;font-weight:700;color:var(--accent);display:block;margin-bottom:6px;}
+.lec-btn.done .lec-num{color:var(--green);}
+.lec-title{font-family:var(--tag);font-size:8px;color:var(--muted);letter-spacing:1px;line-height:1.4;}
+
+/* CONTENT AREA */
+.content-area{display:none;}
+.content-area.active{display:block;}
+.sec-label{font-family:var(--tag);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:24px 0 12px;display:flex;align-items:center;gap:10px;}
 .sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
 .card{background:rgba(8,18,36,0.48);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);padding:18px;margin-bottom:14px;position:relative;}
 .card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:.4;}
 .card.warn::before{background:var(--yellow);opacity:.6;}
 .card.success::before{background:var(--green);opacity:.6;}
+.card.danger::before{background:var(--red);opacity:.6;}
+.card.purple::before{background:var(--purple);opacity:.6;}
 .card-title{font-family:var(--tag);font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
 .card-title::before{content:'▸ ';color:var(--green);}
-.code{background:rgba(1,4,9,0.8);border:1px solid var(--border);border-right:3px solid var(--accent);padding:14px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.7;margin:8px 0;}
+.code{background:rgba(1,4,9,0.85);border:1px solid var(--border);border-right:3px solid var(--accent);padding:14px;font-family:var(--mono);font-size:11px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.8;margin:8px 0;}
 .code .cmd{color:var(--accent);}
 .code .ok{color:var(--green);}
 .code .err{color:var(--red);}
@@ -50,7 +55,7 @@ body{color:var(--text);font-family:var(--sans);min-height:100vh;}
 .code .val{color:var(--yellow);}
 .code .purple{color:var(--purple);}
 table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0;}
-th{background:rgba(1,4,9,0.8);color:var(--accent);padding:8px 12px;text-align:right;border:1px solid var(--border);font-family:var(--tag);font-size:9px;letter-spacing:1px;}
+th{background:rgba(1,4,9,0.8);color:var(--accent);padding:8px 12px;text-align:right;border:1px solid var(--border);font-family:var(--tag);font-size:9px;letter-spacing:1px;text-transform:uppercase;}
 td{padding:7px 12px;border:1px solid var(--border);color:var(--text);font-size:11px;vertical-align:top;}
 tr:nth-child(even) td{background:rgba(8,15,28,0.5);}
 tr:nth-child(odd) td{background:rgba(1,4,9,0.4);}
@@ -58,14 +63,25 @@ td.mono{font-family:var(--mono);color:var(--accent);}
 td.safe{color:var(--green);}
 td.warn{color:var(--yellow);}
 td.danger{color:var(--red);}
-.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.6;}
+.alert{padding:10px 14px;font-size:11px;margin:8px 0;border-right:3px solid;line-height:1.7;}
 .alert.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#99e8ff;}
 .alert.warning{background:rgba(251,191,36,.08);border-color:var(--yellow);color:#ffe599;}
 .alert.success{background:rgba(57,255,20,.08);border-color:var(--green);color:#99ff99;}
+.alert.danger{background:rgba(255,87,87,.08);border-color:var(--red);color:#ff9999;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
 .info-box{background:rgba(1,4,9,0.6);border:1px solid var(--border);padding:12px;}
 .info-box-title{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
-.lbl{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;}
+/* EXERCISES */
+.ex-box{background:rgba(57,255,20,.04);border:1px solid rgba(57,255,20,.2);padding:16px;margin-bottom:12px;}
+.ex-num{font-family:var(--tag);font-size:9px;color:var(--green);letter-spacing:2px;margin-bottom:8px;}
+.ex-title{font-family:var(--mono);font-size:13px;color:var(--white);margin-bottom:8px;}
+.ex-desc{font-size:12px;color:var(--text);line-height:1.7;margin-bottom:10px;}
+.ex-hint{font-family:var(--tag);font-size:9px;color:var(--muted);letter-spacing:1px;}
+.ex-hint::before{content:'💡 تلميح: ';}
+/* COMING SOON */
+.coming-soon{text-align:center;padding:80px 20px;color:var(--muted);}
+.coming-soon .big{font-family:var(--mono);font-size:48px;margin-bottom:16px;opacity:.3;}
+.coming-soon p{font-family:var(--tag);font-size:10px;letter-spacing:3px;}
 @media(max-width:600px){.grid-2{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -75,318 +91,439 @@ td.danger{color:var(--red);}
 
 <a href="courses.html" class="back-btn">◄ BACK TO COURSES</a>
 
-<div class="hdr">
-  <div class="hdr-tag">► CHALMERS · EDA482 · 7.5 HP · TENTAMEN AUGUSTI 2026</div>
-  <div class="hdr-name">MASKINORIENTERAD <span>PROGRAMMERING</span></div>
-  <div class="hdr-sub">ASSEMBLY x86 · C LANGUAGE · MEMORY · REGISTERS · STACK</div>
-  <div class="divider"></div>
+<div class="hdr-tag">► CHALMERS · EDA482 · 7.5 HP · RISC-V ASSEMBLY</div>
+<div class="hdr-name">MASKINORIENTERAD <span>PROGRAMMERING</span></div>
+<div class="hdr-sub">RISC-V · ASSEMBLY · C LANGUAGE · MEMORY · REGISTERS · STACK</div>
+<div class="divider"></div>
+
+<!-- LECTURE SELECTOR -->
+<div class="sec-label">► اختر المحاضرة</div>
+<div class="lec-grid">
+  <div class="lec-btn" onclick="showLec(1,this)">
+    <span class="lec-num">01</span>
+    <div class="lec-title">INTRO TO<br>RISC-V ISA</div>
+  </div>
+  <div class="lec-btn done" onclick="showLec(2,this)">
+    <span class="lec-num">02</span>
+    <div class="lec-title">RISC-V ISA<br>DEEP DIVE</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(3,this)">
+    <span class="lec-num">03</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(4,this)">
+    <span class="lec-num">04</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(5,this)">
+    <span class="lec-num">05</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(6,this)">
+    <span class="lec-num">06</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(7,this)">
+    <span class="lec-num">07</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(8,this)">
+    <span class="lec-num">08</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(9,this)">
+    <span class="lec-num">09</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(10,this)">
+    <span class="lec-num">10</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(11,this)">
+    <span class="lec-num">11</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
+  <div class="lec-btn" onclick="showLec(12,this)">
+    <span class="lec-num">12</span>
+    <div class="lec-title">COMING<br>SOON</div>
+  </div>
 </div>
 
-<div class="facts-bar">
-  <div class="fact"><div class="fact-val">x86</div><div class="fact-lbl">Architecture</div></div>
-  <div class="fact"><div class="fact-val">C + ASM</div><div class="fact-lbl">Languages</div></div>
-  <div class="fact"><div class="fact-val" style="color:var(--green)">Lab ✅</div><div class="fact-lbl">Status</div></div>
-  <div class="fact"><div class="fact-val" style="color:var(--yellow)">Aug 2026</div><div class="fact-lbl">Tentamen</div></div>
-  <div class="fact"><div class="fact-val">7.5 hp</div><div class="fact-lbl">Credits</div></div>
+<!-- ═══════════ LECTURE 1 ═══════════ -->
+<div id="lec-1" class="content-area">
+  <div class="coming-soon">
+    <div class="big">01</div>
+    <p>محاضرة 1 — قريباً</p>
+  </div>
 </div>
 
-<div class="nav">
-  <button class="nav-btn active" onclick="showPanel('registers',this)">Registers</button>
-  <button class="nav-btn" onclick="showPanel('memory',this)">Memory</button>
-  <button class="nav-btn" onclick="showPanel('assembly',this)">Assembly</button>
-  <button class="nav-btn" onclick="showPanel('c_lang',this)">C Language</button>
-  <button class="nav-btn" onclick="showPanel('stack',this)">Stack & Functions</button>
-  <button class="nav-btn" onclick="showPanel('tips',this)">Exam Tips</button>
-</div>
+<!-- ═══════════ LECTURE 2 ═══════════ -->
+<div id="lec-2" class="content-area">
 
-<!-- REGISTERS -->
-<div id="panel-registers" class="panel active">
+  <div class="sec-label">► المحاضرة 2 — RISC-V ISA Deep Dive</div>
 
+  <!-- PART 1: ما هو RISC-V -->
   <div class="card">
-    <div class="card-title">📦 x86 Registers</div>
+    <div class="card-title">🔷 ما هو RISC-V؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
+      أي processor يحتاج "لغة" يفهمها — هاي اللغة اسمها <strong style="color:var(--accent);">Instruction Set Architecture (ISA)</strong>.
+      تحدد الأوامر المتاحة، الـ Registers، وكيف يتعامل مع الذاكرة.
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">Intel/ARM (مغلق)</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          شركات خاصة<br>
+          لازم تدفع رسوم ترخيص<br>
+          ما تقدر تعدّل عليه
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">RISC-V (مفتوح) ✅</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          مجاني 100%<br>
+          أي شركة تقدر تبني عليه<br>
+          قابل للتعديل والتوسيع
+        </div>
+      </div>
+    </div>
+    <div class="alert info">💡 مثال: CH32V307 (الـ lab kit) + Raspberry Pi Pico 2 = كلاهم RISC-V → نفس الكود يشتغل على الاثنين!</div>
+  </div>
+
+  <!-- PART 2: Variants -->
+  <div class="card">
+    <div class="card-title">🔧 Variants والـ Extensions</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      RISC-V = <strong style="color:var(--accent);">Base (47 أمر فقط)</strong> + Extensions اختيارية حسب الحاجة.
+    </p>
     <table>
-      <tr><th>Register</th><th>الاسم</th><th>الوظيفة</th><th>الحجم</th></tr>
-      <tr><td class="mono">EAX</td><td>Accumulator</td><td>العمليات الحسابية ونتائج الدوال</td><td class="mono">32-bit</td></tr>
-      <tr><td class="mono">EBX</td><td>Base</td><td>عنوان base للبيانات</td><td class="mono">32-bit</td></tr>
-      <tr><td class="mono">ECX</td><td>Counter</td><td>عداد الـ loops</td><td class="mono">32-bit</td></tr>
-      <tr><td class="mono">EDX</td><td>Data</td><td>البيانات وعمليات الضرب/القسمة</td><td class="mono">32-bit</td></tr>
-      <tr><td class="mono warn">ESP</td><td>Stack Pointer</td><td>يشير لرأس الـ stack دايماً</td><td class="mono">32-bit</td></tr>
-      <tr><td class="mono warn">EBP</td><td>Base Pointer</td><td>base الـ stack frame للدالة الحالية</td><td class="mono">32-bit</td></tr>
-      <tr><td class="mono safe">ESI</td><td>Source Index</td><td>عنوان المصدر في عمليات النسخ</td><td class="mono">32-bit</td></tr>
-      <tr><td class="mono safe">EDI</td><td>Destination Index</td><td>عنوان الوجهة في عمليات النسخ</td><td class="mono">32-bit</td></tr>
-      <tr><td class="mono" style="color:var(--red)">EIP</td><td>Instruction Pointer</td><td>عنوان الأمر التالي للتنفيذ</td><td class="mono">32-bit</td></tr>
-      <tr><td class="mono">EFLAGS</td><td>Flags Register</td><td>نتائج المقارنات (ZF, SF, CF, OF)</td><td class="mono">32-bit</td></tr>
-    </table>
-    <div class="alert info">💡 Sub-registers: EAX (32) → AX (16) → AH/AL (8-bit high/low)</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">🚩 EFLAGS — Flags المهمة</div>
-    <table>
-      <tr><th>Flag</th><th>الاسم</th><th>متى يصير 1؟</th></tr>
-      <tr><td class="mono safe">ZF</td><td>Zero Flag</td><td>النتيجة = صفر (مفيدة لـ comparisons)</td></tr>
-      <tr><td class="mono warn">SF</td><td>Sign Flag</td><td>النتيجة سالبة (أول bit = 1)</td></tr>
-      <tr><td class="mono" style="color:var(--red)">CF</td><td>Carry Flag</td><td>overflow في unsigned</td></tr>
-      <tr><td class="mono purple">OF</td><td>Overflow Flag</td><td>overflow في signed</td></tr>
-    </table>
-  </div>
-
-</div>
-
-<!-- MEMORY -->
-<div id="panel-memory" class="panel">
-
-  <div class="card">
-    <div class="card-title">🗺️ Memory Layout</div>
-    <div class="code"><span class="cmt">High addresses (0xFFFFFFFF)</span>
-┌─────────────────┐
-│   <span class="err">Stack</span>          │ ← ينمو للأسفل (ESP يقل)
-│   ↓             │
-├─────────────────┤
-│   (free space)  │
-├─────────────────┤
-│   ↑             │
-│   <span class="ok">Heap</span>           │ ← ينمو للأعلى (malloc)
-├─────────────────┤
-│   <span class="val">BSS</span>            │ ← global vars غير مهيأة
-├─────────────────┤
-│   <span class="val">Data</span>           │ ← global vars مهيأة
-├─────────────────┤
-│   <span class="cmd">Text/Code</span>      │ ← الكود التنفيذي (read-only)
-└─────────────────┘
-<span class="cmt">Low addresses (0x00000000)</span></div>
-    <div class="alert warning">⚠️ Stack ينمو للأسفل! PUSH يقلل ESP، POP يزيد ESP</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">💾 Data Types في الذاكرة</div>
-    <table>
-      <tr><th>النوع</th><th>الحجم</th><th>ASM</th><th>C</th></tr>
-      <tr><td class="mono">Byte</td><td>1 byte = 8 bits</td><td class="mono">BYTE PTR / db</td><td class="mono">char</td></tr>
-      <tr><td class="mono">Word</td><td>2 bytes = 16 bits</td><td class="mono">WORD PTR / dw</td><td class="mono">short</td></tr>
-      <tr><td class="mono warn">Double Word</td><td>4 bytes = 32 bits</td><td class="mono">DWORD PTR / dd</td><td class="mono">int / long</td></tr>
-      <tr><td class="mono">Quad Word</td><td>8 bytes = 64 bits</td><td class="mono">QWORD PTR / dq</td><td class="mono">long long</td></tr>
-    </table>
-    <div class="alert info">💡 x86 = Little Endian: الـ byte الأصغر يُخزّن أولاً في العنوان الأصغر</div>
-  </div>
-
-</div>
-
-<!-- ASSEMBLY -->
-<div id="panel-assembly" class="panel">
-
-  <div class="card">
-    <div class="card-title">⚙️ أوامر Assembly الأساسية</div>
-
-    <div class="lbl">Data Movement:</div>
-    <div class="code"><span class="cmd">MOV</span> eax, 5          <span class="cmt">; eax = 5</span>
-<span class="cmd">MOV</span> eax, [ebx]      <span class="cmt">; eax = قيمة في العنوان ebx</span>
-<span class="cmd">MOV</span> [ebx], eax      <span class="cmt">; احفظ eax في عنوان ebx</span>
-<span class="cmd">LEA</span> eax, [ebx+4]   <span class="cmt">; eax = العنوان نفسه (مش القيمة!)</span>
-<span class="cmd">XCHG</span> eax, ebx      <span class="cmt">; تبديل قيم الـ registers</span></div>
-
-    <div class="lbl">Arithmetic:</div>
-    <div class="code"><span class="cmd">ADD</span> eax, ebx        <span class="cmt">; eax = eax + ebx</span>
-<span class="cmd">SUB</span> eax, ebx        <span class="cmt">; eax = eax - ebx</span>
-<span class="cmd">MUL</span> ebx             <span class="cmt">; EDX:EAX = EAX * ebx (unsigned)</span>
-<span class="cmd">IMUL</span> ebx            <span class="cmt">; EDX:EAX = EAX * ebx (signed)</span>
-<span class="cmd">DIV</span> ebx             <span class="cmt">; EAX = EDX:EAX / ebx, EDX = remainder</span>
-<span class="cmd">INC</span> eax             <span class="cmt">; eax++</span>
-<span class="cmd">DEC</span> eax             <span class="cmt">; eax--</span>
-<span class="cmd">NEG</span> eax             <span class="cmt">; eax = -eax</span></div>
-
-    <div class="lbl">Logical:</div>
-    <div class="code"><span class="cmd">AND</span> eax, ebx        <span class="cmt">; bitwise AND</span>
-<span class="cmd">OR</span>  eax, ebx        <span class="cmt">; bitwise OR</span>
-<span class="cmd">XOR</span> eax, eax        <span class="cmt">; eax = 0 (أسرع طريقة لـ zero)</span>
-<span class="cmd">NOT</span> eax             <span class="cmt">; bitwise NOT</span>
-<span class="cmd">SHL</span> eax, 2          <span class="cmt">; shift left 2 = × 4</span>
-<span class="cmd">SHR</span> eax, 2          <span class="cmt">; shift right 2 = ÷ 4</span></div>
-
-    <div class="lbl">Control Flow:</div>
-    <div class="code"><span class="cmd">CMP</span> eax, ebx        <span class="cmt">; مقارنة (تعدّل الـ Flags)</span>
-<span class="cmd">JMP</span> label           <span class="cmt">; jump دايماً</span>
-<span class="cmd">JE</span>  label           <span class="cmt">; jump if equal (ZF=1)</span>
-<span class="cmd">JNE</span> label           <span class="cmt">; jump if not equal (ZF=0)</span>
-<span class="cmd">JL</span>  label           <span class="cmt">; jump if less (signed)</span>
-<span class="cmd">JG</span>  label           <span class="cmt">; jump if greater (signed)</span>
-<span class="cmd">JB</span>  label           <span class="cmt">; jump if below (unsigned)</span>
-<span class="cmd">JA</span>  label           <span class="cmt">; jump if above (unsigned)</span></div>
-
-    <div class="lbl">Stack:</div>
-    <div class="code"><span class="cmd">PUSH</span> eax            <span class="cmt">; ESP -= 4, [ESP] = eax</span>
-<span class="cmd">POP</span>  eax            <span class="cmt">; eax = [ESP], ESP += 4</span>
-<span class="cmd">CALL</span> func           <span class="cmt">; PUSH EIP ثم JMP func</span>
-<span class="cmd">RET</span>                 <span class="cmt">; POP EIP (ارجع للمستدعي)</span></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">🔄 مثال — Loop في Assembly</div>
-    <div class="code"><span class="cmt">; for (int i = 0; i < 10; i++) sum += i;</span>
-
-    <span class="cmd">MOV</span> ecx, <span class="val">0</span>         <span class="cmt">; i = 0</span>
-    <span class="cmd">MOV</span> eax, <span class="val">0</span>         <span class="cmt">; sum = 0</span>
-
-<span class="ok">loop_start:</span>
-    <span class="cmd">CMP</span> ecx, <span class="val">10</span>        <span class="cmt">; i < 10?</span>
-    <span class="cmd">JGE</span> loop_end       <span class="cmt">; لو i >= 10 اخرج</span>
-    <span class="cmd">ADD</span> eax, ecx       <span class="cmt">; sum += i</span>
-    <span class="cmd">INC</span> ecx            <span class="cmt">; i++</span>
-    <span class="cmd">JMP</span> loop_start     <span class="cmt">; كرر</span>
-<span class="ok">loop_end:</span>
-    <span class="cmt">; eax = 45 (مجموع 0..9)</span></div>
-  </div>
-
-</div>
-
-<!-- C LANGUAGE -->
-<div id="panel-c_lang" class="panel">
-
-  <div class="card">
-    <div class="card-title">🔷 C — أساسيات</div>
-    <div class="code"><span class="cmt">// Pointers</span>
-<span class="cmd">int</span> x = <span class="val">42</span>;
-<span class="cmd">int</span> *p = &x;       <span class="cmt">// p يحمل عنوان x</span>
-*p = <span class="val">100</span>;           <span class="cmt">// تغيير قيمة x عبر الـ pointer</span>
-
-<span class="cmt">// Arrays</span>
-<span class="cmd">int</span> arr[<span class="val">5</span>] = {<span class="val">1,2,3,4,5</span>};
-<span class="cmt">// arr = عنوان أول عنصر (arr == &arr[0])</span>
-
-<span class="cmt">// Pointer Arithmetic</span>
-<span class="cmd">int</span> *ptr = arr;
-ptr++;              <span class="cmt">// ينتقل 4 bytes (حجم int)</span>
-*(ptr + <span class="val">2</span>)         <span class="cmt">// نفس arr[2]</span>
-
-<span class="cmt">// Strings</span>
-<span class="cmd">char</span> str[] = <span class="val">"Hello"</span>;  <span class="cmt">// [H,e,l,l,o,\0]</span>
-<span class="cmd">char</span> *s = str;</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">💾 Dynamic Memory</div>
-    <div class="code"><span class="cmt">// Heap allocation:</span>
-<span class="cmd">int</span> *arr = (<span class="cmd">int</span>*) <span class="ok">malloc</span>(<span class="val">5</span> * <span class="cmd">sizeof</span>(<span class="cmd">int</span>));
-<span class="cmt">// احكي دايماً على NULL check!</span>
-<span class="cmd">if</span> (arr == <span class="val">NULL</span>) { <span class="err">/* handle error */</span> }
-
-arr[<span class="val">0</span>] = <span class="val">10</span>;
-arr[<span class="val">1</span>] = <span class="val">20</span>;
-
-<span class="cmt">// Resize:</span>
-arr = (<span class="cmd">int</span>*) <span class="ok">realloc</span>(arr, <span class="val">10</span> * <span class="cmd">sizeof</span>(<span class="cmd">int</span>));
-
-<span class="cmt">// Free — لازم دايماً!</span>
-<span class="ok">free</span>(arr);
-arr = <span class="val">NULL</span>;  <span class="cmt">// تجنب dangling pointer</span></div>
-    <div class="alert warning">⚠️ Memory Leaks: كل malloc يحتاج free. Dangling Pointer: استخدام pointer بعد free!</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">🔗 Structs</div>
-    <div class="code"><span class="cmd">typedef struct</span> {
-    <span class="cmd">int</span>   id;
-    <span class="cmd">char</span>  name[<span class="val">50</span>];
-    <span class="cmd">float</span> grade;
-} Student;
-
-Student s1 = {<span class="val">1</span>, <span class="val">"Husein"</span>, <span class="val">4.5</span>};
-Student *p = &s1;
-
-<span class="cmt">// Access:</span>
-s1.id           <span class="cmt">// بالنقطة</span>
-p->id           <span class="cmt">// بالـ arrow (عبر pointer)</span>
-(*p).id         <span class="cmt">// نفس الشيء</span></div>
-  </div>
-
-</div>
-
-<!-- STACK & FUNCTIONS -->
-<div id="panel-stack" class="panel">
-
-  <div class="card">
-    <div class="card-title">📚 Stack Frame — كيف تشتغل الدوال</div>
-    <div class="code"><span class="cmt">; استدعاء دالة: int add(int a, int b)</span>
-
-<span class="cmt">; 1. المستدعي يدفع الـ arguments (من اليمين للشمال):</span>
-<span class="cmd">PUSH</span> b              <span class="cmt">; argument 2</span>
-<span class="cmd">PUSH</span> a              <span class="cmt">; argument 1</span>
-<span class="cmd">CALL</span> add            <span class="cmt">; PUSH EIP + JMP add</span>
-
-<span class="cmt">; 2. داخل الدالة:</span>
-<span class="cmd">PUSH</span> EBP            <span class="cmt">; احفظ EBP القديم</span>
-<span class="cmd">MOV</span>  EBP, ESP       <span class="cmt">; ابني الـ stack frame</span>
-<span class="cmd">SUB</span>  ESP, 8         <span class="cmt">; مساحة للـ local variables</span>
-
-<span class="cmt">; الوصول للـ arguments:</span>
-<span class="cmd">MOV</span> eax, [EBP+8]   <span class="cmt">; a</span>
-<span class="cmd">MOV</span> ebx, [EBP+12]  <span class="cmt">; b</span>
-
-<span class="cmt">; 3. العودة:</span>
-<span class="cmd">MOV</span> eax, result    <span class="cmt">; النتيجة في EAX</span>
-<span class="cmd">MOV</span> ESP, EBP       <span class="cmt">; أزل الـ locals</span>
-<span class="cmd">POP</span> EBP            <span class="cmt">; استرجع EBP</span>
-<span class="cmd">RET</span>                <span class="cmt">; POP EIP + ارجع</span></div>
-
-    <div class="card-title" style="margin-top:14px;">📊 Stack Frame Layout</div>
-    <div class="code" style="direction:ltr;text-align:left;">
-High addresses
-┌─────────────────┐
-│      arg b      │ EBP+12
-│      arg a      │ EBP+8
-│   return addr   │ EBP+4  ← CALL حفظه
-│   old EBP       │ EBP    ← PUSH EBP حفظه
-│   local var 1   │ EBP-4
-│   local var 2   │ EBP-8  ← ESP
-└─────────────────┘
-Low addresses</div>
-    <div class="alert info">💡 Calling Convention (cdecl): Arguments من اليمين للشمال، المستدعي ينظف الـ Stack، النتيجة في EAX</div>
-  </div>
-
-</div>
-
-<!-- EXAM TIPS -->
-<div id="panel-tips" class="panel">
-
-  <div class="card warn">
-    <div class="card-title">⚠️ نقاط مهمة للامتحان</div>
-    <table>
-      <tr><th>الموضوع</th><th>النقطة المهمة</th></tr>
-      <tr><td class="mono warn">Stack Direction</td><td>ينمو للأسفل — PUSH يقلل ESP، POP يزيد ESP</td></tr>
-      <tr><td class="mono warn">Little Endian</td><td>Byte الأصغر في العنوان الأصغر</td></tr>
-      <tr><td class="mono warn">EBP+8</td><td>أول argument للدالة (بعد return addr وold EBP)</td></tr>
-      <tr><td class="mono warn">EAX</td><td>يحمل دايماً return value الدالة</td></tr>
-      <tr><td class="mono warn">XOR eax,eax</td><td>أسرع طريقة لتصفير register</td></tr>
-      <tr><td class="mono warn">LEA vs MOV</td><td>LEA يجيب العنوان، MOV يجيب القيمة</td></tr>
-      <tr><td class="mono warn">PTR Size</td><td>كل pointer = 4 bytes في x86 (بغض النظر عن النوع)</td></tr>
-      <tr><td class="mono warn">malloc/free</td><td>كل malloc يحتاج free — تجنب memory leaks!</td></tr>
-      <tr><td class="mono warn">NULL check</td><td>دايماً تحقق من malloc قبل الاستخدام</td></tr>
-      <tr><td class="mono warn">Array</td><td>arr[i] == *(arr + i) في C</td></tr>
+      <tr><th>الجهاز</th><th>Extensions المطلوبة</th><th>السبب</th></tr>
+      <tr><td>ريموت تلفزيون</td><td class="mono">RV32I</td><td>بسيط، ما يحتاج أكثر</td></tr>
+      <tr><td>آلة حاسبة</td><td class="mono">RV64I + F + D</td><td>64-bit + floating point</td></tr>
+      <tr><td>ساعة ذكية</td><td class="mono">+ C (Compressed)</td><td>توفير battery</td></tr>
+      <tr><td class="warn">الـ Lab (CH32V307)</td><td class="mono warn">RV32I + M + A + F + C + Zicsr</td><td>نركز على RV32I + M + Zicsr فقط</td></tr>
     </table>
   </div>
 
-  <div class="card success">
-    <div class="card-title">✅ Checklist قبل الامتحان</div>
-    <div style="font-size:12px;color:var(--text);line-height:2;">
-      ☐ تعرف كل الـ registers ووظيفتها<br>
-      ☐ تفهم الـ stack frame بالتفصيل<br>
-      ☐ تعرف تقرأ وتكتب Assembly loops<br>
-      ☐ تفهم الـ calling convention (cdecl)<br>
-      ☐ تعرف الفرق بين MOV وLEA<br>
-      ☐ تفهم Pointer Arithmetic في C<br>
-      ☐ تعرف متى تستخدم malloc/realloc/free<br>
-      ☐ تفهم Structs والـ arrow operator<br>
-      ☐ تعرف Little Endian<br>
-      ☐ تعرف EFLAGS وEFLAGS conditions<br>
+  <!-- PART 3: ISA vs ABI -->
+  <div class="card">
+    <div class="card-title">⚖️ ISA vs ABI — الفرق المهم</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">ISA = قواعد الـ Hardware</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          "المعالج لازم يدعم 32 register"<br>
+          يحدد ما يقدر الـ processor يفعله<br>
+          <span style="color:var(--accent);">= قانون البناء</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">ABI = قواعد الـ Software</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          "النتيجة دايماً ترجع في x10 (a0)"<br>
+          يحدد كيف يتواصل الكود مع بعضه<br>
+          <span style="color:var(--yellow);">= قانون السير الداخلي</span>
+        </div>
+      </div>
     </div>
   </div>
 
-</div>
+  <!-- PART 4: Registers -->
+  <div class="card">
+    <div class="card-title">📦 الـ 33 Registers في RV32I</div>
+    <table>
+      <tr><th>Register</th><th>ABI Name</th><th>الاستخدام</th><th>ملاحظة</th></tr>
+      <tr><td class="mono">x0</td><td class="mono safe">zero</td><td>دايماً = 0</td><td class="safe">hardwired! لا يتغير أبداً</td></tr>
+      <tr><td class="mono">x1</td><td class="mono">ra</td><td>Return Address</td><td>عنوان العودة من الدالة</td></tr>
+      <tr><td class="mono">x2</td><td class="mono">sp</td><td>Stack Pointer</td><td>رأس الـ Stack</td></tr>
+      <tr><td class="mono">x3</td><td class="mono">gp</td><td>Global Pointer</td><td></td></tr>
+      <tr><td class="mono">x4</td><td class="mono">tp</td><td>Thread Pointer</td><td></td></tr>
+      <tr><td class="mono">x5-x7</td><td class="mono warn">t0-t2</td><td>Temporary</td><td class="warn">مؤقت — مش محفوظ بعد الدالة</td></tr>
+      <tr><td class="mono">x8</td><td class="mono">s0/fp</td><td>Frame Pointer</td><td>محفوظ</td></tr>
+      <tr><td class="mono">x9</td><td class="mono">s1</td><td>Saved Register</td><td>محفوظ</td></tr>
+      <tr><td class="mono">x10-x17</td><td class="mono" style="color:var(--purple);">a0-a7</td><td>Arguments / Return Value</td><td class="purple">⭐ الأهم للدوال!</td></tr>
+      <tr><td class="mono">x18-x27</td><td class="mono">s2-s11</td><td>Saved Registers</td><td>محفوظة بعد الدالة</td></tr>
+      <tr><td class="mono">x28-x31</td><td class="mono warn">t3-t6</td><td>Temporary</td><td class="warn">مؤقت</td></tr>
+      <tr><td class="mono" style="color:var(--red);">pc</td><td class="mono" style="color:var(--red);">pc</td><td>Program Counter</td><td class="danger">عنوان الأمر الجاي دايماً</td></tr>
+    </table>
+    <div class="alert info">💡 x0 (zero) دايماً = 0 حتى لو حاولت تكتب فيه — هاد يبسّط الـ Hardware كثيراً!</div>
+  </div>
+
+  <!-- PART 5: RISC Philosophy -->
+  <div class="card">
+    <div class="card-title">⚡ فلسفة RISC — ليش 47 أمر فقط؟</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">RISC (RISC-V, ARM)</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          أوامر بسيطة وقليلة<br>
+          كل أمر = cycle وحد<br>
+          Hardware بسيط = أسرع وأرخص<br>
+          Pipeline أسهل
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">CISC (Intel x86)</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          أوامر معقدة وكثيرة<br>
+          أمر وحد ممكن يأخذ cycles<br>
+          Hardware معقد<br>
+          صعب على الـ Pipeline
+        </div>
+      </div>
+    </div>
+    <div class="alert warning">⚠️ RISC-V ما عنده أمر mv حقيقي! المترجم يحوّله: mv x1, x2 → add x1, x2, x0</div>
+  </div>
+
+  <!-- PART 6: Pseudo Instructions -->
+  <div class="card">
+    <div class="card-title">🔄 Pseudo Instructions — اختصارات المبرمج</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      Pseudo Instructions = اختصارات تكتبها أنت، الـ Assembler يترجمها تلقائياً لأوامر حقيقية.
+      <strong style="color:var(--green);">ما تحتاج تحفظ كيف تتترجم</strong> — فقط تعرف كيف تستخدمها!
+    </p>
+    <table>
+      <tr><th>Pseudo Instruction</th><th>تتحول لـ</th><th>الوظيفة</th></tr>
+      <tr><td class="mono">mv rd, rs</td><td class="mono">add rd, rs, x0</td><td>نسخ قيمة register</td></tr>
+      <tr><td class="mono">li rd, imm</td><td class="mono">addi rd, x0, imm (أو lui+addi)</td><td>تحميل رقم ثابت</td></tr>
+      <tr><td class="mono">neg rd, rs</td><td class="mono">sub rd, x0, rs</td><td>عكس الإشارة</td></tr>
+      <tr><td class="mono">nop</td><td class="mono">addi x0, x0, 0</td><td>لا عملية</td></tr>
+      <tr><td class="mono">bgtz rs, label</td><td class="mono">blt x0, rs, label</td><td>Jump if > 0</td></tr>
+      <tr><td class="mono">beqz rs, label</td><td class="mono">beq rs, x0, label</td><td>Jump if = 0</td></tr>
+      <tr><td class="mono">la rd, symbol</td><td class="mono">lui + addi</td><td>تحميل عنوان متغير</td></tr>
+    </table>
+  </div>
+
+  <!-- PART 7: Load/Store -->
+  <div class="card">
+    <div class="card-title">💾 Load/Store Architecture</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      المبدأ الأساسي: <strong style="color:var(--red);">الأوامر الحسابية تشتغل على Registers فقط!</strong>
+      الذاكرة = فقط عبر Load/Store.
+    </p>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">x86 (Intel) — معقد</div>
+        <div class="code" style="margin-top:8px;">add r0, M(r1)
+<span class="cmt"># جمع مع الذاكرة مباشرة!</span></div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">RISC-V — بسيط ✅</div>
+        <div class="code" style="margin-top:8px;"><span class="cmd">lw</span>  x3, 0(x2)  <span class="cmt"># جيب من الذاكرة</span>
+<span class="cmd">add</span> x1, x1, x3 <span class="cmt"># احسب</span></div>
+      </div>
+    </div>
+
+    <div class="sec-label" style="margin-top:16px;">► أوامر Load</div>
+    <table>
+      <tr><th>الأمر</th><th>الحجم</th><th>النوع</th><th>النتيجة</th></tr>
+      <tr><td class="mono">lb rd, offset(rs1)</td><td>8-bit</td><td class="danger">signed</td><td>sign extend → 32-bit</td></tr>
+      <tr><td class="mono">lh rd, offset(rs1)</td><td>16-bit</td><td class="danger">signed</td><td>sign extend → 32-bit</td></tr>
+      <tr><td class="mono">lw rd, offset(rs1)</td><td>32-bit</td><td>—</td><td>كامل</td></tr>
+      <tr><td class="mono">lbu rd, offset(rs1)</td><td>8-bit</td><td class="safe">unsigned</td><td>zero extend → 32-bit</td></tr>
+      <tr><td class="mono">lhu rd, offset(rs1)</td><td>16-bit</td><td class="safe">unsigned</td><td>zero extend → 32-bit</td></tr>
+    </table>
+
+    <div class="sec-label">► أوامر Store</div>
+    <table>
+      <tr><th>الأمر</th><th>الحجم</th><th>ملاحظة</th></tr>
+      <tr><td class="mono">sb rs2, offset(rs1)</td><td>8-bit</td><td>يكتب أدنى byte فقط</td></tr>
+      <tr><td class="mono">sh rs2, offset(rs1)</td><td>16-bit</td><td>يكتب أدنى halfword</td></tr>
+      <tr><td class="mono">sw rs2, offset(rs1)</td><td>32-bit</td><td>يكتب الكلمة كاملة</td></tr>
+    </table>
+    <div class="alert warning">⚠️ Store: الـ operand الأول هو المصدر (rs2) مش الوجهة! عكس بقية الأوامر.</div>
+  </div>
+
+  <!-- PART 8: Sign Extension -->
+  <div class="card">
+    <div class="card-title">📐 Sign Extension — ليش مهم؟</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      في الذاكرة: <code style="color:var(--accent);">unsigned char a = 251</code> و <code style="color:var(--accent);">signed char b = -5</code> — كلاهم يُخزَّن كـ <code style="color:var(--yellow);">0xFB</code>!
+      لما تحمّل للـ register (32-bit) لازم تحدد النوع:
+    </p>
+    <div class="code"><span class="cmt"># -5 بالـ 8-bit = 1111 1011 = 0xFB</span>
+<span class="cmt"># MSB = 1 → سالب (Two's Complement)</span>
+
+<span class="cmd">lbu</span> t0, 0(t0)  <span class="cmt"># zero extend → t0 = 0x000000FB = 251 ❌ خطأ للسالب!</span>
+<span class="cmd">lb</span>  t1, 0(t1)  <span class="cmt"># sign extend → t1 = 0xFFFFFFFB = -5  ✅ صح!</span></div>
+    <div class="alert info">💡 القاعدة: MSB=1 → سالب → sign extend يحشي بـ 1. MSB=0 → موجب → يحشي بـ 0.</div>
+    <div class="alert success">✅ Sign Extension = محافظة على المعنى عند التكبير من 8-bit أو 16-bit لـ 32-bit.</div>
+  </div>
+
+  <!-- PART 9: Instruction Cycle -->
+  <div class="card">
+    <div class="card-title">⛓️ Instruction Cycle — كيف ينفذ المعالج الكود</div>
+    <div class="code"><span class="cmt"># كل cycle يمر بـ 4 مراحل:</span>
+
+<span class="ok">1. FETCH</span>    ← جيب الأمر من عنوان PC
+        ↓ PC += 4 (كل أمر = 4 bytes)
+<span class="ok">2. DECODE</span>   ← فهّم الأمر (add؟ load؟ branch؟)
+        ↓
+<span class="ok">3. EXECUTE</span>  ← نفّذ العملية (ALU يحسب)
+        ↓
+<span class="ok">4. WRITEBACK</span>← احفظ النتيجة في register أو ذاكرة</div>
+    <div class="alert info">💡 بالنظرية = 4 cycles/أمر. بالواقع = ~1 cycle/أمر بسبب Pipelining (خارج نطاق الكورس).</div>
+  </div>
+
+  <!-- PART 10: Large Constants -->
+  <div class="card">
+    <div class="card-title">🔢 تحميل أرقام كبيرة — LUI + ADDI</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      <code style="color:var(--accent);">addi</code> عندها 12-bit فقط للـ immediate → أكبر قيمة = 2047.
+      لو الرقم أكبر، الـ assembler يقسمه لأمرين:
+    </p>
+    <div class="code"><span class="cmt"># li t0, 10 → يكفي 12-bit:</span>
+<span class="cmd">addi</span> t0, zero, 10
+
+<span class="cmt"># li t0, 1000000 → ما يكفي! يتحول لـ:</span>
+<span class="cmd">lui</span>  t0, 0xf4       <span class="cmt"># حط 0xf4 في الـ 20 bits العليا → t0 = 0x000F4000</span>
+<span class="cmd">addi</span> t0, t0, 0x240  <span class="cmt"># أضف الـ 12 bits السفلى → t0 = 0x000F4240 = 1,000,000</span></div>
+  </div>
+
+  <!-- PART 11: Variables -->
+  <div class="card">
+    <div class="card-title">📝 Variables في Assembly</div>
+    <div class="code"><span class="cmt"># بدل العناوين المطلقة، استخدم labels:</span>
+   <span class="cmd">la</span> x1, var_a      <span class="cmt"># x1 = عنوان var_a</span>
+   <span class="cmd">lb</span> x2, 0(x1)      <span class="cmt"># x2 = قيمة var_a = 10</span>
+   <span class="cmd">la</span> x1, var_b
+   <span class="cmd">lb</span> x3, 0(x1)      <span class="cmt"># x3 = قيمة var_b = 20</span>
+   <span class="cmd">add</span> x1, x2, x3    <span class="cmt"># x1 = 30</span>
+
+<span class="ok">var_a:</span> <span class="val">.byte 10</span>
+<span class="ok">var_b:</span> <span class="val">.byte 20</span></div>
+  </div>
+
+  <!-- PART 12: Memory Alignment -->
+  <div class="card danger">
+    <div class="card-title">⚠️ Memory Alignment — القاعدة الذهبية</div>
+    <table>
+      <tr><th>الأمر</th><th>الحجم</th><th>شرط العنوان</th><th>مثال صح</th><th>مثال خطأ</th></tr>
+      <tr><td class="mono">lw / sw</td><td>4 bytes</td><td class="danger">يقسم على 4</td><td class="mono safe">0x100</td><td class="mono danger">0x102 ❌ كراش!</td></tr>
+      <tr><td class="mono">lh / sh</td><td>2 bytes</td><td class="warn">يقسم على 2</td><td class="mono safe">0x102</td><td class="mono danger">0x101 ❌ كراش!</td></tr>
+      <tr><td class="mono">lb / sb</td><td>1 byte</td><td class="safe">أي عنوان</td><td class="mono safe">0x101</td><td class="mono safe">0x103 ✅</td></tr>
+    </table>
+    <div class="code"><span class="cmt"># مشكلة شائعة:</span>
+<span class="ok">var_a:</span> <span class="val">.byte 10</span>   <span class="cmt"># عنوانه 0x100 ✅</span>
+<span class="ok">var_b:</span> <span class="val">.word 20</span>   <span class="cmt"># عنوانه 0x101 ❌ كراش! (word لازم يقسم على 4)</span>
+
+<span class="cmt"># الحل:</span>
+<span class="ok">var_a:</span> <span class="val">.byte 10</span>
+       <span class="val">.align 2</span>   <span class="cmt"># العنوان الجاي يقسم على 2^2=4</span>
+<span class="ok">var_b:</span> <span class="val">.word 20</span>   <span class="cmt"># هلأ عنوانه 0x104 ✅</span></div>
+    <div class="alert danger">💥 تكسر قاعدة الـ Alignment = البرنامج يكرش (Exception)!</div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="sec-label">► تمارين المحاضرة 2 (10 تمارين)</div>
+  <div class="alert info">🌐 استخدم المحاكي: <a href="https://venus.kvakil.me" target="_blank" style="color:var(--accent);">venus.kvakil.me</a></div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 01 — سهل</div>
+    <div class="ex-title">مجموع من 1 إلى 5</div>
+    <div class="ex-desc">اكتب برنامج يحسب 1+2+3+4+5 ويخزن النتيجة في t0. النتيجة المتوقعة = 15.</div>
+    <div class="ex-hint">استخدم: li, add, addi, blt, label</div>
+  </div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 02 — سهل</div>
+    <div class="ex-title">الضرب بدون mul</div>
+    <div class="ex-desc">احسب 7 × 3 = 21 بدون استخدام أمر mul. استخدم loop + add فقط.<br>تلميح: 7×3 = 7+7+7</div>
+    <div class="ex-hint">counter يبدأ من 0، result يبدأ من 0، كرر إضافة var_a لـ var_b مرات</div>
+  </div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 03 — سهل</div>
+    <div class="ex-title">Variables في الذاكرة</div>
+    <div class="ex-desc">عرّف متغيرين var_a=15 و var_b=8 في الـ .data section. احملهم واحسب الفرق (var_a - var_b) واخزن النتيجة في s0.</div>
+    <div class="ex-hint">استخدم: .data, .word, la, lw, sub</div>
+  </div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 04 — متوسط</div>
+    <div class="ex-title">Sign Extension</div>
+    <div class="ex-desc">عرّف byte يساوي 0xFF في الذاكرة. احمله مرتين: مرة بـ lb ومرة بـ lbu. قارن النتيجتين في الـ registers. ما الفرق؟</div>
+    <div class="ex-hint">0xFF = 255 unsigned = -1 signed. lb → 0xFFFFFFFF, lbu → 0x000000FF</div>
+  </div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 05 — متوسط</div>
+    <div class="ex-title">Array في الذاكرة</div>
+    <div class="ex-desc">احفظ الأرقام 10, 20, 30, 40, 50 في الذاكرة باستخدام .word. ثم اقرأهم كلهم باستخدام loop وoffset متزايد، وأضفهم. النتيجة = 150.</div>
+    <div class="ex-hint">استخدم base address + offset (0, 4, 8, 12, 16) لأن كل word = 4 bytes</div>
+  </div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 06 — متوسط</div>
+    <div class="ex-title">Memory Alignment</div>
+    <div class="ex-desc">اكتب هاد الكود وشوف إذا يشتغل:<br>
+    <code style="color:var(--yellow);font-family:var(--mono);">var_a: .byte 5 | var_b: .word 10</code><br>
+    بعدين صلح المشكلة باستخدام .align 2 وأثبت إنه شغّال.</div>
+    <div class="ex-hint">.align 2 يعني العنوان الجاي يقسم على 2^2 = 4</div>
+  </div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 07 — متوسط</div>
+    <div class="ex-title">العد التنازلي</div>
+    <div class="ex-desc">اكتب loop يبدأ من 10 وينقص 1 كل مرة حتى يصل للصفر. في كل iteration خزّن القيمة الحالية في الذاكرة (array من 10 عناصر). النتيجة: array تحتوي [10,9,8,...,1].</div>
+    <div class="ex-hint">احتاج base address + counter يزيد بـ 4 كل iteration</div>
+  </div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 08 — صعب</div>
+    <div class="ex-title">إيجاد الـ Maximum</div>
+    <div class="ex-desc">عندك array من 5 أرقام: [3, 7, 2, 9, 1]. اكتب loop يجد أكبر رقم ويخزنه في s0. النتيجة = 9.</div>
+    <div class="ex-hint">استخدم blt للمقارنة — لو العنصر الحالي > الـ max الحالي، حدّث الـ max</div>
+  </div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 09 — صعب</div>
+    <div class="ex-title">Byte vs Halfword vs Word</div>
+    <div class="ex-desc">احفظ القيمة 0x12345678 كـ word في الذاكرة. ثم اقرأ:<br>
+    1. البايت الأول (lb)<br>
+    2. الـ halfword الأول (lh)<br>
+    3. الـ word كاملة (lw)<br>
+    ما هي النتائج؟ ليش؟ (تذكر Little Endian!)</div>
+    <div class="ex-hint">Little Endian: البايت الأصغر في العنوان الأصغر. lb → 0x78, lh → 0x5678, lw → 0x12345678</div>
+  </div>
+
+  <div class="ex-box">
+    <div class="ex-num">تمرين 10 — تحدي</div>
+    <div class="ex-title">Bubble Sort</div>
+    <div class="ex-desc">اكتب Bubble Sort يرتب array من 5 أرقام تصاعدياً: [5, 3, 8, 1, 4] → [1, 3, 4, 5, 8].<br>تحتاج nested loops: outer loop + inner loop + swap.</div>
+    <div class="ex-hint">للـ swap: استخدم register مؤقت. للـ swap في الذاكرة: lw, sw للعنصرين ثم اكتبهم معكوسين.</div>
+  </div>
 
 </div>
-<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
+
+<!-- LECTURES 3-12: Coming Soon -->
+<div id="lec-3" class="content-area"><div class="coming-soon"><div class="big">03</div><p>محاضرة 3 — قريباً</p></div></div>
+<div id="lec-4" class="content-area"><div class="coming-soon"><div class="big">04</div><p>محاضرة 4 — قريباً</p></div></div>
+<div id="lec-5" class="content-area"><div class="coming-soon"><div class="big">05</div><p>محاضرة 5 — قريباً</p></div></div>
+<div id="lec-6" class="content-area"><div class="coming-soon"><div class="big">06</div><p>محاضرة 6 — قريباً</p></div></div>
+<div id="lec-7" class="content-area"><div class="coming-soon"><div class="big">07</div><p>محاضرة 7 — قريباً</p></div></div>
+<div id="lec-8" class="content-area"><div class="coming-soon"><div class="big">08</div><p>محاضرة 8 — قريباً</p></div></div>
+<div id="lec-9" class="content-area"><div class="coming-soon"><div class="big">09</div><p>محاضرة 9 — قريباً</p></div></div>
+<div id="lec-10" class="content-area"><div class="coming-soon"><div class="big">10</div><p>محاضرة 10 — قريباً</p></div></div>
+<div id="lec-11" class="content-area"><div class="coming-soon"><div class="big">11</div><p>محاضرة 11 — قريباً</p></div></div>
+<div id="lec-12" class="content-area"><div class="coming-soon"><div class="big">12</div><p>محاضرة 12 — قريباً</p></div></div>
+
+</div>
+
 <script>
-function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');btn.classList.add('active');}
+function showLec(num, btn) {
+  document.querySelectorAll('.content-area').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.lec-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('lec-' + num).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('lec-' + num).scrollIntoView({behavior:'smooth', block:'start'});
+}
+// Auto-open lecture 2
+window.onload = () => {
+  const btn = document.querySelectorAll('.lec-btn')[1];
+  showLec(2, btn);
+};
 </script>
+<script>(function(){var c=document.getElementById('glass-particles');if(!c)return;var x=c.getContext('2d'),W,H,pts=[];function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}function spawn(){pts=[];var n=Math.max(80,Math.min(Math.round(W*H/7000),220));for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+0.4,vy:-(Math.random()*0.45+0.15),vx:(Math.random()-0.5)*0.18,a:Math.random()*0.55+0.15})}function draw(){x.clearRect(0,0,W,H);pts.forEach(function(p){x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,'+p.a+')';x.fill();p.y+=p.vy;p.x+=p.vx;if(p.y<-8){p.y=H+4;p.x=Math.random()*W}if(p.x<0)p.x=W;if(p.x>W)p.x=0});requestAnimationFrame(draw)}resize();spawn();draw();window.addEventListener('resize',function(){resize();spawn()})})();</script>
 </body>
 </html>
