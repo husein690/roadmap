@@ -109,6 +109,7 @@ td.purple{color:var(--purple);}
   <button class="nav-btn" onclick="showPanel('assets',this)">Asset Management</button>
   <button class="nav-btn" onclick="showPanel('standards',this)">Standards</button>
   <button class="nav-btn" onclick="showPanel('frameworks',this)">Pentest Frameworks</button>
+  <button class="nav-btn" onclick="showPanel('cve',this)">CVE & OVAL</button>
   <button class="nav-btn" onclick="showPanel('report',this)">Pentest Report</button>
 </div>
 
@@ -526,6 +527,128 @@ td.purple{color:var(--purple);}
       <tr><td class="mono purple">Firmware STM</td><td>Firmware & IoT Security Testing</td></tr>
     </table>
     <div class="alert success">🎯 OWASP Top 10 = أشهر قائمة لأخطر 10 ثغرات في تطبيقات الويب — لازم تعرفها عن ظهر قلب!</div>
+  </div>
+
+</div>
+
+<!-- CVE & OVAL -->
+<div id="panel-cve" class="panel">
+
+  <div class="card">
+    <div class="card-title">🌐 OVAL — Open Vulnerability Assessment Language</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      معيار دولي مدعوم من DHS لوصف وتحديد حالة السيستم ومشاكله. يحتوي 7000+ تعريف جاهز. تستخدمه أدوات مثل Nessus لتجهيز قوالب فحص الامتثال.
+    </p>
+
+    <div class="sec-label">► 3 خطوات OVAL Process</div>
+    <table>
+      <tr><th>#</th><th>الخطوة</th><th>النتيجة</th></tr>
+      <tr><td class="mono warn">1</td><td>تحديد إعدادات النظام المراد فحصها</td><td>تعريف نطاق الفحص</td></tr>
+      <tr><td class="mono warn">2</td><td>تقييم وتحليل حالة النظام الحالية</td><td>مقارنة بالمعايير</td></tr>
+      <tr><td class="mono warn">3</td><td>كشف وعرض المعلومات في تقرير</td><td>Vulnerable / Patched / Non-compliant</td></tr>
+    </table>
+
+    <div class="sec-label">► 4 أصناف تعريفات OVAL</div>
+    <table>
+      <tr><th>النوع</th><th>الوظيفة</th></tr>
+      <tr><td class="mono danger">Vulnerability Definitions</td><td>تحديد الثغرات البرمجية في السيستم</td></tr>
+      <tr><td class="mono warn">Compliance Definitions</td><td>التحقق هل إعدادات النظام تتوافق مع سياسات الشركة</td></tr>
+      <tr><td class="mono safe">Inventory Definitions</td><td>فحص هل برنامج معين مثبت على النظام</td></tr>
+      <tr><td class="mono" style="color:var(--purple);">Patch Definitions</td><td>التحقق هل الـ Patch المطلوب مثبت</td></tr>
+    </table>
+    <div class="alert info">💡 OVAL ID Format: <span style="font-family:var(--mono);color:var(--accent);">oval:org.mitre.oval:obj:1116</span> — النوع: def/obj/ste/var</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔢 CVE — Common Vulnerabilities and Exposures</div>
+    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
+      الكتالوج العالمي المفتوح لكل الثغرات المعروفة. كل ثغرة تأخذ CVE ID فريد من جهة CNA (CVE Numbering Authority).
+    </p>
+
+    <div class="sec-label">► 3 شروط للحصول على CVE ID</div>
+    <table>
+      <tr><th>الشرط</th><th>التفاصيل</th></tr>
+      <tr><td class="mono safe">Independently Fixable</td><td>الثغرة قابلة للإصلاح بشكل مستقل عن أي Bug آخر</td></tr>
+      <tr><td class="mono warn">One Codebase</td><td>تضرب قاعدة أكواد واحدة — لو أثرت على منتجات متعددة كل منتج يأخذ CVE منفصل</td></tr>
+      <tr><td class="mono danger">Acknowledged</td><td>الشركة تعترف بوجودها أو يُثبت تأثيرها السلبي على الأمان</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⛓️ الـ 9 خطوات للحصول على CVE ID باسمك</div>
+    <table>
+      <tr><th>#</th><th>المرحلة</th><th>التفاصيل</th></tr>
+      <tr><td class="mono safe">1</td><td>التأكد</td><td>تأكد إنها ثغرة حقيقية وابحث إنها غير مسجلة مسبقاً</td></tr>
+      <tr><td class="mono safe">2</td><td>التواصل</td><td>أبلغ الشركة صاحبة المنتج بحسن نية (Responsible Disclosure)</td></tr>
+      <tr><td class="mono">3</td><td>تحديد CNA</td><td>هل الشركة عضو CNA؟ لو نعم كلمهم مباشرة</td></tr>
+      <tr><td class="mono">4</td><td>طلب الكود</td><td>لو فشلت الطرق السابقة — املأ Web Form على موقع CVE</td></tr>
+      <tr><td class="mono">5</td><td>التأكيد</td><td>تصلك إيميل تأكيد — الفريق يتواصل لو احتاجوا تفاصيل</td></tr>
+      <tr><td class="mono warn">6</td><td>الاستلام</td><td>تستلم CVE ID — يبقى سري في البداية</td></tr>
+      <tr><td class="mono warn">7</td><td>الإعلان المنسق</td><td>ينشر للعامة بعد استعداد الشركات المعنية</td></tr>
+      <tr><td class="mono">8</td><td>النشر والتفريق</td><td>لو كذا CVE معاً — وضح الفروق بين كل ثغرة</td></tr>
+      <tr><td class="mono safe">9</td><td>تحديث NVD</td><td>المعلومات تُكتب في الصفحة الرسمية للثغرة على NVD</td></tr>
+    </table>
+  </div>
+
+  <div class="card danger">
+    <div class="card-title">💀 Zero-Day vs Responsible Disclosure</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <div class="info-box-title">✅ Responsible Disclosure</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          تبلغ الشركة سراً أولاً<br>
+          تديهم وقت لعمل الـ Patch<br>
+          بعدين تعلن للعامة<br>
+          <span style="color:var(--green);">= الطريقة الأخلاقية والقانونية ✅</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">💀 Zero-Day (0-day)</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
+          تنشر الثغرة للعلن فوراً<br>
+          الشركة ما عندها وقت للـ Patch<br>
+          الهكرز يستغلونها مباشرة<br>
+          <span style="color:var(--red);">= خطر على الملايين! ❌</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔴 CVEs مرعبة من الواقع</div>
+    <table>
+      <tr><th>CVE</th><th>الاسم</th><th>الخدمة</th><th>التأثير</th><th>CVSS</th></tr>
+      <tr>
+        <td class="mono danger">CVE-2020-5902</td>
+        <td>BIG-IP RCE</td>
+        <td class="mono">F5 BIG-IP TMUI</td>
+        <td class="danger">تحكم كامل بالجهاز — تنفيذ كود، تعديل ملفات، إيقاف خدمات</td>
+        <td class="mono" style="color:var(--red);font-weight:bold;">9.8</td>
+      </tr>
+      <tr>
+        <td class="mono danger">CVE-2021-34527</td>
+        <td>PrintNightmare</td>
+        <td class="mono">Windows Print Spooler</td>
+        <td class="danger">RCE مع user عادي → تحكم كامل بالـ Domain Controller!</td>
+        <td class="mono" style="color:var(--red);font-weight:bold;">8.8</td>
+      </tr>
+      <tr>
+        <td class="mono danger">CVE-2017-0144</td>
+        <td>EternalBlue</td>
+        <td class="mono">SMBv1 Port 445</td>
+        <td class="danger">RCE بدون credentials — استخدمه WannaCry لتدمير 200,000 جهاز!</td>
+        <td class="mono" style="color:var(--red);font-weight:bold;">9.8</td>
+      </tr>
+      <tr>
+        <td class="mono warn">CVE-2021-44228</td>
+        <td>Log4Shell</td>
+        <td class="mono">Log4j Java Library</td>
+        <td class="danger">RCE عبر أي log message — أثر على ملايين السيرفرات حول العالم</td>
+        <td class="mono" style="color:var(--red);font-weight:bold;">10.0</td>
+      </tr>
+    </table>
+    <div class="alert danger">💀 PrintNightmare: user عادي بدون صلاحيات خاصة يقدر يتحكم بالـ Domain Controller كامل = يتحكم بكل شبكة الشركة!</div>
+    <div class="alert info">🔍 ابحث عن أي CVE: <a href="https://nvd.nist.gov/vuln/search" target="_blank" style="color:var(--accent);">nvd.nist.gov</a> | <a href="https://www.exploit-db.com" target="_blank" style="color:var(--accent);">exploit-db.com</a> | <a href="https://cve.mitre.org" target="_blank" style="color:var(--accent);">cve.mitre.org</a></div>
   </div>
 
 </div>
