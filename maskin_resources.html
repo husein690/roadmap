@@ -504,316 +504,226 @@ td.danger{color:var(--red);}
 
   <div class="sec-label">► المحاضرة 3 — Control Flow, Functions & Arrays</div>
 
-  <!-- PART 1: Jump Instructions -->
+  <!-- JUMP INSTRUCTIONS -->
   <div class="card">
     <div class="card-title">🦘 Jump Instructions — jal و jalr</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
-      أمرين فقط للـ Unconditional Jump في RISC-V. كلمة <strong style="color:var(--accent);">"Link"</strong> تعني احفظ عنوان العودة (PC+4) عشان تقدر ترجع بعدين.
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      في RISC-V، عندنا أمرين فقط للقفز غير الشرطي: <code style="color:var(--accent);">jal</code> و <code style="color:var(--accent);">jalr</code>. كلمة "Link" في اسمهم تعني إنهم يحفظون عنوان العودة — يعني العنوان الجاي بعد الأمر الحالي — عشان نقدر نرجع بعد ما نخلص من القفز. هاد مهم جداً لما نستدعي دوال.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      الفرق بين <code style="color:var(--accent);">jal</code> و <code style="color:var(--accent);">jalr</code> هو إن jal تقفز بناءً على offset محسوب من مكانك الحالي (PC)، بينما jalr تقفز لعنوان موجود في register. jal تقدر تقفز +/- 1MB فقط (لأن الـ offset 20-bit)، لكن jalr تقدر تقفز لأي عنوان في الذاكرة — مفيد لو الكود في مكان بعيد مثل FLASH memory.
     </p>
     <table>
       <tr><th>الأمر</th><th>المعنى</th><th>النتيجة</th></tr>
       <tr><td class="mono">jal rd, offset</td><td>Jump and Link</td><td>rd = PC+4 ثم PC += offset</td></tr>
       <tr><td class="mono">jalr rd, offset(rs1)</td><td>Jump and Link Register</td><td>rd = PC+4 ثم PC = rs1+offset</td></tr>
     </table>
-
-    <div class="sec-label" style="margin-top:16px;">► Pseudo Instructions للـ Jump</div>
-    <table>
-      <tr><th>Pseudo</th><th>يتحول لـ</th><th>متى تستخدمه؟</th><th>عنوان العودة</th></tr>
-      <tr><td class="mono safe">j label</td><td class="mono">jal zero, offset</td><td>قفز بسيط بدون عودة</td><td class="danger">يُهمَل (zero)</td></tr>
-      <tr><td class="mono" style="color:var(--purple);">call label</td><td class="mono">jal ra, offset</td><td>استدعاء دالة مع عودة</td><td class="safe">محفوظ في ra</td></tr>
-      <tr><td class="mono warn">jr rs</td><td class="mono">jalr zero, 0(rs)</td><td>قفز لعنوان في register</td><td class="danger">يُهمَل (zero)</td></tr>
-      <tr><td class="mono safe">ret</td><td class="mono">jalr zero, 0(ra)</td><td>العودة من دالة</td><td>—</td></tr>
-    </table>
-
-    <div class="alert info">💡 j و call و jr و ret كلهم Pseudo Instructions — الـ Assembler يترجمهم لـ jal أو jalr تلقائياً!</div>
-
-    <div class="grid-2" style="margin-top:12px;">
-      <div class="info-box">
-        <div class="info-box-title">j label — بدون عودة</div>
-        <div class="code" style="margin-top:8px;"><span class="cmt"># j = jal zero, offset</span>
-<span class="cmt"># العودة تُكتب في zero = تُهمَل</span>
-<span class="ok">blink:</span>
-    <span class="cmt"># كود يومض LED</span>
-    <span class="cmd">j</span> blink  <span class="cmt"># loop أبدي</span></div>
-      </div>
-      <div class="info-box">
-        <div class="info-box-title">call label — مع عودة</div>
-        <div class="code" style="margin-top:8px;"><span class="cmt"># call = jal ra, offset</span>
-<span class="cmt"># العودة تُحفظ في ra</span>
-    <span class="cmd">call</span> my_func
-    <span class="cmt"># يرجع هنا بعد ret</span></div>
-      </div>
-    </div>
-
-    <div class="alert warning">⚠️ jal يقفز +/- 1MB فقط (20-bit offset). لو العنوان أبعد (مثل FLASH memory):<br>
-    <code style="font-family:var(--mono);color:var(--yellow);">li t0, 0x00000100 | jr t0</code> ← jalr يقدر يقفز لأي عنوان ✅</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-top:16px;margin-bottom:16px;">
+      المبرمج نادراً ما يستخدم jal و jalr مباشرة — بدلاً من ذلك نستخدم Pseudo Instructions أوضح وأسهل للقراءة. كلها تتحول تلقائياً لـ jal أو jalr:
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      <strong style="color:var(--green);">j label</strong> (Jump) يتحول لـ <code style="color:var(--accent);">jal zero, offset</code>. لاحظ إن العنوان يُكتب في zero — يعني يُهمَل — لأننا ما نحتاج نرجع. نستخدمه للـ loops الأبدية أو القفزات البسيطة.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      <strong style="color:var(--purple);">call label</strong> يتحول لـ <code style="color:var(--accent);">jal ra, offset</code>. هنا العنوان يُحفظ في ra (register x1) عشان نقدر نرجع بـ ret.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      <strong style="color:var(--yellow);">jr rs</strong> (Jump Register) يتحول لـ <code style="color:var(--accent);">jalr zero, 0(rs)</code>. مثل j بس العنوان في register — نستخدمه لو العنوان بعيد أكثر من 1MB.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      <strong style="color:var(--green);">ret</strong> (Return) يتحول لـ <code style="color:var(--accent);">jalr zero, 0(ra)</code>. يقفز للعنوان المحفوظ في ra — هكذا نرجع من الدالة.
+    </p>
+    <div class="alert info">💡 j و call و jr و ret = كلهم Pseudo Instructions. الـ Assembler يترجمهم لـ jal أو jalr تلقائياً. الفرق الوحيد: أي register يحفظون فيه عنوان العودة.</div>
+    <div class="alert warning">⚠️ jal يقفز +/- 1MB فقط. لو العنوان أبعد (مثل FLASH memory) استخدم: <code style="color:var(--yellow);">li t0, 0x00000100</code> ثم <code style="color:var(--yellow);">jr t0</code></div>
   </div>
 
-  <!-- PART 2: Branching -->
+  <!-- BRANCHING -->
   <div class="card">
     <div class="card-title">🔀 Branching — القفز الشرطي</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-      الـ Branch instructions تقارن مباشرة بدون flag register منفصل — هاد يبسّط الـ Hardware!
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      Branching يعني القفز بناءً على شرط معين. على عكس بعض المعماريات القديمة التي تستخدم "flag register" منفصل، RISC-V يجعل الأمر أبسط: كل أمر branch يقارن مباشرة بين register-ين ويقرر القفز أم لا — هاد يبسّط الـ Hardware ويقلل مشاكل الـ Pipeline.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      عندنا 6 أوامر حقيقية فقط: beq, bne, blt, bge وإصداراتهم unsigned (bltu, bgeu). ربما تتساءل: ليش ما في bgt أو ble؟ الجواب بسيط — لأن (a &gt; b) = (b &lt; a). بمجرد عكس ترتيب الـ operands نحصل على نفس النتيجة. لهذا bgt هو Pseudo Instruction يتحول لـ blt مع عكس الترتيب.
+    </p>
+    <table>
+      <tr><th>الأمر الحقيقي</th><th>الشرط</th></tr>
+      <tr><td class="mono">beq rs1, rs2, label</td><td>rs1 = rs2</td></tr>
+      <tr><td class="mono">bne rs1, rs2, label</td><td>rs1 ≠ rs2</td></tr>
+      <tr><td class="mono warn">blt rs1, rs2, label</td><td>rs1 &lt; rs2 (signed)</td></tr>
+      <tr><td class="mono warn">bge rs1, rs2, label</td><td>rs1 ≥ rs2 (signed)</td></tr>
+    </table>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-top:16px;margin-bottom:8px;">
+      هناك أيضاً Pseudo Instructions للمقارنة مع الصفر مثل <code style="color:var(--accent);">beqz</code>, <code style="color:var(--accent);">bnez</code>, <code style="color:var(--accent);">bgtz</code>, <code style="color:var(--accent);">bltz</code> — كلها تتحول لأوامر حقيقية باستخدام zero register.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      <strong style="color:var(--red);">تنبيه مهم:</strong> ما في Immediate versions للـ branch! لا تكتب <code style="color:var(--red);">bgt t1, 5, end</code> — ما يشتغل. لازم تحط الرقم في register أولاً: <code style="color:var(--accent);">li t2, 5</code> ثم <code style="color:var(--accent);">bgt t1, t2, end</code>.
     </p>
 
-    <div class="sec-label">► الأوامر الحقيقية (6 أوامر)</div>
-    <table>
-      <tr><th>الأمر</th><th>المعنى</th><th>الشرط</th></tr>
-      <tr><td class="mono">beq rs1, rs2, label</td><td>Branch if Equal</td><td>rs1 = rs2</td></tr>
-      <tr><td class="mono">bne rs1, rs2, label</td><td>Branch if Not Equal</td><td>rs1 ≠ rs2</td></tr>
-      <tr><td class="mono warn">blt rs1, rs2, label</td><td>Branch if Less Than (signed)</td><td>rs1 &lt; rs2</td></tr>
-      <tr><td class="mono warn">bge rs1, rs2, label</td><td>Branch if Greater or Equal (signed)</td><td>rs1 ≥ rs2</td></tr>
-      <tr><td class="mono">bltu rs1, rs2, label</td><td>Branch if Less Than (unsigned)</td><td>rs1 &lt; rs2 (u)</td></tr>
-      <tr><td class="mono">bgeu rs1, rs2, label</td><td>Branch if Greater or Equal (unsigned)</td><td>rs1 ≥ rs2 (u)</td></tr>
-    </table>
-
-    <div class="sec-label">► Pseudo Instructions للمقارنة</div>
-    <table>
-      <tr><th>Pseudo</th><th>يتحول لـ</th><th>الشرط</th></tr>
-      <tr><td class="mono safe">bgt rs1, rs2, label</td><td class="mono">blt rs2, rs1, label</td><td>rs1 &gt; rs2 (اعكس الترتيب!)</td></tr>
-      <tr><td class="mono safe">ble rs1, rs2, label</td><td class="mono">bge rs2, rs1, label</td><td>rs1 ≤ rs2</td></tr>
-      <tr><td class="mono">beqz rs, label</td><td class="mono">beq rs, zero, label</td><td>rs = 0</td></tr>
-      <tr><td class="mono">bnez rs, label</td><td class="mono">bne rs, zero, label</td><td>rs ≠ 0</td></tr>
-      <tr><td class="mono">bgtz rs, label</td><td class="mono">blt zero, rs, label</td><td>rs &gt; 0</td></tr>
-      <tr><td class="mono">bltz rs, label</td><td class="mono">blt rs, zero, label</td><td>rs &lt; 0</td></tr>
-    </table>
-
-    <div class="alert info">💡 ليش ما في bgt حقيقي؟ لأن (a &gt; b) = (b &lt; a) — اعكس الترتيب وخلص!</div>
-    <div class="alert warning">⚠️ ما في Immediate versions! ما تكتب bgt t1, 5, end — لازم تحط 5 في register أول: li t2, 5 ثم bgt t1, t2, end</div>
-
-    <div class="sec-label">► مثال عملي — Factorial (5! = 120)</div>
+    <div class="sec-label" style="margin-top:16px;">► مثال — Factorial (5! = 120)</div>
     <div class="code"><span class="cmd">li</span> t0, 1        <span class="cmt"># y = 1</span>
 <span class="cmd">li</span> t1, 1        <span class="cmt"># i = 1</span>
 
 <span class="ok">forloop:</span>
     <span class="cmd">li</span>   t2, 5
-    <span class="cmd">bgt</span>  t1, t2, end  <span class="cmt"># إذا i > 5 اخرج (= blt t2, t1, end)</span>
+    <span class="cmd">bgt</span>  t1, t2, end  <span class="cmt"># إذا i > 5 اخرج ← يتحول لـ blt t2, t1, end</span>
     <span class="cmd">mul</span>  t0, t0, t1   <span class="cmt"># y = y × i</span>
     <span class="cmd">addi</span> t1, t1, 1   <span class="cmt"># i++</span>
-    <span class="cmd">j</span>    forloop
-
+    <span class="cmd">j</span>    forloop      <span class="cmt"># ارجع للبداية</span>
 <span class="ok">end:</span>
     <span class="cmt"># t0 = 120 ✅</span></div>
   </div>
 
-  <!-- PART 3: Stack -->
+  <!-- STACK -->
   <div class="card">
-    <div class="card-title">📚 الـ Stack — مخزن مؤقت</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
-      Registers = 32 فقط. لما تنتهي = احفظ مؤقتاً في الـ Stack. <br>
-      <strong style="color:var(--accent);">sp (x2)</strong> = Stack Pointer، يشير لرأس الـ Stack دايماً.
+    <div class="card-title">📚 الـ Stack</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      الـ registers عددها 32 فقط. أحياناً نحتاج نحفظ قيماً مؤقتاً لما تنتهي الـ registers المتاحة. الـ Stack هو منطقة ذاكرة مخصصة لهذا الغرض. <code style="color:var(--accent);">sp</code> (register x2) يشير دايماً لرأس الـ Stack.
     </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      قاعدة مهمة: الـ Stack ينمو للأسفل — يعني لما نضيف قيمة (PUSH) ننقص sp، ولما نأخذ قيمة (POP) نزيد sp. في RISC-V ما في أوامر PUSH وPOP مدمجة — نبنيها بأنفسنا من sw/lw وaddi.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      لماذا لازم ننقص sp <strong style="color:var(--yellow);">أولاً</strong> ثم نحفظ؟ لأن sp يشير دايماً لآخر قيمة محفوظة. لو حفظنا أولاً كتبنا فوق قيمة موجودة! إذاً لازم نحجز مكان جديد أولاً بتنقيص sp، ثم نكتب في المكان الجديد.
+    </p>
+    <div class="code"><span class="cmt"># PUSH t0 للـ Stack:</span>
+<span class="cmd">addi</span> sp, sp, -4    <span class="cmt"># حجز مكان جديد أولاً</span>
+<span class="cmd">sw</span>   t0, 0(sp)     <span class="cmt"># احفظ t0 في المكان الجديد</span>
 
-    <div class="grid-2">
-      <div class="info-box">
-        <div class="info-box-title">⬇️ PUSH — احفظ في Stack</div>
-        <div class="code" style="margin-top:8px;"><span class="cmt"># لازم تنزّل sp أول!</span>
-<span class="cmd">addi</span> sp, sp, -4  <span class="cmt"># حجز مكان جديد</span>
-<span class="cmd">sw</span>   t0, 0(sp)   <span class="cmt"># احفظ t0</span>
+<span class="cmt"># POP t0 من الـ Stack:</span>
+<span class="cmd">lw</span>   t0, 0(sp)     <span class="cmt"># اقرأ القيمة أولاً</span>
+<span class="cmd">addi</span> sp, sp, 4     <span class="cmt"># ثم حرر المكان</span>
 
-<span class="cmt"># ليش ننزّل أول؟</span>
-<span class="cmt"># sp يشير لآخر قيمة محفوظة</span>
-<span class="cmt"># لو حفظت أول = كتبت فوق قيمة!</span></div>
-      </div>
-      <div class="info-box">
-        <div class="info-box-title">⬆️ POP — أعد من Stack</div>
-        <div class="code" style="margin-top:8px;"><span class="cmt"># اقرأ أول ثم ارفع sp</span>
-<span class="cmd">lw</span>   t0, 0(sp)   <span class="cmt"># أعد t0</span>
-<span class="cmd">addi</span> sp, sp, 4   <span class="cmt"># حرّر المكان</span>
-
-<span class="cmt"># ترتيب POP = عكس PUSH!</span></div>
-      </div>
-    </div>
-
-    <div class="sec-label">► حفظ 3 registers معاً</div>
-    <div class="code"><span class="cmt"># PUSH t0, t1, t2:</span>
-<span class="cmd">addi</span> sp, sp, -12  <span class="cmt"># مساحة لـ 3 words (3×4)</span>
-<span class="cmd">sw</span>   t0, 8(sp)    <span class="cmt"># t0 في الأعلى</span>
+<span class="cmt"># حفظ 3 registers معاً:</span>
+<span class="cmd">addi</span> sp, sp, -12   <span class="cmt"># مساحة لـ 3 words</span>
+<span class="cmd">sw</span>   t0, 8(sp)
 <span class="cmd">sw</span>   t1, 4(sp)
-<span class="cmd">sw</span>   t2, 0(sp)    <span class="cmt"># t2 في الأسفل</span>
+<span class="cmd">sw</span>   t2, 0(sp)
 
-<span class="cmt"># POP (عكسي):</span>
+<span class="cmt"># استرجاعهم (عكسي):</span>
 <span class="cmd">lw</span>   t2, 0(sp)
 <span class="cmd">lw</span>   t1, 4(sp)
 <span class="cmd">lw</span>   t0, 8(sp)
 <span class="cmd">addi</span> sp, sp, 12</div>
-    <div class="alert info">💡 Stack ينمو للأسفل: PUSH → sp تنقص، POP → sp تزيد.</div>
   </div>
 
-  <!-- PART 4: Function Calls -->
+  <!-- FUNCTION CALLS -->
   <div class="card purple">
     <div class="card-title">🔧 Function Calls — ABI Conventions</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
-      Assembly ما عندها functions مدمجة — نبنيها بأنفسنا باتباع ABI Conventions عشان الكود يتوافق مع C والمكتبات.
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      Assembly ما عندها functions مدمجة — نبنيها بأنفسنا. بس لو كل مبرمج عمل طريقته الخاصة، الكود ما يتوافق مع بعضه ولا مع مكتبات C. لهذا ABI يحدد قواعد موحدة يتبعها الجميع.
     </p>
-
-    <div class="grid-2">
-      <div class="info-box">
-        <div class="info-box-title">قواعد ABI للدوال</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.9;margin-top:6px;">
-          <span style="color:var(--purple);">Parameters:</span> a0-a7 (بالترتيب)<br>
-          <span style="color:var(--purple);">Return Value:</span> a0<br>
-          <span style="color:var(--purple);">Return Address:</span> ra (يحفظه call)<br>
-          <span style="color:var(--purple);">استدعاء:</span> call label<br>
-          <span style="color:var(--purple);">عودة:</span> ret
-        </div>
-      </div>
-      <div class="info-box">
-        <div class="info-box-title">لو ما حطينا ret؟</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.9;margin-top:6px;">
-          البرنامج ما يرجع للمكان الصح<br>
-          يكمل ينفذ الكود الجاي بالذاكرة<br>
-          <span style="color:var(--red);">= نتائج عشوائية أو كراش! 💥</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="sec-label">► مثال كامل — دالة min(a, b)</div>
-    <div class="code"><span class="cmt"># الاستدعاء:</span>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      القاعدة بسيطة: الـ parameters تُحط في <code style="color:var(--purple);">a0-a7</code> بالترتيب قبل استدعاء الدالة. النتيجة ترجع في <code style="color:var(--purple);">a0</code>. عنوان العودة يُحفظ تلقائياً في <code style="color:var(--purple);">ra</code> بأمر call. والدالة ترجع بأمر <code style="color:var(--purple);">ret</code>.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      لو نسينا ret ماذا يحدث؟ البرنامج لا يرجع للمكان الصح — يكمل ينفذ الكود الجاي في الذاكرة بشكل عشوائي مما يؤدي لنتائج غير متوقعة أو كراش.
+    </p>
+    <div class="code"><span class="cmt"># مثال: min(a, b) ترجع الأصغر</span>
 <span class="cmd">li</span>   a0, 20      <span class="cmt"># parameter a = 20</span>
 <span class="cmd">li</span>   a1, 10      <span class="cmt"># parameter b = 10</span>
-<span class="cmd">call</span> min         <span class="cmt"># ra = عنوان العودة، اقفز لـ min</span>
-<span class="cmt"># بعد العودة: a0 = 10 ✅</span>
+<span class="cmd">call</span> min         <span class="cmt"># ra = عنوان العودة</span>
+<span class="cmt"># a0 = 10 بعد العودة ✅</span>
 
 <span class="ok">min:</span>
-    <span class="cmd">blt</span>  a0, a1, min_end  <span class="cmt"># إذا a < b ارجع (a0 جاهز)</span>
-    <span class="cmd">mv</span>   a0, a1            <span class="cmt"># b أصغر → a0 = b</span>
+    <span class="cmd">blt</span> a0, a1, min_end  <span class="cmt"># إذا a < b ارجع مباشرة</span>
+    <span class="cmd">mv</span>  a0, a1           <span class="cmt"># b أصغر → a0 = b</span>
 <span class="ok">min_end:</span>
-    <span class="cmd">ret</span>                    <span class="cmt"># = jalr zero, 0(ra)</span></div>
+    <span class="cmd">ret</span>                  <span class="cmt"># = jalr zero, 0(ra)</span></div>
   </div>
 
-  <!-- PART 5: Register Saving -->
+  <!-- REGISTER SAVING -->
   <div class="card">
     <div class="card-title">💾 Register Saving — من يحفظ ماذا؟</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
-      لما تستدعي دالة ما تعرف أي registers تغيّرها! الـ ABI يحل هاي المشكلة بتقسيم الـ registers لنوعين:
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      المشكلة: لما نستدعي دالة، ما نعرف أي registers تغيّرها. لو وضعنا قيمة مهمة في t2 ثم استدعينا دالة تستخدم t2، القيمة ضاعت! 
     </p>
-
-    <div class="grid-2">
-      <div class="info-box">
-        <div class="info-box-title">🔴 Caller-Saved (مؤقتة)</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
-          <span style="color:var(--red);">t0-t6, a0-a7, ra</span><br><br>
-          الدالة المستدعاة تقدر تغيّرها بحرية<br>
-          لو تحتاجها بعد الـ call = <strong>أنت تحفظها</strong><br><br>
-          مثل: مكتب مشترك — ما تضمن إن ورقتك تبقى!
-        </div>
-      </div>
-      <div class="info-box">
-        <div class="info-box-title">🟢 Callee-Saved (محفوظة)</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
-          <span style="color:var(--green);">s0-s11, sp</span><br><br>
-          الدالة لو استخدمتها = تحفظها وترجعها<br>
-          مضمون ما تتغير بعد الـ call ✅<br><br>
-          مثل: مكتب خاص — من يستخدمه يرجعه كما كان
-        </div>
-      </div>
-    </div>
-
-    <div class="alert warning">⚠️ الضمان مش تقني (hardware) — هو اتفاقية (ABI)! كل دالة مكتوبة صح ملزمة بحفظ s registers وإرجاعها. لو دالة ما تتبع ABI = هي المخطئة.</div>
-
-    <div class="sec-label">► المشكلة والحل</div>
-    <div class="code"><span class="cmt"># المشكلة: max ممكن تغيّر t2!</span>
-<span class="cmd">mv</span>   a0, t0
-<span class="cmd">mv</span>   a1, t1
-<span class="cmd">call</span> max          <span class="cmt"># t2 ممكن ضاع! ❌</span>
-<span class="cmd">mv</span>   a1, t2        <span class="cmt"># t2 قيمته غير مضمونة!</span>
-
-<span class="cmt"># الحل 1 — احفظ t2 في Stack:</span>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      الـ ABI يحل هاي المشكلة بتقسيم الـ registers لنوعين. الأول هو <strong style="color:var(--red);">Caller-Saved</strong> (t0-t6, a0-a7, ra) — هاي registers الدالة المستدعاة تقدر تغيّرها بحرية. إذا كنت تحتاجها بعد الـ call، أنت مسؤول عن حفظها. الثاني هو <strong style="color:var(--green);">Callee-Saved</strong> (s0-s11) — هاي registers الدالة ملزمة بحفظها قبل استخدامها وإرجاعها قبل ret. مضمون ما تتغير بعد الـ call.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      هاد الضمان مش تقني — هو اتفاقية (convention). أي دالة مكتوبة صح تلتزم بهاد القانون. لو دالة ما تتبع ABI = هي المخطئة وليس كودك.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      <strong style="color:var(--yellow);">الحل 1 — Stack:</strong> احفظ t2 قبل الـ call في Stack وأعده بعدها.
+      <br><strong style="color:var(--green);">الحل 2 — s registers (أنظف):</strong> انقل القيمة لـ s0 قبل الـ call. الدالة ملزمة بعدم تغيير s0.
+    </p>
+    <div class="code"><span class="cmt"># الحل بالـ Stack:</span>
 <span class="cmd">addi</span> sp, sp, -4
 <span class="cmd">sw</span>   t2, 0(sp)     <span class="cmt"># احفظ t2</span>
 <span class="cmd">call</span> max
 <span class="cmd">lw</span>   t2, 0(sp)     <span class="cmt"># أعد t2</span>
 <span class="cmd">addi</span> sp, sp, 4
 
-<span class="cmt"># الحل 2 — استخدم s register (أنظف):</span>
-<span class="cmd">mv</span>   s0, t2        <span class="cmt"># انقل لـ s0 (مضمون لا يتغير)</span>
-<span class="cmd">call</span> max           <span class="cmt"># s0 مضمون ✅</span>
-<span class="cmd">mv</span>   a1, s0        <span class="cmt"># استخدم القيمة المحفوظة</span></div>
+<span class="cmt"># الحل بـ s register (أنظف):</span>
+<span class="cmd">mv</span>   s0, t2        <span class="cmt"># s0 مضمون ما يتغير بعد call</span>
+<span class="cmd">call</span> max
+<span class="cmd">mv</span>   a1, s0        <span class="cmt"># القيمة لا تزال موجودة ✅</span></div>
   </div>
 
-  <!-- PART 6: Nested Functions & Prologue/Epilogue -->
+  <!-- PROLOGUE/EPILOGUE -->
   <div class="card">
-    <div class="card-title">🔗 Nested Functions — Prologue & Epilogue</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
-      لما دالة تستدعي دالة ثانية — <code style="color:var(--red);">call</code> يكتب فوق <code style="color:var(--red);">ra</code>! لازم تحفظه.
+    <div class="card-title">📋 Prologue & Epilogue — دوال متداخلة</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      لما دالة تستدعي دالة ثانية، <code style="color:var(--accent);">call</code> سيكتب فوق ra! هذا يعني إنك لو رجعت بـ ret ستقفز للمكان الغلط. الحل: احفظ ra في الـ Stack في بداية الدالة (Prologue) وأعده قبل ret (Epilogue).
     </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      الأسلوب الأنظف لكتابة الدوال: استخدم t registers للحسابات المؤقتة. لو تحتاج قيمة تبقى بعد call استخدم s register. ولو استخدمت s register احفظه في Prologue وأعده في Epilogue.
+    </p>
+    <div class="code"><span class="ok">max_of_three:</span>
+    <span class="cmt"># PROLOGUE:</span>
+    <span class="cmd">addi</span> sp, sp, -8
+    <span class="cmd">sw</span>   s0, 4(sp)   <span class="cmt"># احفظ s0 (Callee-Saved)</span>
+    <span class="cmd">sw</span>   ra, 0(sp)   <span class="cmt"># احفظ ra (call سيكتب فوقه!)</span>
 
-    <div class="code"><span class="cmt"># max_of_three(a, b, c) تستدعي max(a, b) مرتين</span>
+    <span class="cmd">mv</span>   s0, a2      <span class="cmt"># s0 = c (مضمون لا يتغير)</span>
+    <span class="cmd">call</span> max         <span class="cmt"># a0 = max(a, b)</span>
+    <span class="cmd">mv</span>   a1, s0      <span class="cmt"># a1 = c</span>
+    <span class="cmd">call</span> max         <span class="cmt"># a0 = max(max(a,b), c) ✅</span>
 
-<span class="ok">max_of_three:</span>
-    <span class="cmt"># ═══ PROLOGUE — في البداية: ═══</span>
-    <span class="cmd">addi</span> sp, sp, -8    <span class="cmt"># مساحة لـ s0 و ra</span>
-    <span class="cmd">sw</span>   s0, 4(sp)     <span class="cmt"># احفظ s0 (Callee-Saved)</span>
-    <span class="cmd">sw</span>   ra, 0(sp)     <span class="cmt"># احفظ ra (call سيكتب فوقه!)</span>
-
-    <span class="cmd">mv</span>   s0, a2        <span class="cmt"># s0 = c (نحفظه بـ s register)</span>
-    <span class="cmd">call</span> max           <span class="cmt"># a0 = max(a, b)</span>
-    <span class="cmd">mv</span>   a1, s0        <span class="cmt"># a1 = c (من s0 المضمون)</span>
-    <span class="cmd">call</span> max           <span class="cmt"># a0 = max(max(a,b), c) ✅</span>
-
-    <span class="cmt"># ═══ EPILOGUE — قبل الرجوع: ═══</span>
-    <span class="cmd">lw</span>   s0, 4(sp)     <span class="cmt"># أعد s0</span>
-    <span class="cmd">lw</span>   ra, 0(sp)     <span class="cmt"># أعد ra</span>
-    <span class="cmd">addi</span> sp, sp, 8    <span class="cmt"># أعد الـ stack</span>
+    <span class="cmt"># EPILOGUE:</span>
+    <span class="cmd">lw</span>   s0, 4(sp)
+    <span class="cmd">lw</span>   ra, 0(sp)
+    <span class="cmd">addi</span> sp, sp, 8
     <span class="cmd">ret</span></div>
-
     <div class="alert success">✅ قاعدة ذهبية: لو دالتك تستدعي دالة ثانية = احفظ ra في الـ Prologue دايماً!</div>
-
-    <div class="sec-label">► خطوات كتابة أي دالة</div>
-    <table>
-      <tr><th>#</th><th>القاعدة</th><th>السبب</th></tr>
-      <tr><td class="mono warn">1</td><td>استخدم t registers للحسابات المؤقتة</td><td>بدون حفظ في Stack</td></tr>
-      <tr><td class="mono warn">2</td><td>لو تحتاج قيمة تبقى بعد call = استخدم s register</td><td>مضمون ما يتغير</td></tr>
-      <tr><td class="mono warn">3</td><td>لو استخدمت s register = احفظه في Prologue</td><td>أنت callee = ملزم بإرجاعه</td></tr>
-      <tr><td class="mono warn">4</td><td>لو دالتك تستدعي دالة ثانية = احفظ ra</td><td>call سيكتب فوقه!</td></tr>
-    </table>
   </div>
 
-  <!-- PART 7: Arrays -->
+  <!-- ARRAYS -->
   <div class="card">
     <div class="card-title">📋 Arrays في Assembly</div>
-
-    <div class="sec-label">► تعريف Arrays</div>
-    <div class="code"><span class="cmt"># Array من bytes (محددة القيم):</span>
-<span class="ok">numbers:</span> <span class="val">.byte 10, 20, 30, 40, 50</span>
-
-<span class="cmt"># Array فاضية (5 bytes):</span>
-<span class="ok">numbers:</span> <span class="val">.space 5</span>
-
-<span class="cmt"># Array من words (5 عناصر = 20 byte):</span>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      الـ Array هو قائمة من متغيرات نفس النوع مخزنة بشكل متتالي في الذاكرة. للوصول لعنصر معين نحتاج عنوان البداية وال offset (الفرق بالـ bytes) من ذلك العنوان.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      لو الـ array من bytes، الـ offset = رقم العنصر مباشرة. لو من words (4 bytes لكل عنصر)، الـ offset = رقم العنصر × 4. هاد ضروري لأن الذاكرة عبارة عن سلسلة bytes وكل word تأخذ 4 منها.
+    </p>
+    <div class="code"><span class="cmt"># تعريف arrays:</span>
+<span class="ok">numbers:</span> <span class="val">.byte 10, 20, 30</span>      <span class="cmt"># array من bytes</span>
+<span class="ok">numbers:</span> <span class="val">.space 5</span>             <span class="cmt"># 5 bytes فاضية</span>
          <span class="val">.align 2</span>
-<span class="ok">numbers:</span> <span class="val">.word 2, 4, 6, 8, 10</span>
-
-<span class="cmt"># Array words فاضية (5 عناصر):</span>
+<span class="ok">numbers:</span> <span class="val">.word 2, 4, 6, 8</span>     <span class="cmt"># array من words</span>
          <span class="val">.align 2</span>
-<span class="ok">numbers:</span> <span class="val">.space 20</span>   <span class="cmt"># 5 × 4 bytes</span></div>
+<span class="ok">numbers:</span> <span class="val">.space 20</span>            <span class="cmt"># 5 words فاضية (5×4)</span>
 
-    <div class="alert info">💡 .space = عدد الـ bytes دايماً! لو تبي 5 words = .space 20 (5×4)</div>
+<span class="cmt"># الوصول للعناصر:</span>
+<span class="cmd">la</span> t0, numbers
+<span class="cmd">lw</span> t1, 0(t0)    <span class="cmt"># numbers[0]</span>
+<span class="cmd">lw</span> t1, 4(t0)    <span class="cmt"># numbers[1]  (1×4)</span>
+<span class="cmd">lw</span> t1, 16(t0)   <span class="cmt"># numbers[4]  (4×4)</span></div>
 
-    <div class="sec-label">► الوصول للعناصر</div>
-    <div class="code"><span class="cmd">la</span> t0, numbers     <span class="cmt"># t0 = عنوان أول عنصر</span>
-
-<span class="cmt"># Byte array (offset = index):</span>
-<span class="cmd">lb</span> t1, 0(t0)       <span class="cmt"># numbers[0]</span>
-<span class="cmd">lb</span> t1, 4(t0)       <span class="cmt"># numbers[4]</span>
-
-<span class="cmt"># Word array (offset = index × 4):</span>
-<span class="cmd">lw</span> t1, 0(t0)       <span class="cmt"># numbers[0]</span>
-<span class="cmd">lw</span> t1, 4(t0)       <span class="cmt"># numbers[1]  ← 1×4=4</span>
-<span class="cmd">lw</span> t1, 16(t0)      <span class="cmt"># numbers[4]  ← 4×4=16</span></div>
-
-    <div class="alert info">💡 ليش offset × 4 للـ words؟ لأن الذاكرة = سلسلة bytes. كل word تأخذ 4 bytes متتالية.</div>
-
-    <div class="sec-label">► Loop على Array — مجموع 10 أرقام</div>
-    <div class="code"><span class="cmd">li</span>  t0, 0          <span class="cmt"># i = 0</span>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-top:16px;margin-bottom:8px;">
+      للتنقل بين عناصر array في loop، نحسب الـ offset بضرب index × حجم العنصر. بدل mul نستخدم <code style="color:var(--accent);">slli</code> (Shift Left) لأن الضرب بـ 4 = shift left بـ 2. هاد أسرع لأن shift أبسط للـ Hardware.
+    </p>
+    <div class="code"><span class="cmt"># loop لحساب مجموع 10 أرقام:</span>
+<span class="cmd">li</span>  t0, 0          <span class="cmt"># i = 0</span>
 <span class="cmd">li</span>  t1, 0          <span class="cmt"># sum = 0</span>
-<span class="cmd">la</span>  t2, numbers    <span class="cmt"># t2 = عنوان أول عنصر</span>
+<span class="cmd">la</span>  t2, numbers
 
 <span class="ok">loop:</span>
-    <span class="cmd">slli</span> t3, t0, 2   <span class="cmt"># t3 = i × 4 (shift left = × 2² = × 4)</span>
-    <span class="cmd">add</span>  t3, t2, t3  <span class="cmt"># t3 = عنوان numbers[i]</span>
-    <span class="cmd">lw</span>   t3, 0(t3)   <span class="cmt"># t3 = numbers[i]</span>
+    <span class="cmd">slli</span> t3, t0, 2   <span class="cmt"># t3 = i × 4 (بدل mul)</span>
+    <span class="cmd">add</span>  t3, t2, t3  <span class="cmt"># عنوان numbers[i]</span>
+    <span class="cmd">lw</span>   t3, 0(t3)   <span class="cmt"># numbers[i]</span>
     <span class="cmd">add</span>  t1, t1, t3  <span class="cmt"># sum += numbers[i]</span>
     <span class="cmd">addi</span> t0, t0, 1  <span class="cmt"># i++</span>
     <span class="cmd">li</span>   t4, 10
@@ -821,35 +731,25 @@ td.danger{color:var(--red);}
 
 <span class="val">.align 2</span>
 <span class="ok">numbers:</span> <span class="val">.word 2,4,6,8,0,1,2,3,4,5</span></div>
-    <div class="alert info">💡 slli t3, t0, 2 = i × 4 بدون mul. Shift Left أسرع لأنه أمر بسيط للـ Hardware!</div>
-  </div>
 
-  <!-- PART 8: Arrays as Parameters -->
-  <div class="card">
-    <div class="card-title">📤 Arrays كـ Function Parameters</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-      ما ترسل الـ Array كاملة — آلاف bytes في الـ Stack! بدلاً من ذلك أرسل <strong style="color:var(--accent);">العنوان + الحجم</strong> فقط.
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-top:16px;margin-bottom:8px;">
+      لما نرسل array لدالة، ما نرسل العناصر كلها — بدل ذلك نرسل <strong style="color:var(--accent);">العنوان والحجم</strong>. الدالة تستخدم الـ addi على الـ base address للتنقل بين العناصر.
     </p>
     <div class="code"><span class="ok">main:</span>
     <span class="cmd">la</span>  a0, numbers   <span class="cmt"># a0 = عنوان أول عنصر</span>
     <span class="cmd">li</span>  a1, 10        <span class="cmt"># a1 = حجم الـ array</span>
     <span class="cmd">call</span> sum
-    <span class="cmt"># a0 = مجموع الأرقام</span>
 
-<span class="cmt"># int sum(int array[], int size)</span>
 <span class="ok">sum:</span>
-    <span class="cmd">li</span>   t0, 0        <span class="cmt"># sum = 0</span>
+    <span class="cmd">li</span>   t0, 0
 <span class="ok">sum_loop:</span>
-    <span class="cmd">lw</span>   t1, 0(a0)    <span class="cmt"># اقرأ العنصر الحالي</span>
-    <span class="cmd">add</span>  t0, t0, t1   <span class="cmt"># sum += element</span>
+    <span class="cmd">lw</span>   t1, 0(a0)
+    <span class="cmd">add</span>  t0, t0, t1
     <span class="cmd">addi</span> a0, a0, 4   <span class="cmt"># انتقل للعنصر الجاي</span>
-    <span class="cmd">addi</span> a1, a1, -1  <span class="cmt"># size--</span>
-    <span class="cmd">bnez</span> a1, sum_loop <span class="cmt"># إذا ما خلصنا كرر</span>
-    <span class="cmd">mv</span>   a0, t0       <span class="cmt"># return sum</span>
-    <span class="cmd">ret</span>
-
-<span class="val">.align 2</span>
-<span class="ok">numbers:</span> <span class="val">.word 2,4,6,8,0,1,2,3,4,5</span></div>
+    <span class="cmd">addi</span> a1, a1, -1
+    <span class="cmd">bnez</span> a1, sum_loop
+    <span class="cmd">mv</span>   a0, t0
+    <span class="cmd">ret</span></div>
   </div>
 
   <!-- EXERCISES -->
@@ -862,76 +762,70 @@ td.danger{color:var(--red);}
     <div class="ex-item">
       <div class="ex-num">تمرين 01 — سهل</div>
       <div class="ex-title">Factorial بالـ Loop</div>
-      <div class="ex-desc">اكتب برنامج يحسب 5! = 120 باستخدام loop. استخدم bgt أو blt للمقارنة. خزّن النتيجة في t0.</div>
+      <div class="ex-desc">اكتب برنامج يحسب 5! = 120 باستخدام loop. خزّن النتيجة في t0.</div>
       <div class="ex-hint">y=1, i=1, loop: y*=i, i++, إذا i ≤ 5 كرر. استخدم mul t0, t0, t1</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 02 — سهل</div>
       <div class="ex-title">دالة بسيطة — add(a, b)</div>
-      <div class="ex-desc">اكتب دالة add تأخذ parametersين في a0 و a1 وترجع مجموعهم في a0. استدعِ الدالة بـ a=15, b=25. النتيجة = 40.</div>
-      <div class="ex-hint">call add → في الدالة: add a0, a0, a1 ثم ret</div>
+      <div class="ex-desc">اكتب دالة add تأخذ parametersين في a0 و a1 وترجع مجموعهم في a0. استدعِها بـ a=15, b=25. النتيجة = 40.</div>
+      <div class="ex-hint">call add ← في الدالة: add a0, a0, a1 ثم ret</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 03 — سهل</div>
-      <div class="ex-title">Infinite Loop — LED Blink</div>
-      <div class="ex-desc">اكتب برنامج يزيد عداد بـ 1 لانهاية. استخدم j للـ loop الأبدي. شاهد كيف تسير الـ registers في الـ simulator (اضغط Step مرات عديدة).</div>
+      <div class="ex-title">Infinite Loop</div>
+      <div class="ex-desc">اكتب برنامج يزيد عداد بـ 1 لانهاية باستخدام j. شاهد كيف تسير الـ registers بالـ Step.</div>
       <div class="ex-hint">li t0, 0 → loop: addi t0, t0, 1 → j loop</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 04 — متوسط</div>
       <div class="ex-title">دالة max(a, b)</div>
-      <div class="ex-desc">اكتب دالة max تأخذ parametersين وترجع الأكبر في a0. استدعِها مرتين: max(3,7)=7 ثم max(10,2)=10.</div>
-      <div class="ex-hint">بlt a0, a1, end → mv a0, a1 → end: ret</div>
+      <div class="ex-desc">اكتب دالة max ترجع الأكبر في a0. استدعِها مرتين: max(3,7)=7 ثم max(10,2)=10.</div>
+      <div class="ex-hint">blt a0, a1, end → mv a0, a1 → end: ret</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 05 — متوسط</div>
-      <div class="ex-title">Stack — حفظ واسترجاع Registers</div>
-      <div class="ex-desc">احفظ t0=10, t1=20, t2=30 في الـ Stack. بعدين غيّر قيمهم (t0=99, t1=88, t2=77). ثم أعدهم من الـ Stack وتحقق إن القيم رجعت 10, 20, 30.</div>
-      <div class="ex-hint">addi sp, sp, -12 → sw t0,8(sp) → sw t1,4(sp) → sw t2,0(sp) → بعد التغيير → lw بعكسي</div>
+      <div class="ex-title">Stack — حفظ واسترجاع</div>
+      <div class="ex-desc">احفظ t0=10, t1=20, t2=30 في الـ Stack. غيّر قيمهم (t0=99, t1=88, t2=77). أعدهم من Stack وتحقق إن القيم رجعت.</div>
+      <div class="ex-hint">addi sp, sp, -12 → sw t0,8(sp) → sw t1,4(sp) → sw t2,0(sp) ← ثم عكسي</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 06 — متوسط</div>
       <div class="ex-title">مجموع Array</div>
-      <div class="ex-desc">عندك array من 5 words: [10, 20, 30, 40, 50]. اكتب loop يحسب مجموعهم. استخدم slli للـ offset. النتيجة = 150.</div>
+      <div class="ex-desc">عندك array: [10, 20, 30, 40, 50]. اكتب loop يحسب مجموعهم باستخدام slli للـ offset. النتيجة = 150.</div>
       <div class="ex-hint">slli t3, t0, 2 = i×4 → add t3, t2, t3 → lw t3, 0(t3)</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 07 — متوسط</div>
       <div class="ex-title">دالة مع Prologue/Epilogue</div>
-      <div class="ex-desc">اكتب دالة sum_three(a, b, c) تجمع ثلاثة أرقام. استدعِ دالة add(a,b) من داخلها مرتين. لا تنس حفظ ra و s registers!</div>
+      <div class="ex-desc">اكتب دالة sum_three(a,b,c) تجمع ثلاثة أرقام باستدعاء دالة add(a,b) مرتين. لا تنس حفظ ra وs registers!</div>
       <div class="ex-hint">Prologue: sw ra + sw s0. mv s0, a2. call add. mv a1, s0. call add. Epilogue: lw ra + lw s0. ret</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 08 — صعب</div>
-      <div class="ex-title">دالة sum_array كـ Parameter</div>
-      <div class="ex-desc">اكتب دالة sum_array تأخذ (عنوان array, حجم) وترجع المجموع. استدعِها مع array من 5 أرقام: [1,2,3,4,5]. النتيجة = 15.</div>
+      <div class="ex-title">دالة sum_array</div>
+      <div class="ex-desc">اكتب دالة sum_array(عنوان, حجم) ترجع مجموع العناصر. استدعِها مع [1,2,3,4,5]. النتيجة = 15.</div>
       <div class="ex-hint">la a0, numbers → li a1, 5 → call sum_array. في الدالة: lw + addi a0,a0,4 + addi a1,a1,-1 + bnez</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 09 — صعب</div>
       <div class="ex-title">إيجاد الـ Maximum في Array</div>
-      <div class="ex-desc">اكتب دالة max_array(عنوان, حجم) تجد أكبر عنصر في array. جرّبها مع [3, 9, 1, 7, 2]. النتيجة = 9. استخدم blt للمقارنة.</div>
-      <div class="ex-hint">max = أول عنصر. loop: إذا العنصر الحالي > max → حدّث max. addi a0, a0, 4 للانتقال.</div>
+      <div class="ex-desc">اكتب دالة max_array(عنوان, حجم) تجد أكبر عنصر. جرّبها مع [3, 9, 1, 7, 2]. النتيجة = 9.</div>
+      <div class="ex-hint">max = أول عنصر. loop: إذا العنصر الحالي > max حدّث max. addi a0, a0, 4 للانتقال.</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 10 — تحدي 🏆</div>
-      <div class="ex-title">Caller vs Callee Save — اكتشف الـ Bug</div>
-      <div class="ex-desc">
-        الكود التالي فيه bug — اكتشفه وصلحه:<br>
-        <code style="font-family:var(--mono);color:var(--yellow);font-size:10px;">
-        li t0, 5 | li t1, 3 | li t2, 7 | mv a0, t0 | mv a1, t1 | call max | mv a1, t2 | call max
-        </code><br>
-        بعدين اكتب نسخة صحيحة تضمن إن t2 محفوظ.
-      </div>
+      <div class="ex-title">اكتشف الـ Bug</div>
+      <div class="ex-desc">الكود التالي فيه bug — اكتشفه وصلحه:<br><code style="font-family:var(--mono);color:var(--yellow);font-size:11px;">li t0,5 | li t1,3 | li t2,7 | mv a0,t0 | mv a1,t1 | call max | mv a1,t2 | call max</code></div>
       <div class="ex-hint">max ممكن تغيّر t2! الحل: احفظ t2 في Stack قبل أول call أو انقله لـ s0</div>
     </div>
 
