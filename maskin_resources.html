@@ -11,9 +11,9 @@
 html,body{background:url('https://raw.githubusercontent.com/husein690/roadmap/main/assets/kuggen.jpg') no-repeat center center fixed!important;background-size:cover!important;background-color:#030810!important;}
 body::before{content:''!important;position:fixed!important;inset:0!important;background:rgba(2,6,14,0.75)!important;z-index:0!important;display:block!important;pointer-events:none!important;}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
-body{color:var(--text);font-family:var(--sans);min-height:100vh;}
+body{color:var(--text);font-family:var(--sans);min-height:100vh;font-size:16px;}
 #glass-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
-.wrap{max-width:960px;margin:0 auto;padding:40px 24px 80px;position:relative;z-index:2;}
+.wrap{max-width:900px;margin:0 auto;padding:40px 24px 80px;position:relative;z-index:2;}
 .back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--tag);font-size:13px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--muted);margin-bottom:28px;transition:all .2s;}
 .back-btn:hover{color:var(--accent);border-color:var(--accent);}
 .hdr-tag{font-family:var(--tag);font-size:13px;color:var(--green);letter-spacing:5px;margin-bottom:12px;animation:blink 2.5s infinite;}
@@ -47,16 +47,16 @@ body{color:var(--text);font-family:var(--sans);min-height:100vh;}
 .card.purple::before{background:var(--purple);opacity:.6;}
 .card-title{font-family:var(--tag);font-size:13px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;text-transform:uppercase;}
 .card-title::before{content:'▸ ';color:var(--green);}
-.code{background:rgba(1,4,9,0.85);border:1px solid var(--border);border-right:3px solid var(--accent);padding:16px;font-family:var(--mono);font-size:13px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.8;margin:8px 0;}
+.code{background:rgba(1,4,9,0.85);border:1px solid var(--border);border-right:3px solid var(--accent);padding:16px;font-family:var(--mono);font-size:14px;color:var(--text);direction:ltr;text-align:left;overflow-x:auto;white-space:pre;line-height:1.8;margin:8px 0;}
 .code .cmd{color:var(--accent);}
 .code .ok{color:var(--green);}
 .code .err{color:var(--red);}
 .code .cmt{color:var(--muted);}
 .code .val{color:var(--yellow);}
 .code .purple{color:var(--purple);}
-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0;}
 th{background:rgba(1,4,9,0.8);color:var(--accent);padding:10px 14px;text-align:right;border:1px solid var(--border);font-family:var(--tag);font-size:12px;letter-spacing:1px;text-transform:uppercase;}
-td{padding:9px 14px;border:1px solid var(--border);color:var(--text);font-size:13px;vertical-align:top;}
+td{padding:9px 14px;border:1px solid var(--border);color:var(--text);font-size:14px;vertical-align:top;}
 tr:nth-child(even) td{background:rgba(8,15,28,0.5);}
 tr:nth-child(odd) td{background:rgba(1,4,9,0.4);}
 td.mono{font-family:var(--mono);color:var(--accent);}
@@ -167,33 +167,33 @@ td.danger{color:var(--red);}
 
   <div class="card">
     <div class="card-title">🔷 ما هو RISC-V؟</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       أي processor يحتاج "لغة" يفهمها — هاي اللغة تُسمى <strong style="color:var(--accent);">Instruction Set Architecture (ISA)</strong>. هي تحدد ثلاثة أشياء: الأوامر المتاحة، الـ Registers (المخازن المؤقتة)، وكيف يتعامل المعالج مع الذاكرة.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       شركات مثل Intel وARM تمتلك ISAs خاصة بها وتطلب رسوم ترخيص لاستخدامها. RISC-V مختلف تماماً — هو معيار مفتوح المصدر مجاني 100%، أي شركة أو فرد يقدر يبني عليه معالجه الخاص بدون دفع أي رسوم. هذا ما يجعله مهماً بشكل متزايد في الصناعة والبحث العلمي.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       مثال عملي: في هذا الكورس نستخدم لوحة MD307 التي تحتوي على microcontroller اسمه CH32V307 — وهو يعمل على RISC-V. كذلك Raspberry Pi Pico 2 يستخدم RISC-V. لأن كلاهم يستخدم نفس الـ ISA، يمكنهم تشغيل نفس الكود في بعض الحالات!
     </p>
   </div>
 
   <div class="card">
     <div class="card-title">🔧 Variants والـ Extensions</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       RISC-V مصمم ليكون مرناً — يستخدم في أجهزة صغيرة جداً وفي مراكز البيانات الضخمة. لذلك هو مقسم إلى <strong style="color:var(--accent);">Base Instruction Set</strong> يحتوي 47 أمر فقط، وعدد كبير من الـ Extensions الاختيارية.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       ريموت التلفزيون يحتاج RV32I فقط (32-bit base). الآلة الحاسبة تحتاج RV64I إضافة إلى F وD للـ floating point. الساعة الذكية تحتاج C (Compressed instructions) لتوفير الطاقة. أما المعالج في الـ lab (CH32V307) فيدعم RV32I + M + A + F + C + Zicsr + Zifencei — لكن في هذا الكورس نركز فقط على RV32I + M + Zicsr.
     </p>
   </div>
 
   <div class="card">
     <div class="card-title">⚖️ ISA vs ABI</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       الـ ISA يحدد ما يقدر الـ Hardware يفعله — "المعالج لازم يدعم 32 register". هذا مثل قانون البناء الذي يحدد كيف تُبنى المباني.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       الـ <strong style="color:var(--yellow);">ABI (Application Binary Interface)</strong> يحدد كيف يتواصل الكود مع بعضه على مستوى الـ Software — "لما دالة تُرجع نتيجة، حطها في register x10". هذا مثل قواعد السير الداخلية في المبنى. كلاهم ضروريان: ISA يضمن إن المعالج يفهم الأوامر، ABI يضمن إن برامج مختلفة تتعاون صح.
     </p>
     <div class="alert info">💡 في هذا الكورس، كل الكود يتبع الـ ABI لضمان توافقه مع كود C والمكتبات.</div>
@@ -201,13 +201,13 @@ td.danger{color:var(--red);}
 
   <div class="card">
     <div class="card-title">📦 الـ Registers في RV32I</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       أي معالج يدعم RV32I لازم يدعم 33 register: 32 general-purpose register (x0-x31) وواحد للـ Program Counter (pc). كل register عبارة عن 32-bit.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       أهم register هو <strong style="color:var(--green);">x0 (zero)</strong> — هذا register خاص مُقيَّد بالـ hardware ليكون صفراً دائماً. حتى لو حاولت تكتب فيه يُهمَل. هذا يبسّط الـ Hardware كثيراً ويتيح تقليص عدد الأوامر.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       الـ ABI يعطي كل register اسماً يصف وظيفته: t0-t6 للبيانات المؤقتة، a0-a7 للـ function arguments والنتائج، s0-s11 للقيم المحفوظة، sp للـ Stack Pointer، ra لعنوان العودة. يمكنك استخدام الاسم الرقمي (x5) أو اسم الـ ABI (t0) — كلاهم يشير لنفس الـ register.
     </p>
     <table>
@@ -224,10 +224,10 @@ td.danger{color:var(--red);}
 
   <div class="card">
     <div class="card-title">⚡ فلسفة RISC وأوامر Assembly</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       RISC تعني "Reduced Instruction Set Computer". الفلسفة بسيطة: أوامر قليلة وبسيطة أفضل من أوامر كثيرة ومعقدة. كل أمر بسيط يمكن تنفيذه في clock cycle واحد، مما يسهّل الـ Pipelining ويجعل الـ Hardware أبسط وأسرع وأرخص.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       Assembly Language هي أقرب لغة للمبرمج من الـ Machine Code. تحتوي على كل الأوامر الحقيقية، وأيضاً <strong style="color:var(--accent);">Pseudo Instructions</strong> وهي اختصارات يترجمها الـ Assembler تلقائياً لأوامر حقيقية. مثلاً <code style="color:var(--accent);">mv x1, x2</code> تتحول لـ <code style="color:var(--accent);">add x1, x2, x0</code> لأن RISC-V ما عنده أمر mv حقيقي — لكن جمع أي قيمة مع الصفر يعطي نفس النتيجة.
     </p>
     <div class="alert info">💡 ما تحتاج تحفظ كيف تتترجم الـ Pseudo Instructions — فقط تعرف كيف تستخدمها. الـ Assembler يتكفل بالباقي.</div>
@@ -235,10 +235,10 @@ td.danger{color:var(--red);}
 
   <div class="card">
     <div class="card-title">💾 Load/Store Architecture</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       في RISC-V، <strong style="color:var(--red);">الأوامر الحسابية تعمل على Registers فقط</strong> — لا تستطيع أن تجمع رقماً من الذاكرة مع register مباشرة. إذا أردت الحساب على بيانات في الذاكرة، لازم تمر بثلاث خطوات: أولاً Load (جيب البيانات من الذاكرة للـ register)، ثانياً احسب، ثالثاً Store (احفظ النتيجة من الـ register للذاكرة).
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       هذا يبدو أطول من Intel x86 الذي يسمح بـ <code style="color:var(--muted);">add r0, M(r1)</code> مباشرة، لكن البساطة تجعل الـ Hardware أسرع وأقل أخطاءً وأسهل في الـ Pipeline.
     </p>
     <table>
@@ -257,13 +257,13 @@ td.danger{color:var(--red);}
 
   <div class="card">
     <div class="card-title">📐 Sign Extension — ليش مهم؟</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       لنفترض عندنا متغيرين: <code style="color:var(--accent);">unsigned char a = 251</code> و <code style="color:var(--accent);">signed char b = -5</code>. في الذاكرة، كلاهم يُخزَّن كـ <code style="color:var(--yellow);">0xFB</code> — نفس الـ bits تماماً! إذاً كيف يعرف المعالج الفرق؟
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       الجواب هو في أمر الـ Load نفسه. عندما تستخدم <code style="color:var(--accent);">lbu</code> (Load Byte Unsigned)، المعالج يفهم الرقم كـ unsigned ويحشي الـ 24 bit المتبقية بأصفار → نتيجة: 0x000000FB = 251. أما <code style="color:var(--accent);">lb</code> (Load Byte Signed)، يشوف إن الـ MSB = 1 (يعني سالب في Two's Complement) ويحشي الـ 24 bit بـ 1 → نتيجة: 0xFFFFFFFB = -5.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       القاعدة: الـ MSB يحدد الإشارة في Two's Complement. Sign Extension يكرر الـ MSB في كل الـ bits الأعلى عشان يحافظ على نفس القيمة عند التكبير من 8-bit لـ 32-bit. هذا فهم وليس حفظ — لو شفت MSB=1 في رقم signed تعرف فوراً إنه سالب.
     </p>
     <div class="code"><span class="cmd">lbu</span> t0, 0(t0)  <span class="cmt"># zero extend → t0 = 0x000000FB = 251</span>
@@ -272,20 +272,20 @@ td.danger{color:var(--red);}
 
   <div class="card">
     <div class="card-title">⛓️ Instruction Cycle</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       عندما يعمل المعالج يمر بدورة ثابتة من 4 مراحل لكل أمر. أولاً <strong style="color:var(--green);">Fetch</strong>: يجيب الأمر من العنوان الموجود في PC ثم يزيد PC بـ 4 (لأن كل أمر = 4 bytes). ثانياً <strong style="color:var(--green);">Decode</strong>: يفهم الأمر — هل هو add؟ load؟ branch؟ ثالثاً <strong style="color:var(--green);">Execute</strong>: ينفذ العملية الفعلية. رابعاً <strong style="color:var(--green);">Writeback</strong>: يحفظ النتيجة في register أو ذاكرة.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       بالنظرية = 4 cycles لكل أمر. بالواقع = ~1 cycle لكل أمر بسبب Pipelining (خارج نطاق الكورس). المهم أن تفهم إن PC يزيد بـ 4 بعد كل أمر ويشير دائماً للأمر القادم.
     </p>
   </div>
 
   <div class="card">
     <div class="card-title">🔢 تحميل أرقام كبيرة — LUI + ADDI</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       أمر <code style="color:var(--accent);">addi</code> عنده 12-bit فقط للرقم الثابت (immediate)، يعني أكبر قيمة = 2047. لو أردنا تحميل رقم أكبر مثل 1,000,000 ماذا يحدث؟
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       الـ Assembler يقسمه تلقائياً لأمرين: <code style="color:var(--accent);">lui</code> (Load Upper Immediate) يضع الـ 20 bits العليا في الـ register، ثم <code style="color:var(--accent);">addi</code> يضيف الـ 12 bits السفلى. 1,000,000 بالـ hex = 0xF4240، فيصير: lui t0, 0xF4 (يضع 0x000F4000) ثم addi t0, t0, 0x240 (يضيف 576) = 0x000F4240 = 1,000,000.
     </p>
     <div class="alert info">💡 ما تحتاج تعمل هذا يدوياً — فقط اكتب li t0, 1000000 والـ Assembler يولد الأمرين تلقائياً.</div>
@@ -293,7 +293,7 @@ td.danger{color:var(--red);}
 
   <div class="card">
     <div class="card-title">📝 Variables في Assembly</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       بدل استخدام عناوين مطلقة، نستخدم labels لتعريف المتغيرات. في قسم <code style="color:var(--accent);">.data</code> نعرّف المتغيرات، وفي قسم <code style="color:var(--accent);">.text</code> نكتب الكود. للوصول لمتغير نستخدم <code style="color:var(--accent);">la</code> (Load Address) لنجيب عنوانه، ثم lb/lw لنقرأ قيمته.
     </p>
     <div class="code"><span class="cmd">la</span> x1, var_a      <span class="cmt"># x1 = عنوان var_a</span>
@@ -308,13 +308,13 @@ td.danger{color:var(--red);}
 
   <div class="card danger">
     <div class="card-title">⚠️ Memory Alignment — القاعدة الذهبية</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       لأن الذاكرة تعمل بكلمات (words) من 32-bit، هناك قيود على عناوين الوصول. إذا أردت قراءة word كاملة (4 bytes) من عنوان لا يقبل القسمة على 4، المعالج سيحتاج قراءتين منفصلتين مما يعقّد الـ Hardware — لذلك معظم المعماريات ومنها RISC-V تمنع ذلك وتعطي Exception.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       القاعدة: <strong style="color:var(--red);">lw/sw يحتاج عنوان يقبل القسمة على 4، lh/sh يحتاج قسمة على 2، lb/sb بدون قيود</strong>. مشكلة شائعة: تعرّف byte ثم word مباشرة بعدها — الـ byte يأخذ عنواناً واحداً، فالـ word ستبدأ من عنوان لا يقبل القسمة على 4 → كراش!
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       الحل: استخدم <code style="color:var(--accent);">.align 2</code> قبل أي word. هذا يجبر الـ Assembler على إدراج bytes فاضية عشان العنوان التالي يكون قابلاً للقسمة على 2² = 4.
     </p>
     <div class="code"><span class="cmt"># مشكلة:</span>
@@ -415,10 +415,10 @@ td.danger{color:var(--red);}
   <!-- JUMP INSTRUCTIONS -->
   <div class="card">
     <div class="card-title">🦘 Jump Instructions — jal و jalr</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       في RISC-V، عندنا أمرين فقط للقفز غير الشرطي: <code style="color:var(--accent);">jal</code> و <code style="color:var(--accent);">jalr</code>. كلمة "Link" في اسمهم تعني إنهم يحفظون عنوان العودة — يعني العنوان الجاي بعد الأمر الحالي — عشان نقدر نرجع بعد ما نخلص من القفز. هاد مهم جداً لما نستدعي دوال.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       الفرق بين <code style="color:var(--accent);">jal</code> و <code style="color:var(--accent);">jalr</code> هو إن jal تقفز بناءً على offset محسوب من مكانك الحالي (PC)، بينما jalr تقفز لعنوان موجود في register. jal تقدر تقفز +/- 1MB فقط (لأن الـ offset 20-bit)، لكن jalr تقدر تقفز لأي عنوان في الذاكرة — مفيد لو الكود في مكان بعيد مثل FLASH memory.
     </p>
     <table>
@@ -426,19 +426,19 @@ td.danger{color:var(--red);}
       <tr><td class="mono">jal rd, offset</td><td>Jump and Link</td><td>rd = PC+4 ثم PC += offset</td></tr>
       <tr><td class="mono">jalr rd, offset(rs1)</td><td>Jump and Link Register</td><td>rd = PC+4 ثم PC = rs1+offset</td></tr>
     </table>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-top:16px;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-top:16px;margin-bottom:16px;">
       المبرمج نادراً ما يستخدم jal و jalr مباشرة — بدلاً من ذلك نستخدم Pseudo Instructions أوضح وأسهل للقراءة. كلها تتحول تلقائياً لـ jal أو jalr:
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       <strong style="color:var(--green);">j label</strong> (Jump) يتحول لـ <code style="color:var(--accent);">jal zero, offset</code>. لاحظ إن العنوان يُكتب في zero — يعني يُهمَل — لأننا ما نحتاج نرجع. نستخدمه للـ loops الأبدية أو القفزات البسيطة.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       <strong style="color:var(--purple);">call label</strong> يتحول لـ <code style="color:var(--accent);">jal ra, offset</code>. هنا العنوان يُحفظ في ra (register x1) عشان نقدر نرجع بـ ret.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       <strong style="color:var(--yellow);">jr rs</strong> (Jump Register) يتحول لـ <code style="color:var(--accent);">jalr zero, 0(rs)</code>. مثل j بس العنوان في register — نستخدمه لو العنوان بعيد أكثر من 1MB.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       <strong style="color:var(--green);">ret</strong> (Return) يتحول لـ <code style="color:var(--accent);">jalr zero, 0(ra)</code>. يقفز للعنوان المحفوظ في ra — هكذا نرجع من الدالة.
     </p>
     <div class="alert info">💡 j و call و jr و ret = كلهم Pseudo Instructions. الـ Assembler يترجمهم لـ jal أو jalr تلقائياً. الفرق الوحيد: أي register يحفظون فيه عنوان العودة.</div>
@@ -448,10 +448,10 @@ td.danger{color:var(--red);}
   <!-- BRANCHING -->
   <div class="card">
     <div class="card-title">🔀 Branching — القفز الشرطي</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       Branching يعني القفز بناءً على شرط معين. على عكس بعض المعماريات القديمة التي تستخدم "flag register" منفصل، RISC-V يجعل الأمر أبسط: كل أمر branch يقارن مباشرة بين register-ين ويقرر القفز أم لا — هاد يبسّط الـ Hardware ويقلل مشاكل الـ Pipeline.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       عندنا 6 أوامر حقيقية فقط: beq, bne, blt, bge وإصداراتهم unsigned (bltu, bgeu). ربما تتساءل: ليش ما في bgt أو ble؟ الجواب بسيط — لأن (a &gt; b) = (b &lt; a). بمجرد عكس ترتيب الـ operands نحصل على نفس النتيجة. لهذا bgt هو Pseudo Instruction يتحول لـ blt مع عكس الترتيب.
     </p>
     <table>
@@ -461,10 +461,10 @@ td.danger{color:var(--red);}
       <tr><td class="mono warn">blt rs1, rs2, label</td><td>rs1 &lt; rs2 (signed)</td></tr>
       <tr><td class="mono warn">bge rs1, rs2, label</td><td>rs1 ≥ rs2 (signed)</td></tr>
     </table>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-top:16px;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-top:16px;margin-bottom:8px;">
       هناك أيضاً Pseudo Instructions للمقارنة مع الصفر مثل <code style="color:var(--accent);">beqz</code>, <code style="color:var(--accent);">bnez</code>, <code style="color:var(--accent);">bgtz</code>, <code style="color:var(--accent);">bltz</code> — كلها تتحول لأوامر حقيقية باستخدام zero register.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       <strong style="color:var(--red);">تنبيه مهم:</strong> ما في Immediate versions للـ branch! لا تكتب <code style="color:var(--red);">bgt t1, 5, end</code> — ما يشتغل. لازم تحط الرقم في register أولاً: <code style="color:var(--accent);">li t2, 5</code> ثم <code style="color:var(--accent);">bgt t1, t2, end</code>.
     </p>
 
@@ -485,13 +485,13 @@ td.danger{color:var(--red);}
   <!-- STACK -->
   <div class="card">
     <div class="card-title">📚 الـ Stack</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       الـ registers عددها 32 فقط. أحياناً نحتاج نحفظ قيماً مؤقتاً لما تنتهي الـ registers المتاحة. الـ Stack هو منطقة ذاكرة مخصصة لهذا الغرض. <code style="color:var(--accent);">sp</code> (register x2) يشير دايماً لرأس الـ Stack.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       قاعدة مهمة: الـ Stack ينمو للأسفل — يعني لما نضيف قيمة (PUSH) ننقص sp، ولما نأخذ قيمة (POP) نزيد sp. في RISC-V ما في أوامر PUSH وPOP مدمجة — نبنيها بأنفسنا من sw/lw وaddi.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       لماذا لازم ننقص sp <strong style="color:var(--yellow);">أولاً</strong> ثم نحفظ؟ لأن sp يشير دايماً لآخر قيمة محفوظة. لو حفظنا أولاً كتبنا فوق قيمة موجودة! إذاً لازم نحجز مكان جديد أولاً بتنقيص sp، ثم نكتب في المكان الجديد.
     </p>
     <div class="code"><span class="cmt"># PUSH t0 للـ Stack:</span>
@@ -518,13 +518,13 @@ td.danger{color:var(--red);}
   <!-- FUNCTION CALLS -->
   <div class="card purple">
     <div class="card-title">🔧 Function Calls — ABI Conventions</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       Assembly ما عندها functions مدمجة — نبنيها بأنفسنا. بس لو كل مبرمج عمل طريقته الخاصة، الكود ما يتوافق مع بعضه ولا مع مكتبات C. لهذا ABI يحدد قواعد موحدة يتبعها الجميع.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       القاعدة بسيطة: الـ parameters تُحط في <code style="color:var(--purple);">a0-a7</code> بالترتيب قبل استدعاء الدالة. النتيجة ترجع في <code style="color:var(--purple);">a0</code>. عنوان العودة يُحفظ تلقائياً في <code style="color:var(--purple);">ra</code> بأمر call. والدالة ترجع بأمر <code style="color:var(--purple);">ret</code>.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       لو نسينا ret ماذا يحدث؟ البرنامج لا يرجع للمكان الصح — يكمل ينفذ الكود الجاي في الذاكرة بشكل عشوائي مما يؤدي لنتائج غير متوقعة أو كراش.
     </p>
     <div class="code"><span class="cmt"># مثال: min(a, b) ترجع الأصغر</span>
@@ -543,16 +543,16 @@ td.danger{color:var(--red);}
   <!-- REGISTER SAVING -->
   <div class="card">
     <div class="card-title">💾 Register Saving — من يحفظ ماذا؟</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       المشكلة: لما نستدعي دالة، ما نعرف أي registers تغيّرها. لو وضعنا قيمة مهمة في t2 ثم استدعينا دالة تستخدم t2، القيمة ضاعت! 
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       الـ ABI يحل هاي المشكلة بتقسيم الـ registers لنوعين. الأول هو <strong style="color:var(--red);">Caller-Saved</strong> (t0-t6, a0-a7, ra) — هاي registers الدالة المستدعاة تقدر تغيّرها بحرية. إذا كنت تحتاجها بعد الـ call، أنت مسؤول عن حفظها. الثاني هو <strong style="color:var(--green);">Callee-Saved</strong> (s0-s11) — هاي registers الدالة ملزمة بحفظها قبل استخدامها وإرجاعها قبل ret. مضمون ما تتغير بعد الـ call.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       هاد الضمان مش تقني — هو اتفاقية (convention). أي دالة مكتوبة صح تلتزم بهاد القانون. لو دالة ما تتبع ABI = هي المخطئة وليس كودك.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:8px;">
       <strong style="color:var(--yellow);">الحل 1 — Stack:</strong> احفظ t2 قبل الـ call في Stack وأعده بعدها.
       <br><strong style="color:var(--green);">الحل 2 — s registers (أنظف):</strong> انقل القيمة لـ s0 قبل الـ call. الدالة ملزمة بعدم تغيير s0.
     </p>
@@ -572,10 +572,10 @@ td.danger{color:var(--red);}
   <!-- PROLOGUE/EPILOGUE -->
   <div class="card">
     <div class="card-title">📋 Prologue & Epilogue — دوال متداخلة</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       لما دالة تستدعي دالة ثانية، <code style="color:var(--accent);">call</code> سيكتب فوق ra! هذا يعني إنك لو رجعت بـ ret ستقفز للمكان الغلط. الحل: احفظ ra في الـ Stack في بداية الدالة (Prologue) وأعده قبل ret (Epilogue).
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       الأسلوب الأنظف لكتابة الدوال: استخدم t registers للحسابات المؤقتة. لو تحتاج قيمة تبقى بعد call استخدم s register. ولو استخدمت s register احفظه في Prologue وأعده في Epilogue.
     </p>
     <div class="code"><span class="ok">max_of_three:</span>
@@ -600,10 +600,10 @@ td.danger{color:var(--red);}
   <!-- ARRAYS -->
   <div class="card">
     <div class="card-title">📋 Arrays في Assembly</div>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       الـ Array هو قائمة من متغيرات نفس النوع مخزنة بشكل متتالي في الذاكرة. للوصول لعنصر معين نحتاج عنوان البداية وال offset (الفرق بالـ bytes) من ذلك العنوان.
     </p>
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-bottom:16px;">
       لو الـ array من bytes، الـ offset = رقم العنصر مباشرة. لو من words (4 bytes لكل عنصر)، الـ offset = رقم العنصر × 4. هاد ضروري لأن الذاكرة عبارة عن سلسلة bytes وكل word تأخذ 4 منها.
     </p>
     <div class="code"><span class="cmt"># تعريف arrays:</span>
@@ -620,7 +620,7 @@ td.danger{color:var(--red);}
 <span class="cmd">lw</span> t1, 4(t0)    <span class="cmt"># numbers[1]  (1×4)</span>
 <span class="cmd">lw</span> t1, 16(t0)   <span class="cmt"># numbers[4]  (4×4)</span></div>
 
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-top:16px;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-top:16px;margin-bottom:8px;">
       للتنقل بين عناصر array في loop، نحسب الـ offset بضرب index × حجم العنصر. بدل mul نستخدم <code style="color:var(--accent);">slli</code> (Shift Left) لأن الضرب بـ 4 = shift left بـ 2. هاد أسرع لأن shift أبسط للـ Hardware.
     </p>
     <div class="code"><span class="cmt"># loop لحساب مجموع 10 أرقام:</span>
@@ -640,7 +640,7 @@ td.danger{color:var(--red);}
 <span class="val">.align 2</span>
 <span class="ok">numbers:</span> <span class="val">.word 2,4,6,8,0,1,2,3,4,5</span></div>
 
-    <p style="font-size:13px;color:#ffffff;line-height:2;margin-top:16px;margin-bottom:8px;">
+    <p style="font-size:15px;color:#ffffff;line-height:2.1;margin-top:16px;margin-bottom:8px;">
       لما نرسل array لدالة، ما نرسل العناصر كلها — بدل ذلك نرسل <strong style="color:var(--accent);">العنوان والحجم</strong>. الدالة تستخدم الـ addi على الـ base address للتنقل بين العناصر.
     </p>
     <div class="code"><span class="ok">main:</span>
