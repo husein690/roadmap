@@ -165,259 +165,169 @@ td.danger{color:var(--red);}
 
   <div class="sec-label">► المحاضرة 2 — RISC-V ISA Deep Dive</div>
 
-  <!-- PART 1: ما هو RISC-V -->
   <div class="card">
     <div class="card-title">🔷 ما هو RISC-V؟</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:14px;">
-      أي processor يحتاج "لغة" يفهمها — هاي اللغة اسمها <strong style="color:var(--accent);">Instruction Set Architecture (ISA)</strong>.
-      تحدد الأوامر المتاحة، الـ Registers، وكيف يتعامل مع الذاكرة.
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      أي processor يحتاج "لغة" يفهمها — هاي اللغة تُسمى <strong style="color:var(--accent);">Instruction Set Architecture (ISA)</strong>. هي تحدد ثلاثة أشياء: الأوامر المتاحة، الـ Registers (المخازن المؤقتة)، وكيف يتعامل المعالج مع الذاكرة.
     </p>
-    <div class="grid-2">
-      <div class="info-box">
-        <div class="info-box-title">Intel/ARM (مغلق)</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
-          شركات خاصة<br>
-          لازم تدفع رسوم ترخيص<br>
-          ما تقدر تعدّل عليه
-        </div>
-      </div>
-      <div class="info-box">
-        <div class="info-box-title">RISC-V (مفتوح) ✅</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
-          مجاني 100%<br>
-          أي شركة تقدر تبني عليه<br>
-          قابل للتعديل والتوسيع
-        </div>
-      </div>
-    </div>
-    <div class="alert info">💡 مثال: CH32V307 (الـ lab kit) + Raspberry Pi Pico 2 = كلاهم RISC-V → نفس الكود يشتغل على الاثنين!</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      شركات مثل Intel وARM تمتلك ISAs خاصة بها وتطلب رسوم ترخيص لاستخدامها. RISC-V مختلف تماماً — هو معيار مفتوح المصدر مجاني 100%، أي شركة أو فرد يقدر يبني عليه معالجه الخاص بدون دفع أي رسوم. هذا ما يجعله مهماً بشكل متزايد في الصناعة والبحث العلمي.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      مثال عملي: في هذا الكورس نستخدم لوحة MD307 التي تحتوي على microcontroller اسمه CH32V307 — وهو يعمل على RISC-V. كذلك Raspberry Pi Pico 2 يستخدم RISC-V. لأن كلاهم يستخدم نفس الـ ISA، يمكنهم تشغيل نفس الكود في بعض الحالات!
+    </p>
   </div>
 
-  <!-- PART 2: Variants -->
   <div class="card">
     <div class="card-title">🔧 Variants والـ Extensions</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-      RISC-V = <strong style="color:var(--accent);">Base (47 أمر فقط)</strong> + Extensions اختيارية حسب الحاجة.
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      RISC-V مصمم ليكون مرناً — يستخدم في أجهزة صغيرة جداً وفي مراكز البيانات الضخمة. لذلك هو مقسم إلى <strong style="color:var(--accent);">Base Instruction Set</strong> يحتوي 47 أمر فقط، وعدد كبير من الـ Extensions الاختيارية.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      ريموت التلفزيون يحتاج RV32I فقط (32-bit base). الآلة الحاسبة تحتاج RV64I إضافة إلى F وD للـ floating point. الساعة الذكية تحتاج C (Compressed instructions) لتوفير الطاقة. أما المعالج في الـ lab (CH32V307) فيدعم RV32I + M + A + F + C + Zicsr + Zifencei — لكن في هذا الكورس نركز فقط على RV32I + M + Zicsr.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚖️ ISA vs ABI</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      الـ ISA يحدد ما يقدر الـ Hardware يفعله — "المعالج لازم يدعم 32 register". هذا مثل قانون البناء الذي يحدد كيف تُبنى المباني.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      الـ <strong style="color:var(--yellow);">ABI (Application Binary Interface)</strong> يحدد كيف يتواصل الكود مع بعضه على مستوى الـ Software — "لما دالة تُرجع نتيجة، حطها في register x10". هذا مثل قواعد السير الداخلية في المبنى. كلاهم ضروريان: ISA يضمن إن المعالج يفهم الأوامر، ABI يضمن إن برامج مختلفة تتعاون صح.
+    </p>
+    <div class="alert info">💡 في هذا الكورس، كل الكود يتبع الـ ABI لضمان توافقه مع كود C والمكتبات.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📦 الـ Registers في RV32I</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      أي معالج يدعم RV32I لازم يدعم 33 register: 32 general-purpose register (x0-x31) وواحد للـ Program Counter (pc). كل register عبارة عن 32-bit.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      أهم register هو <strong style="color:var(--green);">x0 (zero)</strong> — هذا register خاص مُقيَّد بالـ hardware ليكون صفراً دائماً. حتى لو حاولت تكتب فيه يُهمَل. هذا يبسّط الـ Hardware كثيراً ويتيح تقليص عدد الأوامر.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      الـ ABI يعطي كل register اسماً يصف وظيفته: t0-t6 للبيانات المؤقتة، a0-a7 للـ function arguments والنتائج، s0-s11 للقيم المحفوظة، sp للـ Stack Pointer، ra لعنوان العودة. يمكنك استخدام الاسم الرقمي (x5) أو اسم الـ ABI (t0) — كلاهم يشير لنفس الـ register.
     </p>
     <table>
-      <tr><th>الجهاز</th><th>Extensions المطلوبة</th><th>السبب</th></tr>
-      <tr><td>ريموت تلفزيون</td><td class="mono">RV32I</td><td>بسيط، ما يحتاج أكثر</td></tr>
-      <tr><td>آلة حاسبة</td><td class="mono">RV64I + F + D</td><td>64-bit + floating point</td></tr>
-      <tr><td>ساعة ذكية</td><td class="mono">+ C (Compressed)</td><td>توفير battery</td></tr>
-      <tr><td class="warn">الـ Lab (CH32V307)</td><td class="mono warn">RV32I + M + A + F + C + Zicsr</td><td>نركز على RV32I + M + Zicsr فقط</td></tr>
+      <tr><th>Register</th><th>ABI Name</th><th>الاستخدام</th></tr>
+      <tr><td class="mono">x0</td><td class="mono safe">zero</td><td>دايماً = 0 (hardwired!)</td></tr>
+      <tr><td class="mono">x1</td><td class="mono">ra</td><td>Return Address</td></tr>
+      <tr><td class="mono">x2</td><td class="mono">sp</td><td>Stack Pointer</td></tr>
+      <tr><td class="mono">x5-x7</td><td class="mono warn">t0-t2</td><td>Temporary — مش محفوظ بعد الدالة</td></tr>
+      <tr><td class="mono">x10-x17</td><td class="mono" style="color:var(--purple);">a0-a7</td><td>Arguments / Return Value ⭐</td></tr>
+      <tr><td class="mono">x18-x27</td><td class="mono safe">s2-s11</td><td>Saved Registers — محفوظة بعد الدالة</td></tr>
+      <tr><td class="mono" style="color:var(--red);">pc</td><td class="mono" style="color:var(--red);">pc</td><td>Program Counter — عنوان الأمر الجاي</td></tr>
     </table>
   </div>
 
-  <!-- PART 3: ISA vs ABI -->
   <div class="card">
-    <div class="card-title">⚖️ ISA vs ABI — الفرق المهم</div>
-    <div class="grid-2">
-      <div class="info-box">
-        <div class="info-box-title">ISA = قواعد الـ Hardware</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
-          "المعالج لازم يدعم 32 register"<br>
-          يحدد ما يقدر الـ processor يفعله<br>
-          <span style="color:var(--accent);">= قانون البناء</span>
-        </div>
-      </div>
-      <div class="info-box">
-        <div class="info-box-title">ABI = قواعد الـ Software</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
-          "النتيجة دايماً ترجع في x10 (a0)"<br>
-          يحدد كيف يتواصل الكود مع بعضه<br>
-          <span style="color:var(--yellow);">= قانون السير الداخلي</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PART 4: Registers -->
-  <div class="card">
-    <div class="card-title">📦 الـ 33 Registers في RV32I</div>
-    <table>
-      <tr><th>Register</th><th>ABI Name</th><th>الاستخدام</th><th>ملاحظة</th></tr>
-      <tr><td class="mono">x0</td><td class="mono safe">zero</td><td>دايماً = 0</td><td class="safe">hardwired! لا يتغير أبداً</td></tr>
-      <tr><td class="mono">x1</td><td class="mono">ra</td><td>Return Address</td><td>عنوان العودة من الدالة</td></tr>
-      <tr><td class="mono">x2</td><td class="mono">sp</td><td>Stack Pointer</td><td>رأس الـ Stack</td></tr>
-      <tr><td class="mono">x3</td><td class="mono">gp</td><td>Global Pointer</td><td></td></tr>
-      <tr><td class="mono">x4</td><td class="mono">tp</td><td>Thread Pointer</td><td></td></tr>
-      <tr><td class="mono">x5-x7</td><td class="mono warn">t0-t2</td><td>Temporary</td><td class="warn">مؤقت — مش محفوظ بعد الدالة</td></tr>
-      <tr><td class="mono">x8</td><td class="mono">s0/fp</td><td>Frame Pointer</td><td>محفوظ</td></tr>
-      <tr><td class="mono">x9</td><td class="mono">s1</td><td>Saved Register</td><td>محفوظ</td></tr>
-      <tr><td class="mono">x10-x17</td><td class="mono" style="color:var(--purple);">a0-a7</td><td>Arguments / Return Value</td><td class="purple">⭐ الأهم للدوال!</td></tr>
-      <tr><td class="mono">x18-x27</td><td class="mono">s2-s11</td><td>Saved Registers</td><td>محفوظة بعد الدالة</td></tr>
-      <tr><td class="mono">x28-x31</td><td class="mono warn">t3-t6</td><td>Temporary</td><td class="warn">مؤقت</td></tr>
-      <tr><td class="mono" style="color:var(--red);">pc</td><td class="mono" style="color:var(--red);">pc</td><td>Program Counter</td><td class="danger">عنوان الأمر الجاي دايماً</td></tr>
-    </table>
-    <div class="alert info">💡 x0 (zero) دايماً = 0 حتى لو حاولت تكتب فيه — هاد يبسّط الـ Hardware كثيراً!</div>
-  </div>
-
-  <!-- PART 5: RISC Philosophy -->
-  <div class="card">
-    <div class="card-title">⚡ فلسفة RISC — ليش 47 أمر فقط؟</div>
-    <div class="grid-2">
-      <div class="info-box">
-        <div class="info-box-title">RISC (RISC-V, ARM)</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
-          أوامر بسيطة وقليلة<br>
-          كل أمر = cycle وحد<br>
-          Hardware بسيط = أسرع وأرخص<br>
-          Pipeline أسهل
-        </div>
-      </div>
-      <div class="info-box">
-        <div class="info-box-title">CISC (Intel x86)</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-top:6px;">
-          أوامر معقدة وكثيرة<br>
-          أمر وحد ممكن يأخذ cycles<br>
-          Hardware معقد<br>
-          صعب على الـ Pipeline
-        </div>
-      </div>
-    </div>
-    <div class="alert warning">⚠️ RISC-V ما عنده أمر mv حقيقي! المترجم يحوّله: mv x1, x2 → add x1, x2, x0</div>
-  </div>
-
-  <!-- PART 6: Pseudo Instructions -->
-  <div class="card">
-    <div class="card-title">🔄 Pseudo Instructions — اختصارات المبرمج</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-      Pseudo Instructions = اختصارات تكتبها أنت، الـ Assembler يترجمها تلقائياً لأوامر حقيقية.
-      <strong style="color:var(--green);">ما تحتاج تحفظ كيف تتترجم</strong> — فقط تعرف كيف تستخدمها!
+    <div class="card-title">⚡ فلسفة RISC وأوامر Assembly</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      RISC تعني "Reduced Instruction Set Computer". الفلسفة بسيطة: أوامر قليلة وبسيطة أفضل من أوامر كثيرة ومعقدة. كل أمر بسيط يمكن تنفيذه في clock cycle واحد، مما يسهّل الـ Pipelining ويجعل الـ Hardware أبسط وأسرع وأرخص.
     </p>
-    <table>
-      <tr><th>Pseudo Instruction</th><th>تتحول لـ</th><th>الوظيفة</th></tr>
-      <tr><td class="mono">mv rd, rs</td><td class="mono">add rd, rs, x0</td><td>نسخ قيمة register</td></tr>
-      <tr><td class="mono">li rd, imm</td><td class="mono">addi rd, x0, imm (أو lui+addi)</td><td>تحميل رقم ثابت</td></tr>
-      <tr><td class="mono">neg rd, rs</td><td class="mono">sub rd, x0, rs</td><td>عكس الإشارة</td></tr>
-      <tr><td class="mono">nop</td><td class="mono">addi x0, x0, 0</td><td>لا عملية</td></tr>
-      <tr><td class="mono">bgtz rs, label</td><td class="mono">blt x0, rs, label</td><td>Jump if > 0</td></tr>
-      <tr><td class="mono">beqz rs, label</td><td class="mono">beq rs, x0, label</td><td>Jump if = 0</td></tr>
-      <tr><td class="mono">la rd, symbol</td><td class="mono">lui + addi</td><td>تحميل عنوان متغير</td></tr>
-    </table>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      Assembly Language هي أقرب لغة للمبرمج من الـ Machine Code. تحتوي على كل الأوامر الحقيقية، وأيضاً <strong style="color:var(--accent);">Pseudo Instructions</strong> وهي اختصارات يترجمها الـ Assembler تلقائياً لأوامر حقيقية. مثلاً <code style="color:var(--accent);">mv x1, x2</code> تتحول لـ <code style="color:var(--accent);">add x1, x2, x0</code> لأن RISC-V ما عنده أمر mv حقيقي — لكن جمع أي قيمة مع الصفر يعطي نفس النتيجة.
+    </p>
+    <div class="alert info">💡 ما تحتاج تحفظ كيف تتترجم الـ Pseudo Instructions — فقط تعرف كيف تستخدمها. الـ Assembler يتكفل بالباقي.</div>
   </div>
 
-  <!-- PART 7: Load/Store -->
   <div class="card">
     <div class="card-title">💾 Load/Store Architecture</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-      المبدأ الأساسي: <strong style="color:var(--red);">الأوامر الحسابية تشتغل على Registers فقط!</strong>
-      الذاكرة = فقط عبر Load/Store.
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      في RISC-V، <strong style="color:var(--red);">الأوامر الحسابية تعمل على Registers فقط</strong> — لا تستطيع أن تجمع رقماً من الذاكرة مع register مباشرة. إذا أردت الحساب على بيانات في الذاكرة، لازم تمر بثلاث خطوات: أولاً Load (جيب البيانات من الذاكرة للـ register)، ثانياً احسب، ثالثاً Store (احفظ النتيجة من الـ register للذاكرة).
     </p>
-    <div class="grid-2">
-      <div class="info-box">
-        <div class="info-box-title">x86 (Intel) — معقد</div>
-        <div class="code" style="margin-top:8px;">add r0, M(r1)
-<span class="cmt"># جمع مع الذاكرة مباشرة!</span></div>
-      </div>
-      <div class="info-box">
-        <div class="info-box-title">RISC-V — بسيط ✅</div>
-        <div class="code" style="margin-top:8px;"><span class="cmd">lw</span>  x3, 0(x2)  <span class="cmt"># جيب من الذاكرة</span>
-<span class="cmd">add</span> x1, x1, x3 <span class="cmt"># احسب</span></div>
-      </div>
-    </div>
-
-    <div class="sec-label" style="margin-top:16px;">► أوامر Load</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      هذا يبدو أطول من Intel x86 الذي يسمح بـ <code style="color:var(--muted);">add r0, M(r1)</code> مباشرة، لكن البساطة تجعل الـ Hardware أسرع وأقل أخطاءً وأسهل في الـ Pipeline.
+    </p>
     <table>
-      <tr><th>الأمر</th><th>الحجم</th><th>النوع</th><th>النتيجة</th></tr>
+      <tr><th>الأمر</th><th>الحجم</th><th>النوع</th><th>الوصف</th></tr>
       <tr><td class="mono">lb rd, offset(rs1)</td><td>8-bit</td><td class="danger">signed</td><td>sign extend → 32-bit</td></tr>
       <tr><td class="mono">lh rd, offset(rs1)</td><td>16-bit</td><td class="danger">signed</td><td>sign extend → 32-bit</td></tr>
       <tr><td class="mono">lw rd, offset(rs1)</td><td>32-bit</td><td>—</td><td>كامل</td></tr>
       <tr><td class="mono">lbu rd, offset(rs1)</td><td>8-bit</td><td class="safe">unsigned</td><td>zero extend → 32-bit</td></tr>
       <tr><td class="mono">lhu rd, offset(rs1)</td><td>16-bit</td><td class="safe">unsigned</td><td>zero extend → 32-bit</td></tr>
+      <tr><td class="mono">sb rs2, offset(rs1)</td><td>8-bit</td><td>—</td><td>يكتب أدنى byte</td></tr>
+      <tr><td class="mono">sh rs2, offset(rs1)</td><td>16-bit</td><td>—</td><td>يكتب أدنى halfword</td></tr>
+      <tr><td class="mono">sw rs2, offset(rs1)</td><td>32-bit</td><td>—</td><td>يكتب الكلمة كاملة</td></tr>
     </table>
-
-    <div class="sec-label">► أوامر Store</div>
-    <table>
-      <tr><th>الأمر</th><th>الحجم</th><th>ملاحظة</th></tr>
-      <tr><td class="mono">sb rs2, offset(rs1)</td><td>8-bit</td><td>يكتب أدنى byte فقط</td></tr>
-      <tr><td class="mono">sh rs2, offset(rs1)</td><td>16-bit</td><td>يكتب أدنى halfword</td></tr>
-      <tr><td class="mono">sw rs2, offset(rs1)</td><td>32-bit</td><td>يكتب الكلمة كاملة</td></tr>
-    </table>
-    <div class="alert warning">⚠️ Store: الـ operand الأول هو المصدر (rs2) مش الوجهة! عكس بقية الأوامر.</div>
+    <div class="alert warning">⚠️ في أوامر Store، الـ operand الأول هو المصدر (rs2) مش الوجهة — عكس بقية الأوامر!</div>
   </div>
 
-  <!-- PART 8: Sign Extension -->
   <div class="card">
     <div class="card-title">📐 Sign Extension — ليش مهم؟</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-      في الذاكرة: <code style="color:var(--accent);">unsigned char a = 251</code> و <code style="color:var(--accent);">signed char b = -5</code> — كلاهم يُخزَّن كـ <code style="color:var(--yellow);">0xFB</code>!
-      لما تحمّل للـ register (32-bit) لازم تحدد النوع:
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      لنفترض عندنا متغيرين: <code style="color:var(--accent);">unsigned char a = 251</code> و <code style="color:var(--accent);">signed char b = -5</code>. في الذاكرة، كلاهم يُخزَّن كـ <code style="color:var(--yellow);">0xFB</code> — نفس الـ bits تماماً! إذاً كيف يعرف المعالج الفرق؟
     </p>
-    <div class="code"><span class="cmt"># -5 بالـ 8-bit = 1111 1011 = 0xFB</span>
-<span class="cmt"># MSB = 1 → سالب (Two's Complement)</span>
-
-<span class="cmd">lbu</span> t0, 0(t0)  <span class="cmt"># zero extend → t0 = 0x000000FB = 251 ❌ خطأ للسالب!</span>
-<span class="cmd">lb</span>  t1, 0(t1)  <span class="cmt"># sign extend → t1 = 0xFFFFFFFB = -5  ✅ صح!</span></div>
-    <div class="alert info">💡 القاعدة: MSB=1 → سالب → sign extend يحشي بـ 1. MSB=0 → موجب → يحشي بـ 0.</div>
-    <div class="alert success">✅ Sign Extension = محافظة على المعنى عند التكبير من 8-bit أو 16-bit لـ 32-bit.</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      الجواب هو في أمر الـ Load نفسه. عندما تستخدم <code style="color:var(--accent);">lbu</code> (Load Byte Unsigned)، المعالج يفهم الرقم كـ unsigned ويحشي الـ 24 bit المتبقية بأصفار → نتيجة: 0x000000FB = 251. أما <code style="color:var(--accent);">lb</code> (Load Byte Signed)، يشوف إن الـ MSB = 1 (يعني سالب في Two's Complement) ويحشي الـ 24 bit بـ 1 → نتيجة: 0xFFFFFFFB = -5.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      القاعدة: الـ MSB يحدد الإشارة في Two's Complement. Sign Extension يكرر الـ MSB في كل الـ bits الأعلى عشان يحافظ على نفس القيمة عند التكبير من 8-bit لـ 32-bit. هذا فهم وليس حفظ — لو شفت MSB=1 في رقم signed تعرف فوراً إنه سالب.
+    </p>
+    <div class="code"><span class="cmd">lbu</span> t0, 0(t0)  <span class="cmt"># zero extend → t0 = 0x000000FB = 251</span>
+<span class="cmd">lb</span>  t1, 0(t1)  <span class="cmt"># sign extend → t1 = 0xFFFFFFFB = -5</span></div>
   </div>
 
-  <!-- PART 9: Instruction Cycle -->
   <div class="card">
-    <div class="card-title">⛓️ Instruction Cycle — كيف ينفذ المعالج الكود</div>
-    <div class="code"><span class="cmt"># كل cycle يمر بـ 4 مراحل:</span>
-
-<span class="ok">1. FETCH</span>    ← جيب الأمر من عنوان PC
-        ↓ PC += 4 (كل أمر = 4 bytes)
-<span class="ok">2. DECODE</span>   ← فهّم الأمر (add؟ load؟ branch؟)
-        ↓
-<span class="ok">3. EXECUTE</span>  ← نفّذ العملية (ALU يحسب)
-        ↓
-<span class="ok">4. WRITEBACK</span>← احفظ النتيجة في register أو ذاكرة</div>
-    <div class="alert info">💡 بالنظرية = 4 cycles/أمر. بالواقع = ~1 cycle/أمر بسبب Pipelining (خارج نطاق الكورس).</div>
+    <div class="card-title">⛓️ Instruction Cycle</div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      عندما يعمل المعالج يمر بدورة ثابتة من 4 مراحل لكل أمر. أولاً <strong style="color:var(--green);">Fetch</strong>: يجيب الأمر من العنوان الموجود في PC ثم يزيد PC بـ 4 (لأن كل أمر = 4 bytes). ثانياً <strong style="color:var(--green);">Decode</strong>: يفهم الأمر — هل هو add؟ load؟ branch؟ ثالثاً <strong style="color:var(--green);">Execute</strong>: ينفذ العملية الفعلية. رابعاً <strong style="color:var(--green);">Writeback</strong>: يحفظ النتيجة في register أو ذاكرة.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      بالنظرية = 4 cycles لكل أمر. بالواقع = ~1 cycle لكل أمر بسبب Pipelining (خارج نطاق الكورس). المهم أن تفهم إن PC يزيد بـ 4 بعد كل أمر ويشير دائماً للأمر القادم.
+    </p>
   </div>
 
-  <!-- PART 10: Large Constants -->
   <div class="card">
     <div class="card-title">🔢 تحميل أرقام كبيرة — LUI + ADDI</div>
-    <p style="font-size:12px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-      <code style="color:var(--accent);">addi</code> عندها 12-bit فقط للـ immediate → أكبر قيمة = 2047.
-      لو الرقم أكبر، الـ assembler يقسمه لأمرين:
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      أمر <code style="color:var(--accent);">addi</code> عنده 12-bit فقط للرقم الثابت (immediate)، يعني أكبر قيمة = 2047. لو أردنا تحميل رقم أكبر مثل 1,000,000 ماذا يحدث؟
     </p>
-    <div class="code"><span class="cmt"># li t0, 10 → يكفي 12-bit:</span>
-<span class="cmd">addi</span> t0, zero, 10
-
-<span class="cmt"># li t0, 1000000 → ما يكفي! يتحول لـ:</span>
-<span class="cmd">lui</span>  t0, 0xf4       <span class="cmt"># حط 0xf4 في الـ 20 bits العليا → t0 = 0x000F4000</span>
-<span class="cmd">addi</span> t0, t0, 0x240  <span class="cmt"># أضف الـ 12 bits السفلى → t0 = 0x000F4240 = 1,000,000</span></div>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      الـ Assembler يقسمه تلقائياً لأمرين: <code style="color:var(--accent);">lui</code> (Load Upper Immediate) يضع الـ 20 bits العليا في الـ register، ثم <code style="color:var(--accent);">addi</code> يضيف الـ 12 bits السفلى. 1,000,000 بالـ hex = 0xF4240، فيصير: lui t0, 0xF4 (يضع 0x000F4000) ثم addi t0, t0, 0x240 (يضيف 576) = 0x000F4240 = 1,000,000.
+    </p>
+    <div class="alert info">💡 ما تحتاج تعمل هذا يدوياً — فقط اكتب li t0, 1000000 والـ Assembler يولد الأمرين تلقائياً.</div>
   </div>
 
-  <!-- PART 11: Variables -->
   <div class="card">
     <div class="card-title">📝 Variables في Assembly</div>
-    <div class="code"><span class="cmt"># بدل العناوين المطلقة، استخدم labels:</span>
-   <span class="cmd">la</span> x1, var_a      <span class="cmt"># x1 = عنوان var_a</span>
-   <span class="cmd">lb</span> x2, 0(x1)      <span class="cmt"># x2 = قيمة var_a = 10</span>
-   <span class="cmd">la</span> x1, var_b
-   <span class="cmd">lb</span> x3, 0(x1)      <span class="cmt"># x3 = قيمة var_b = 20</span>
-   <span class="cmd">add</span> x1, x2, x3    <span class="cmt"># x1 = 30</span>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      بدل استخدام عناوين مطلقة، نستخدم labels لتعريف المتغيرات. في قسم <code style="color:var(--accent);">.data</code> نعرّف المتغيرات، وفي قسم <code style="color:var(--accent);">.text</code> نكتب الكود. للوصول لمتغير نستخدم <code style="color:var(--accent);">la</code> (Load Address) لنجيب عنوانه، ثم lb/lw لنقرأ قيمته.
+    </p>
+    <div class="code"><span class="cmd">la</span> x1, var_a      <span class="cmt"># x1 = عنوان var_a</span>
+<span class="cmd">lb</span> x2, 0(x1)      <span class="cmt"># x2 = قيمة var_a = 10</span>
+<span class="cmd">la</span> x1, var_b
+<span class="cmd">lb</span> x3, 0(x1)      <span class="cmt"># x3 = قيمة var_b = 20</span>
+<span class="cmd">add</span> x1, x2, x3   <span class="cmt"># x1 = 30</span>
 
 <span class="ok">var_a:</span> <span class="val">.byte 10</span>
 <span class="ok">var_b:</span> <span class="val">.byte 20</span></div>
   </div>
 
-  <!-- PART 12: Memory Alignment -->
   <div class="card danger">
     <div class="card-title">⚠️ Memory Alignment — القاعدة الذهبية</div>
-    <table>
-      <tr><th>الأمر</th><th>الحجم</th><th>شرط العنوان</th><th>مثال صح</th><th>مثال خطأ</th></tr>
-      <tr><td class="mono">lw / sw</td><td>4 bytes</td><td class="danger">يقسم على 4</td><td class="mono safe">0x100</td><td class="mono danger">0x102 ❌ كراش!</td></tr>
-      <tr><td class="mono">lh / sh</td><td>2 bytes</td><td class="warn">يقسم على 2</td><td class="mono safe">0x102</td><td class="mono danger">0x101 ❌ كراش!</td></tr>
-      <tr><td class="mono">lb / sb</td><td>1 byte</td><td class="safe">أي عنوان</td><td class="mono safe">0x101</td><td class="mono safe">0x103 ✅</td></tr>
-    </table>
-    <div class="code"><span class="cmt"># مشكلة شائعة:</span>
-<span class="ok">var_a:</span> <span class="val">.byte 10</span>   <span class="cmt"># عنوانه 0x100 ✅</span>
-<span class="ok">var_b:</span> <span class="val">.word 20</span>   <span class="cmt"># عنوانه 0x101 ❌ كراش! (word لازم يقسم على 4)</span>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      لأن الذاكرة تعمل بكلمات (words) من 32-bit، هناك قيود على عناوين الوصول. إذا أردت قراءة word كاملة (4 bytes) من عنوان لا يقبل القسمة على 4، المعالج سيحتاج قراءتين منفصلتين مما يعقّد الـ Hardware — لذلك معظم المعماريات ومنها RISC-V تمنع ذلك وتعطي Exception.
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:16px;">
+      القاعدة: <strong style="color:var(--red);">lw/sw يحتاج عنوان يقبل القسمة على 4، lh/sh يحتاج قسمة على 2، lb/sb بدون قيود</strong>. مشكلة شائعة: تعرّف byte ثم word مباشرة بعدها — الـ byte يأخذ عنواناً واحداً، فالـ word ستبدأ من عنوان لا يقبل القسمة على 4 → كراش!
+    </p>
+    <p style="font-size:13px;color:#ffffff;line-height:2;margin-bottom:8px;">
+      الحل: استخدم <code style="color:var(--accent);">.align 2</code> قبل أي word. هذا يجبر الـ Assembler على إدراج bytes فاضية عشان العنوان التالي يكون قابلاً للقسمة على 2² = 4.
+    </p>
+    <div class="code"><span class="cmt"># مشكلة:</span>
+<span class="ok">var_a:</span> <span class="val">.byte 10</span>     <span class="cmt"># عنوان 0x100 ✅</span>
+<span class="ok">var_b:</span> <span class="val">.word 20</span>     <span class="cmt"># عنوان 0x101 ❌ كراش!</span>
 
 <span class="cmt"># الحل:</span>
 <span class="ok">var_a:</span> <span class="val">.byte 10</span>
-       <span class="val">.align 2</span>   <span class="cmt"># العنوان الجاي يقسم على 2^2=4</span>
-<span class="ok">var_b:</span> <span class="val">.word 20</span>   <span class="cmt"># هلأ عنوانه 0x104 ✅</span></div>
-    <div class="alert danger">💥 تكسر قاعدة الـ Alignment = البرنامج يكرش (Exception)!</div>
+       <span class="val">.align 2</span>     <span class="cmt"># العنوان التالي يقسم على 4</span>
+<span class="ok">var_b:</span> <span class="val">.word 20</span>     <span class="cmt"># عنوان 0x104 ✅</span></div>
+    <div class="alert danger">💥 تكسر قاعدة الـ Alignment في الـ Hardware الحقيقي = كراش فوري! Venus (المحاكي) يتجاهل هذه القاعدة — لذلك اعتد على استخدام .align من الآن.</div>
   </div>
 
-  <!-- EXERCISES -->
   <!-- EXERCISES -->
   <div class="sec-label">► تمارين المحاضرة 2 (10 تمارين)</div>
   <div class="alert info">🌐 استخدم المحاكي: <a href="https://venus.kvakil.me" target="_blank" style="color:var(--accent);">venus.kvakil.me</a></div>
@@ -442,64 +352,62 @@ td.danger{color:var(--red);}
     <div class="ex-item">
       <div class="ex-num">تمرين 03 — سهل</div>
       <div class="ex-title">Variables في الذاكرة</div>
-      <div class="ex-desc">عرّف متغيرين var_a=15 و var_b=8 في الـ .data section. احملهم واحسب الفرق (var_a - var_b) واخزن النتيجة في s0. النتيجة = 7.</div>
+      <div class="ex-desc">عرّف var_a=15 و var_b=8 في .data section. احسب الفرق (var_a - var_b) واخزنه في s0. النتيجة = 7.</div>
       <div class="ex-hint">استخدم: .data, .word, la, lw, sub</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 04 — متوسط</div>
       <div class="ex-title">Sign Extension — lb vs lbu</div>
-      <div class="ex-desc">عرّف byte يساوي 0xFF في الذاكرة. احمله مرتين: مرة بـ lb في t0 ومرة بـ lbu في t1. قارن النتيجتين. ما الفرق ولماذا؟</div>
-      <div class="ex-hint">0xFF = 255 unsigned = -1 signed. lb → 0xFFFFFFFF, lbu → 0x000000FF</div>
+      <div class="ex-desc">عرّف byte يساوي 0xFF في الذاكرة. احمله مرتين: مرة بـ lb في t0 ومرة بـ lbu في t1. ما الفرق؟</div>
+      <div class="ex-hint">0xFF: lb → 0xFFFFFFFF = -1، lbu → 0x000000FF = 255</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 05 — متوسط</div>
       <div class="ex-title">Array في الذاكرة</div>
-      <div class="ex-desc">احفظ الأرقام 10, 20, 30, 40, 50 في الذاكرة باستخدام .word. ثم اقرأهم كلهم باستخدام loop وoffset متزايد، وأضفهم معاً. النتيجة = 150.</div>
-      <div class="ex-hint">استخدم base address + offset (0, 4, 8, 12, 16) — كل word = 4 bytes</div>
+      <div class="ex-desc">احفظ الأرقام 10,20,30,40,50 كـ words. اقرأهم كلهم بـ loop وأضفهم. النتيجة = 150.</div>
+      <div class="ex-hint">استخدم base address + offset (0,4,8,12,16) — كل word = 4 bytes</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 06 — متوسط</div>
       <div class="ex-title">Memory Alignment</div>
-      <div class="ex-desc">اكتب: var_a: .byte 5 ثم var_b: .word 10 مباشرة بعده وشوف إذا يشتغل. بعدين صلح المشكلة باستخدام .align 2 وأثبت إنه شغّال.</div>
-      <div class="ex-hint">.align 2 يعني العنوان الجاي يقسم على 2^2 = 4</div>
+      <div class="ex-desc">اكتب: var_a: .byte 5 ثم var_b: .word 10 مباشرة. شوف إذا يشتغل في Venus. بعدين أضف .align 2 بينهم. ما الفرق؟</div>
+      <div class="ex-hint">Venus يتجاهل الـ Alignment — لكن الـ Hardware الحقيقي سيكرش!</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 07 — متوسط</div>
       <div class="ex-title">العد التنازلي + حفظ في الذاكرة</div>
-      <div class="ex-desc">اكتب loop يبدأ من 10 وينقص 1 كل مرة حتى يصل للصفر. في كل iteration خزّن القيمة الحالية في array. النتيجة: array تحتوي [10, 9, 8, ..., 1].</div>
+      <div class="ex-desc">اكتب loop يبدأ من 10 وينقص 1 حتى الصفر. في كل iteration احفظ القيمة في array. النتيجة: array = [10,9,8,...,1].</div>
       <div class="ex-hint">احتاج base address + counter يزيد بـ 4 كل iteration</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 08 — صعب</div>
       <div class="ex-title">إيجاد الـ Maximum</div>
-      <div class="ex-desc">عندك array من 5 أرقام: [3, 7, 2, 9, 1]. اكتب loop يجد أكبر رقم ويخزنه في s0. النتيجة = 9.</div>
-      <div class="ex-hint">استخدم blt للمقارنة — لو العنصر الحالي أكبر من الـ max الحالي، حدّث الـ max</div>
+      <div class="ex-desc">عندك array: [3,7,2,9,1]. اكتب loop يجد أكبر رقم ويخزنه في s0. النتيجة = 9.</div>
+      <div class="ex-hint">max = أول عنصر. loop: إذا العنصر الحالي > max حدّث max</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 09 — صعب</div>
       <div class="ex-title">Byte vs Halfword vs Word — Little Endian</div>
-      <div class="ex-desc">احفظ القيمة 0x12345678 كـ word في الذاكرة. ثم اقرأ: (1) البايت الأول بـ lb، (2) الـ halfword الأول بـ lh، (3) الـ word كاملة بـ lw. ما هي النتائج؟ تذكر Little Endian!</div>
-      <div class="ex-hint">Little Endian: البايت الأصغر في العنوان الأصغر → lb: 0x78, lh: 0x5678, lw: 0x12345678</div>
+      <div class="ex-desc">احفظ 0x12345678 كـ word. اقرأه بـ lb (byte)، lh (halfword)، lw (word). ما النتائج؟ لماذا؟</div>
+      <div class="ex-hint">Little Endian: البايت الأصغر في العنوان الأصغر → lb:0x78, lh:0x5678, lw:0x12345678</div>
     </div>
 
     <div class="ex-item">
       <div class="ex-num">تمرين 10 — تحدي 🏆</div>
       <div class="ex-title">Bubble Sort</div>
-      <div class="ex-desc">اكتب Bubble Sort يرتب array من 5 أرقام تصاعدياً: [5, 3, 8, 1, 4] → [1, 3, 4, 5, 8]. تحتاج nested loops: outer loop + inner loop + swap بين عنصرين.</div>
-      <div class="ex-hint">للـ swap: استخدم register مؤقت. lw عنصرين → sw معكوسين</div>
+      <div class="ex-desc">اكتب Bubble Sort يرتب [5,3,8,1,4] تصاعدياً → [1,3,4,5,8]. تحتاج nested loops + swap.</div>
+      <div class="ex-hint">للـ swap: register مؤقت. lw عنصرين → sw معكوسين</div>
     </div>
 
-  </div><!-- end ex-window -->
+  </div>
 
-</div><!-- end lec-2 -->
-
-<!-- LECTURES 3-12: Coming Soon -->
+</div>
 <div id="lec-3" class="content-area">
 
   <div class="sec-label">► المحاضرة 3 — Control Flow, Functions & Arrays</div>
